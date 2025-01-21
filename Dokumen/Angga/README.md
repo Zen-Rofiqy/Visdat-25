@@ -1,0 +1,2 @@
+* [Infografis](https://drive.google.com/drive/folders/1jV9wF1_WtMmqk_I77Sa2gcyALDhNUBsV?usp=sharing)
+* [Dashboard](https://public.tableau.com/app/profile/oktavia.galih.pratiwi/viz/VISUALISASIDATADASHBOARD/Dashboard1)
