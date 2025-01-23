@@ -22,7 +22,7 @@
 
 ### Kuliah
 
-![Komponen Penilaian](Dokumen/img/Komponen_Penilaian.png)
+<img src="Dokumen/img/Komponen_Penilaian.png" alt="Komponen Penilaian" style="width:65%;">
 
 ### Praktikum
 
