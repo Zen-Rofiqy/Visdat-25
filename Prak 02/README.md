@@ -2,8 +2,6 @@
 
 ## Materi
 
-- https://rpubs.com/BethPiontek/1152389
+## Download Folder
 
-- https://www.appsilon.com/post/r-esquisse-drag-n-drop-charts
-
-- https://rpubs.com/linosergio/1024012
+Copy link folder lalu paste & [Download disini](https://download-directory.github.io/)
