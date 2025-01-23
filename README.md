@@ -17,3 +17,9 @@
 | 11    | Rancangan awal dashboard menggunakan data project             |
 | 12-14 | Diskusi group project: sesuai feedback di kelas kuliah        |
 | 15    | Persiapan UAS                                                 |
+
+## Komponen Penilaian
+
+### Kuliah
+
+### Praktikum
