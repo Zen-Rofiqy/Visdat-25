@@ -22,4 +22,14 @@
 
 ### Kuliah
 
+![Komponen Penilaian](Dokumen\img\Komponen%20Penilaian.png)
+
 ### Praktikum
+
+| Komponen         | Bobot |
+| ---------------- | ----- |
+| Keaktifan        | 15%   |
+| Kuis 2 kali      | 30%   |
+| Tugas 2 Kali     | 25%   |
+| Projek Akhir UTS | 15%   |
+| Projek Akhir UAS | 15%   |
