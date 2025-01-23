@@ -1,6 +1,6 @@
 # Praktikum Visualisasi Data P1 2025
 
-- [Slide Kuliah](https://drive.google.com/drive/folders/1RRSBQVpkJQO836pm7BQZ-fIHg9wj5UTo)
+- **[Slide Kuliah](https://drive.google.com/drive/folders/1RRSBQVpkJQO836pm7BQZ-fIHg9wj5UTo)**
 
 ## Silabus Praktikum
 
@@ -22,7 +22,7 @@
 
 ### Kuliah
 
-<img src="Dokumen/img/Komponen_Penilaian.png" alt="Komponen Penilaian" style="width:65%;">
+<img src="Dokumen/img/Komponen_Penilaian.png" alt="Komponen Penilaian" style="width:50%;">
 
 ### Praktikum
 
