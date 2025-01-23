@@ -2,4 +2,6 @@
 
 ## Materi
 
-- [Download folder ini disini](https://download-directory.github.io/)
+## Download Folder
+
+Copy link folder lalu paste & [Download disini](https://download-directory.github.io/)
