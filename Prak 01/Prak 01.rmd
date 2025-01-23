@@ -42,7 +42,7 @@ install_load <- function (package1, ...)  {
    } 
 }
 
-install_load("esquisse")
+install_load("esquisse","plotly")
 # webshot::install_phantomjs()
 
 path <- function() gsub  ( "\\\\",  "/",  readClipboard ()  )
@@ -61,7 +61,42 @@ opts_knit$set(root.dir = "C:/Users/Fathan/Documents/Obsidian Vault/2. Kuliah/Smt
 esquisser(data=mtcars, viewer = "browser")
 ```
 
+```{r}
+install.packages(plotly)
+```
+
 ## Jumlah Silinder vs Konsumsi Bahan Bakar
+
+```{r}
+ggplot(mtcars) +
+  aes(x = cyl, y = mpg, colour = hp, size = disp) +
+  geom_point() +
+  geom_smooth(se = TRUE) +
+  scale_color_viridis_c(option = "magma", direction = 1) +
+  labs(
+    x = "Jumlah Silinder",
+    y = "Miles per Galon",
+    title = "Konsumsi Bahan Bakar per Jumlah Silinder",
+    subtitle = "Blabla",
+    caption = "Ini caption"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 20L,
+    face = "bold",
+    hjust = 0.5),
+    plot.subtitle = element_text(size = 31L,
+    face = "bold",
+    hjust = 0.5),
+    plot.caption = element_text(size = 20L,
+    face = "bold",
+    hjust = 0.5),
+    axis.title.y = element_text(size = 31L,
+    face = "bold"),
+    axis.title.x = element_text(size = 30L,
+    face = "bold")
+  )
+```
 
 ```{r fig.height=5, fig.width=10, dpi=300}
 # Loading ggplot2 and the mtcars Dataset
