@@ -77,27 +77,32 @@ head(namakabupaten)
 ## Data P**reprocessing** 
 
 ```{r}
-# Ambil nama kabupaten di provinsi jawa barat
 datakab <- namakabupaten[
   namakabupaten$nama_prov == "JAWA BARAT", 
   c("nama_kab", "kab")
 ]
 colnames(datakab) <- c("Nama Kabupaten", "KabKota")
 
-# Merge
 data <- merge(susenas, datakab, by="KabKota")
 head(data)
 ```
 
+## Data Quality Checking
+
 ```{r}
-data <- merge(susenas, datakab, by="KabKota")
-head(data)
+sum(is.na(data))
+```
+
+```{r}
+str(data)
 ```
 
 ```{r}
 databandung <- data[data$`Nama Kabupaten`=="BANDUNG",]
 table(databandung$KabKota)
 ```
+
+# Visualisasi
 
 #Bar Chart Diagram batang status rawan (versi sederhana)
 
