@@ -42,7 +42,10 @@ install_load <- function (package1, ...)  {
    } 
 }
 
-install_load("esquisse","plotly")
+install_load("ggplot2","viridis","dplyr")
+# install.packages("ggplot2"); library(ggplot2)
+# install.packages("viridis"); library(viridis)
+# install.packages("dplyr"); library(dplyr)
 # webshot::install_phantomjs()
 
 path <- function() gsub  ( "\\\\",  "/",  readClipboard ()  )
@@ -51,161 +54,239 @@ path <- function() gsub  ( "\\\\",  "/",  readClipboard ()  )
 ```{r , include=FALSE, echo=FALSE, warning=FALSE, message = FALSE}
 #Set Working Directory
 require("knitr")
-opts_knit$set(root.dir = "C:/Users/Fathan/Documents/Obsidian Vault/2. Kuliah/Smt 7 & 8/Visdat-25/Prak 01")
-```
-
-# Data mtcars
-
-```{r}
-# Launching the Addin and Calling the Data
-esquisser(data=mtcars, viewer = "browser")
+opts_knit$set(root.dir = "C:/Users/Fathan/Documents/Obsidian Vault/2. Kuliah/Smt 7 & 8/Visdat-25/Prak 02")
 ```
 
 ```{r}
-install.packages(plotly)
+setwd("C:/Users/Fathan/Documents/Obsidian Vault/2. Kuliah/Smt 7 & 8/Visdat-25/Prak 02")
 ```
 
-## Jumlah Silinder vs Konsumsi Bahan Bakar
+# Data
+
+## Import Data
+
+> Data Susenas Provinsi Jawa Barat tahun 2020
 
 ```{r}
-ggplot(mtcars) +
-  aes(x = cyl, y = mpg, colour = hp, size = disp) +
-  geom_point() +
-  geom_smooth(se = TRUE) +
-  scale_color_viridis_c(option = "magma", direction = 1) +
-  labs(
-    x = "Jumlah Silinder",
-    y = "Miles per Galon",
-    title = "Konsumsi Bahan Bakar per Jumlah Silinder",
-    subtitle = "Blabla",
-    caption = "Ini caption"
-  ) +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(size = 20L,
-    face = "bold",
-    hjust = 0.5),
-    plot.subtitle = element_text(size = 31L,
-    face = "bold",
-    hjust = 0.5),
-    plot.caption = element_text(size = 20L,
-    face = "bold",
-    hjust = 0.5),
-    axis.title.y = element_text(size = 31L,
-    face = "bold"),
-    axis.title.x = element_text(size = 30L,
-    face = "bold")
-  )
+susenas <- read.csv("Data/Susenas Jawa Barat 2020.csv", sep = ";")
+head(susenas)
 ```
-
-```{r fig.height=5, fig.width=10, dpi=300}
-# Loading ggplot2 and the mtcars Dataset
-
-library(ggplot2)
-dat <- (mtcars)
-
-# Placing the Graph in an R Markdown Document
-
-ggplot(dat) +
-  aes(x = cyl, y = mpg, colour = hp, size = disp) +
-  geom_point(shape = "circle") +
-  geom_smooth(method = "lm", span = 0.75, linewidth = 1) +
-  scale_color_viridis_c(option = "plasma", direction = -1) +
-  labs(
-    x = "Cylinders (cyl)",
-    y = "Miles per Gallon (mpg)",
-    title = "Miles per Gallon by Number of Cylinders",
-    subtitle = "Accounting for Horsepower and Displacement",
-    caption = "Data From the mtcars Dataset",
-    color = "Horsepower (hp)",
-    size = "Displacement (cu. in.)"
-  ) +
-  theme_minimal(base_size = 14) +
-  theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    plot.subtitle = element_text(face = "italic", hjust = 0.5),
-    plot.caption = element_text(face = "italic", hjust = 0.5)
-  )
-```
-
-## Boxplot
-
-```{r fig.height=5, fig.width=10, dpi=300}
-ggplot(dat) +
-  aes(x = factor(cyl), y = mpg, fill = factor(cyl)) +
-  geom_boxplot() +
-  scale_fill_viridis_d(option = "plasma", direction = -1) +
-  labs(
-    x = "Cylinders (cyl)",
-    y = "Miles per Gallon (mpg)",
-    title = "Distribution of Miles per Gallon by Number of Cylinders",
-    subtitle = "Boxplot Showing Variability Across Cylinder Categories",
-    fill = "Cylinders"
-  ) +
-  theme_minimal(base_size = 14) +
-  theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    plot.subtitle = element_text(face = "italic", hjust = 0.5),
-    legend.position = "top"
-  )
-```
-
-## Violin Plot
-
-```{r fig.height=5, fig.width=10, dpi=300}
-ggplot(dat) +
-  aes(x = factor(cyl), y = mpg, fill = factor(cyl)) +
-  geom_violin(trim = FALSE, alpha = 0.7, color = "black") +  # Violin plot
-  geom_boxplot(width = 0.1, fill="white") +  # Boxplot di dalamnya
-  scale_fill_viridis_d(option = "plasma", direction = -1) +  # Warna
-  labs(
-    x = "Cylinders (cyl)",
-    y = "Miles per Gallon (mpg)",
-    title = "Violin Plot of Miles per Gallon by Cylinder Count",
-    subtitle = "With Embedded Boxplot Showing Key Statistics",
-    fill = "Cylinders"
-  ) +
-  theme_minimal(base_size = 14) +
-  theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    plot.subtitle = element_text(face = "italic", hjust = 0.5),
-    legend.position = "top"
-  )
-```
-
-# Data Iris
 
 ```{r}
-esquisser(data=iris, viewer = "browser")
+namakabupaten <- read.csv("Data/nama kabupaten.csv",sep = ",")
+head(namakabupaten)
+```
+
+## Data P**reprocessing**
+
+```{r}
+datakab <- namakabupaten[
+  namakabupaten$nama_prov == "JAWA BARAT", 
+  c("nama_kab", "kab")
+]
+colnames(datakab) <- c("Nama Kabupaten", "KabKota")
+
+data <- merge(susenas, datakab, by="KabKota")
+head(data)
+```
+
+## Data Quality Checking
+
+```{r}
+sum(is.na(data))
+```
+
+```{r}
+str(data)
+```
+
+```{r}
+table(data[data$`Nama Kabupaten` == "BANDUNG", ]$KabKota)
+```
+
+# Bar Chart
+
+## Sederhana
+
+```{r fig.height=3.5, fig.width=10, dpi=300}
+ggplot(data, aes(Status_Rawan)) + 
+  geom_bar()
+```
+
+> **Dengan Warna default**
+
+```{r fig.height=3.5, fig.width=10, dpi=300}
+ggplot(data, aes(Status_Rawan, fill=Status_Rawan)) + 
+  geom_bar()
+```
+
+> **Warna Viridis**
+
+```{r fig.height=3.5, fig.width=10, dpi=300}
+ggplot(data, aes(Status_Rawan, fill=Status_Rawan)) + 
+  geom_bar() + 
+  scale_fill_viridis(discrete = T)
+```
+
+> **Warna manual**
+
+```{r fig.height=3.5, fig.width=10, dpi=300}
+ggplot(data, aes(Status_Rawan, fill=Status_Rawan)) + 
+  geom_bar() + 
+  scale_fill_manual(values = c("#FF6961", "#8CD47E"))
+```
+
+## Banyak Kategori
+
+```{r fig.height=3.5, fig.width=10, dpi=300}
+ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + 
+  geom_bar() + 
+  scale_fill_viridis(discrete = T)
+```
+
+> **Ubah angle text**
+
+```{r fig.height=5, fig.width=10, dpi=300}
+ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + 
+  geom_bar() + 
+  scale_fill_viridis(discrete = T) + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 ```
 
 ```{r fig.height=5, fig.width=10, dpi=300}
-ggplot(iris) +
-  aes(
-    x = Sepal.Length,
-    y = Petal.Length,
-    colour = Species,
-    size = Sepal.Length
-  ) +
-  geom_point(shape = "circle") +
-  scale_color_brewer(palette = "Purples", direction = 1) +
-  labs(
-    x = "Sepal Length",
-    y = "Sepak Width",
-    title = "Sepal Length vs. Sepal Width",
-    subtitle = "A comparison through flower species",
-    caption = "Iris Dataset",
-    color = "Flower class",
-    size = "Sepal Length"
-  ) +
-  theme_classic() +
-  theme(
-    legend.position = "top",
-    plot.title = element_text(
-      size = 17L,
-      face = "bold"
-    ),
-    plot.subtitle = element_text(face = "bold"),
-    plot.caption = element_text(face = "italic")
-  )
+ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + 
+  geom_bar() + 
+  scale_fill_viridis(discrete = T) + 
+  theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust = 1))
+```
+
+> **Hapus legend**
+
+```{r fig.height=3.5, fig.width=10, dpi=300}
+ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + 
+  geom_bar() + 
+  scale_fill_viridis(discrete = T) + 
+  theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust = 1), 
+        legend.position = "none") + ylab("Frekuensi")
+```
+
+> **Rotasi Barchart**
+
+```{r fig.height=3.5, fig.width=10, dpi=300}
+ggplot(data, aes(y = `Nama Kabupaten`, fill=`Nama Kabupaten`)) + 
+  geom_bar() + 
+  scale_fill_viridis(discrete = T) + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), 
+        legend.position = "none") + 
+  xlab("Frekuensi")
+```
+
+```{r fig.height=3.5, fig.width=10, dpi=300}
+ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + 
+  geom_bar() + 
+  scale_fill_viridis(discrete = T) + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), 
+        legend.position = "none") + 
+  ylab("Frekuensi") + 
+  coord_flip() + 
+  ggtitle("Diagram Batang Kabupaten")
+```
+
+# Grouped Bar Chart
+
+```{r fig.height=3.5, fig.width=10, dpi=300}
+ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + 
+  geom_bar(position="dodge")
+```
+
+## Stacked Barchart
+
+```{r fig.height=3.5, fig.width=10, dpi=300}
+ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + 
+  geom_bar(position="stack")
+```
+
+## Stacked Barchart 100%
+
+```{r fig.height=3.5, fig.width=10, dpi=300}
+ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + 
+  geom_bar(position="fill")
+```
+
+```{r}
+percentDatadaerah <- data %>% 
+  group_by(`Nama Kabupaten`) %>% 
+  count(Status_Rawan) %>% 
+  mutate(ratio=scales::percent(n/sum(n)))
+```
+
+```{r fig.height=5, fig.width=7, dpi=300}
+ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + 
+  geom_bar(position="fill") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) + 
+  coord_flip() +
+  geom_text(data=percentDatadaerah, aes(y=n, label=ratio),
+            color="white", position=position_fill(vjust=0.5), size = 3.5)
+```
+
+Mewarnai manual
+
+```{r}
+ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="fill") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) + geom_text(data=percentDatadaerah,aes(y=n,label=ratio),color="white",position=position_fill(vjust=0.5),size = 2)+scale_fill_manual(values=c("#7be217", "#4f58ab"))
+```
+
+#Lollipop Chart
+
+```{r}
+table(data$`Nama Kabupaten`)
+```
+
+```{r}
+head(percentDatadaerah)
+```
+
+```{r}
+percentDatadaerah2 <- percentDatadaerah[percentDatadaerah$Status_Rawan=="Rawan",]
+percentDatadaerah2 <- as.data.frame(percentDatadaerah2)
+```
+
+```{r}
+ggplot(percentDatadaerah2, aes(x = `Nama Kabupaten`, y = n)) + geom_segment(aes(x = `Nama Kabupaten`, xend = `Nama Kabupaten`, y = 0, yend = n)) + geom_point() 
+```
+
+Option 1: coord_flip
+
+```{r}
+ggplot(percentDatadaerah2, aes(x = `Nama Kabupaten`, y = n)) + geom_segment(aes(x = `Nama Kabupaten`, xend = `Nama Kabupaten`, y = 0, yend = n)) + geom_point() + coord_flip()
+```
+
+Option 2: Ubah X dan Y
+
+```{r}
+ggplot(percentDatadaerah2, aes(y = `Nama Kabupaten`, x = n)) + geom_segment(aes(y = `Nama Kabupaten`, yend = `Nama Kabupaten`, x = 0, xend = n)) + geom_point()
+```
+
+```{r}
+ggplot(percentDatadaerah2, aes(x = `Nama Kabupaten`, y = n)) + geom_segment(aes(x = `Nama Kabupaten`, xend = `Nama Kabupaten`, y = 0, yend = n)) + geom_point() + coord_flip() + geom_point(size = 4, pch = 21, bg = 5, col = 6)
+```
+
+```{r}
+ggplot(percentDatadaerah2, aes(x = `Nama Kabupaten`, y = n)) + geom_segment(aes(x = `Nama Kabupaten`, xend = `Nama Kabupaten`, y = 0, yend = n), color="grey", lwd=1.5) + geom_point() + coord_flip() + geom_point(size = 5, pch = 21, bg = 6, col = 1) + theme_classic()
+```
+
+```{r}
+ggplot(percentDatadaerah2, aes(x = `Nama Kabupaten`, y = n)) + geom_segment(aes(x = `Nama Kabupaten`, xend = `Nama Kabupaten`, y = 0, yend = n), color="grey", lwd=1.5) + geom_point() + coord_flip() + geom_point(size = 5, pch = 21, bg = 6, col = 1) + theme_classic()
+```
+
+```{r}
+ggplot(percentDatadaerah2, aes(x = `Nama Kabupaten`, y = n)) + geom_segment(aes(x = `Nama Kabupaten`, xend = `Nama Kabupaten`, y = 0, yend = n), color="grey", lwd=1.5) + geom_point() + coord_flip() + geom_point(size = 5, pch = 21, bg = 6, col = 1) + geom_text(aes(label = n), color = "white", size = 2) + theme_classic() 
+```
+
+```{r}
+x = reorder(percentDatadaerah2$`Nama Kabupaten`, percentDatadaerah2$n)
+x
+```
+
+```{r}
+ggplot(percentDatadaerah2, aes(x = reorder(`Nama Kabupaten`, n), y = n)) + geom_segment(aes(xend = `Nama Kabupaten`, y = 0, yend = n), color="grey", lwd=1.5) + geom_point() + coord_flip() + geom_point(size = 5, pch = 21, bg = 6, col = 1) + geom_text(aes(label = n), color = "white", size = 2) + theme_classic()
 ```
