@@ -43,6 +43,8 @@ install_load <- function (package1, ...)  {
 }
 
 install_load("ggplot2","viridis")
+# install.packages("ggplot2"); library(ggplot2)
+# install.packages("viridis"); library(viridis)
 # webshot::install_phantomjs()
 
 path <- function() gsub  ( "\\\\",  "/",  readClipboard ()  )
@@ -186,13 +188,6 @@ ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) +
 ```{r fig.height=3.5, fig.width=10, dpi=300}
 ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + 
   geom_bar(position="dodge")
-```
-
-```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + 
-  geom_bar(position="dodge") + 
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-  scale_fill_viridis(discrete = T)
 ```
 
 ```{r fig.height=3.5, fig.width=10, dpi=300}
