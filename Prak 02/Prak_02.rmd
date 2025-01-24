@@ -42,7 +42,7 @@ install_load <- function (package1, ...)  {
    } 
 }
 
-install_load("esquisse","plotly")
+install_load("ggplot2","viridis")
 # webshot::install_phantomjs()
 
 path <- function() gsub  ( "\\\\",  "/",  readClipboard ()  )
@@ -98,61 +98,55 @@ str(data)
 ```
 
 ```{r}
-databandung <- data[data$`Nama Kabupaten`=="BANDUNG",]
-table(databandung$KabKota)
+table(data[data$`Nama Kabupaten` == "BANDUNG", ]$KabKota)
 ```
 
-# Visualisasi
+# Bar Chart
 
-#Bar Chart Diagram batang status rawan (versi sederhana)
+## Sederhana
 
-```{r}
-library(ggplot2)
-ggplot(data, aes(Status_Rawan)) + geom_bar()
+```{r fig.height=3.5, fig.width=10, dpi=300}
+ggplot(data, aes(Status_Rawan)) + 
+  geom_bar()
 ```
 
-Diagram batang status rawan (versi warna)
+> Dengan Warna
 
-```{r}
-ggplot(data, aes(Status_Rawan, fill=Status_Rawan)) + geom_bar()
+```{r fig.height=3.5, fig.width=10, dpi=300}
+ggplot(data, aes(Status_Rawan, fill=Status_Rawan)) + 
+  geom_bar()
 ```
 
-```{r}
-library(viridis)
-ggplot(data, aes(Status_Rawan, fill=Status_Rawan)) + geom_bar() + scale_fill_viridis(discrete = T)
+> Warna Viridis
+
+```{r fig.height=3.5, fig.width=10, dpi=300}
+ggplot(data, aes(Status_Rawan, fill=Status_Rawan)) + 
+  geom_bar() + 
+  scale_fill_viridis(discrete = T)
 ```
 
-```{r}
-??scale_viridis()
-View(data)
-```
-
-```{r}
+```{r fig.height=3.5, fig.width=10, dpi=300}
 ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + geom_bar() + scale_fill_viridis(discrete = T)
 ```
 
-```{r}
+```{r fig.height=3.5, fig.width=10, dpi=300}
 ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + geom_bar() + scale_fill_viridis(discrete = T) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 ```
 
-```{r}
+```{r fig.height=3.5, fig.width=10, dpi=300}
 ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + geom_bar() + scale_fill_viridis(discrete = T) + theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust = 1))
 ```
 
-```{r}
+```{r fig.height=3.5, fig.width=10, dpi=300}
 ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + geom_bar() + scale_fill_viridis(discrete = T) + theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust = 1), legend.position = "none") + ylab("Frekuensi")
 ```
 
-```{r}
+```{r fig.height=3.5, fig.width=10, dpi=300}
 ggplot(data, aes(y = `Nama Kabupaten`, fill=`Nama Kabupaten`)) + geom_bar() + scale_fill_viridis(discrete = T) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), legend.position = "none") + xlab("Frekuensi")
 ```
 
-```{r}
+```{r fig.height=3.5, fig.width=10, dpi=300}
 ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + geom_bar() + scale_fill_viridis(discrete = T) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), legend.position = "none") + ylab("Frekuensi") + coord_flip() + ggtitle("Diagram Batang Kabupaten")
-```
-
-```{r}
-??theme()
 ```
 
 #Grouped Bar Chart
