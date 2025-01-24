@@ -42,9 +42,10 @@ install_load <- function (package1, ...)  {
    } 
 }
 
-install_load("ggplot2","viridis")
+install_load("ggplot2","viridis","dplyr")
 # install.packages("ggplot2"); library(ggplot2)
 # install.packages("viridis"); library(viridis)
+# install.packages("dplyr"); library(dplyr)
 # webshot::install_phantomjs()
 
 path <- function() gsub  ( "\\\\",  "/",  readClipboard ()  )
@@ -76,7 +77,7 @@ namakabupaten <- read.csv("Data/nama kabupaten.csv",sep = ",")
 head(namakabupaten)
 ```
 
-## Data P**reprocessing** 
+## Data P**reprocessing**
 
 ```{r}
 datakab <- namakabupaten[
@@ -112,7 +113,7 @@ ggplot(data, aes(Status_Rawan)) +
   geom_bar()
 ```
 
-> **Dengan Warna**
+> **Dengan Warna default**
 
 ```{r fig.height=3.5, fig.width=10, dpi=300}
 ggplot(data, aes(Status_Rawan, fill=Status_Rawan)) + 
@@ -125,6 +126,14 @@ ggplot(data, aes(Status_Rawan, fill=Status_Rawan)) +
 ggplot(data, aes(Status_Rawan, fill=Status_Rawan)) + 
   geom_bar() + 
   scale_fill_viridis(discrete = T)
+```
+
+> **Warna manual**
+
+```{r fig.height=3.5, fig.width=10, dpi=300}
+ggplot(data, aes(Status_Rawan, fill=Status_Rawan)) + 
+  geom_bar() + 
+  scale_fill_manual(values = c("#FF6961", "#8CD47E"))
 ```
 
 ## Banyak Kategori
@@ -190,13 +199,6 @@ ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) +
   geom_bar(position="dodge")
 ```
 
-```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + 
-  geom_bar(position="dodge") + 
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-  scale_fill_viridis(discrete = T)
-```
-
 ## Stacked Barchart
 
 ```{r fig.height=3.5, fig.width=10, dpi=300}
@@ -211,34 +213,20 @@ ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) +
   geom_bar(position="fill")
 ```
 
-```{}
-```
-
-```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="dodge") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) + scale_fill_manual(values = c("red", "green"))
-```
-
 ```{r}
-ggplot(data, aes(x=`Nama Kabupaten`, fill=Air_Minum_Layak)) + geom_bar(position="dodge") + scale_fill_viridis(discrete = T) + facet_wrap(~Status_Rawan) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
-```
-
-#Stacked Bar Chart
-
-```{r}
-ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="fill") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
-```
-
-```{r}
-library(dplyr)
 percentDatadaerah <- data %>% 
   group_by(`Nama Kabupaten`) %>% 
   count(Status_Rawan) %>% 
   mutate(ratio=scales::percent(n/sum(n)))
-head(percentDatadaerah)
 ```
 
-```{r}
-ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="fill") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))+ geom_text(data=percentDatadaerah,aes(y=n,label=ratio),color="white",position=position_fill(vjust=0.5),size = 2)
+```{r fig.height=5, fig.width=7, dpi=300}
+ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + 
+  geom_bar(position="fill") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) + 
+  coord_flip() +
+  geom_text(data=percentDatadaerah, aes(y=n, label=ratio),
+            color="white", position=position_fill(vjust=0.5), size = 3.5)
 ```
 
 Mewarnai manual
