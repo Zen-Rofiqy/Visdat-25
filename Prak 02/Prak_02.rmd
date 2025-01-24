@@ -110,14 +110,14 @@ ggplot(data, aes(Status_Rawan)) +
   geom_bar()
 ```
 
-> Dengan Warna
+> **Dengan Warna**
 
 ```{r fig.height=3.5, fig.width=10, dpi=300}
 ggplot(data, aes(Status_Rawan, fill=Status_Rawan)) + 
   geom_bar()
 ```
 
-> Warna Viridis
+> **Warna Viridis**
 
 ```{r fig.height=3.5, fig.width=10, dpi=300}
 ggplot(data, aes(Status_Rawan, fill=Status_Rawan)) + 
@@ -125,53 +125,101 @@ ggplot(data, aes(Status_Rawan, fill=Status_Rawan)) +
   scale_fill_viridis(discrete = T)
 ```
 
-```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + geom_bar() + scale_fill_viridis(discrete = T)
-```
+## Banyak Kategori
 
 ```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + geom_bar() + scale_fill_viridis(discrete = T) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + 
+  geom_bar() + 
+  scale_fill_viridis(discrete = T)
+```
+
+> **Ubah angle text**
+
+```{r fig.height=5, fig.width=10, dpi=300}
+ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + 
+  geom_bar() + 
+  scale_fill_viridis(discrete = T) + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+```
+
+```{r fig.height=5, fig.width=10, dpi=300}
+ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + 
+  geom_bar() + 
+  scale_fill_viridis(discrete = T) + 
+  theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust = 1))
+```
+
+> **Hapus legend**
+
+```{r fig.height=3.5, fig.width=10, dpi=300}
+ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + 
+  geom_bar() + 
+  scale_fill_viridis(discrete = T) + 
+  theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust = 1), 
+        legend.position = "none") + ylab("Frekuensi")
+```
+
+> **Rotasi Barchart**
+
+```{r fig.height=3.5, fig.width=10, dpi=300}
+ggplot(data, aes(y = `Nama Kabupaten`, fill=`Nama Kabupaten`)) + 
+  geom_bar() + 
+  scale_fill_viridis(discrete = T) + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), 
+        legend.position = "none") + 
+  xlab("Frekuensi")
 ```
 
 ```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + geom_bar() + scale_fill_viridis(discrete = T) + theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust = 1))
+ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + 
+  geom_bar() + 
+  scale_fill_viridis(discrete = T) + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), 
+        legend.position = "none") + 
+  ylab("Frekuensi") + 
+  coord_flip() + 
+  ggtitle("Diagram Batang Kabupaten")
+```
+
+# Grouped Bar Chart
+
+```{r fig.height=3.5, fig.width=10, dpi=300}
+ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + 
+  geom_bar(position="dodge")
 ```
 
 ```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + geom_bar() + scale_fill_viridis(discrete = T) + theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust = 1), legend.position = "none") + ylab("Frekuensi")
+ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + 
+  geom_bar(position="dodge") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  scale_fill_viridis(discrete = T)
 ```
 
 ```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(y = `Nama Kabupaten`, fill=`Nama Kabupaten`)) + geom_bar() + scale_fill_viridis(discrete = T) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), legend.position = "none") + xlab("Frekuensi")
+ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + 
+  geom_bar(position="dodge") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  scale_fill_viridis(discrete = T)
+```
+
+## Stacked Barchart
+
+```{r fig.height=3.5, fig.width=10, dpi=300}
+ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + 
+  geom_bar(position="stack")
+```
+
+## Stacked Barchart 100%
+
+```{r fig.height=3.5, fig.width=10, dpi=300}
+ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + 
+  geom_bar(position="fill")
+```
+
+```{}
 ```
 
 ```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + geom_bar() + scale_fill_viridis(discrete = T) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), legend.position = "none") + ylab("Frekuensi") + coord_flip() + ggtitle("Diagram Batang Kabupaten")
-```
-
-#Grouped Bar Chart
-
-```{r}
-ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="dodge")
-```
-
-```{r}
-ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="stack")
-```
-
-```{r}
-ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="fill")
-```
-
-```{r}
-ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="dodge") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
-```
-
-```{r}
-ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="dodge") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) + scale_fill_viridis(discrete = T)
-```
-
-```{r}
 ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="dodge") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) + scale_fill_manual(values = c("red", "green"))
 ```
 
