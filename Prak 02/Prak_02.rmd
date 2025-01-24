@@ -72,7 +72,7 @@ head(susenas)
 ```
 
 ```{r}
-namakabupaten<-read.csv("Data/nama kabupaten.csv",sep = ",")
+namakabupaten <- read.csv("Data/nama kabupaten.csv",sep = ",")
 head(namakabupaten)
 ```
 
