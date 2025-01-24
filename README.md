@@ -1,6 +1,9 @@
 # Praktikum Visualisasi Data P1 2025
 
+## Materi
+
 - **[Slide Kuliah](https://drive.google.com/drive/folders/1RRSBQVpkJQO836pm7BQZ-fIHg9wj5UTo)**
+- **[Fundamentals of Data Visualization](https://clauswilke.com/dataviz/)**
 
 ## Silabus Praktikum
 
