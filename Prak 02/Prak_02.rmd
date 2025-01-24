@@ -51,91 +51,99 @@ path <- function() gsub  ( "\\\\",  "/",  readClipboard ()  )
 ```{r , include=FALSE, echo=FALSE, warning=FALSE, message = FALSE}
 #Set Working Directory
 require("knitr")
-opts_knit$set(root.dir = "path")
+opts_knit$set(root.dir = "C:/Users/Fathan/Documents/Obsidian Vault/2. Kuliah/Smt 7 & 8/Visdat-25/Prak 02")
 ```
 
 ```{r}
-setwd("path")
+setwd("C:/Users/Fathan/Documents/Obsidian Vault/2. Kuliah/Smt 7 & 8/Visdat-25/Prak 02")
 ```
 
 # Data
 
+## Import Data
+
+> Data Susenas Provinsi Jawa Barat tahun 2020
+
 ```{r}
-susenas<-read.csv("Susenas Jawa Barat 2020.csv", sep = ";")
+susenas <- read.csv("Data/Susenas Jawa Barat 2020.csv", sep = ";")
 head(susenas)
 ```
 
-Data Susenas Provinsi Jawa Barat tahun 2020
-
 ```{r}
-namakabupaten<-read.csv("nama kabupaten.csv",sep = ",")
+namakabupaten<-read.csv("Data/nama kabupaten.csv",sep = ",")
 head(namakabupaten)
 ```
 
+## Data P**reprocessing** 
+
 ```{r}
-datakab <- namakabupaten[namakabupaten$nama_prov=="JAWA BARAT",]; datakab
-datakab <- cbind(datakab$nama_kab,datakab$kab); datakab
-str(datakab)
-datakab <- as.data.frame(datakab); datakab
-colnames(datakab) <- c("Nama Kabupaten","KabKota")
-datakab
+# Ambil nama kabupaten di provinsi jawa barat
+datakab <- namakabupaten[
+  namakabupaten$nama_prov == "JAWA BARAT", 
+  c("nama_kab", "kab")
+]
+colnames(datakab) <- c("Nama Kabupaten", "KabKota")
+
+# Merge
+data <- merge(susenas, datakab, by="KabKota")
+head(data)
 ```
 
 ```{r}
-datadf <- merge(susenas, datakab, by="KabKota")
-head(datadf)
+data <- merge(susenas, datakab, by="KabKota")
+head(data)
 ```
 
 ```{r}
-datadfbandung <- datadf[datadf$`Nama Kabupaten`=="BANDUNG",]
-table(datadfbandung$KabKota)
+databandung <- data[data$`Nama Kabupaten`=="BANDUNG",]
+table(databandung$KabKota)
 ```
 
 #Bar Chart Diagram batang status rawan (versi sederhana)
 
 ```{r}
 library(ggplot2)
-ggplot(datadf, aes(Status_Rawan)) + geom_bar()
+ggplot(data, aes(Status_Rawan)) + geom_bar()
 ```
 
 Diagram batang status rawan (versi warna)
 
 ```{r}
-ggplot(datadf, aes(Status_Rawan, fill=Status_Rawan)) + geom_bar()
+ggplot(data, aes(Status_Rawan, fill=Status_Rawan)) + geom_bar()
 ```
 
 ```{r}
 library(viridis)
-ggplot(datadf, aes(Status_Rawan, fill=Status_Rawan)) + geom_bar() + scale_fill_viridis(discrete = T)
+ggplot(data, aes(Status_Rawan, fill=Status_Rawan)) + geom_bar() + scale_fill_viridis(discrete = T)
 ```
 
 ```{r}
 ??scale_viridis()
-View(datadf)
+View(data)
 ```
 
 ```{r}
-ggplot(datadf, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + geom_bar() + scale_fill_viridis(discrete = T)
+ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + geom_bar() + scale_fill_viridis(discrete = T)
 ```
 
 ```{r}
-ggplot(datadf, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + geom_bar() + scale_fill_viridis(discrete = T) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + geom_bar() + scale_fill_viridis(discrete = T) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 ```
 
 ```{r}
-ggplot(datadf, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + geom_bar() + scale_fill_viridis(discrete = T) + theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust = 1))
+ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + geom_bar() + scale_fill_viridis(discrete = T) + theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust = 1))
 ```
 
 ```{r}
-ggplot(datadf, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + geom_bar() + scale_fill_viridis(discrete = T) + theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust = 1), legend.position = "none") + ylab("Frekuensi")
+ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + geom_bar() + scale_fill_viridis(discrete = T) + theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust = 1), legend.position = "none") + ylab("Frekuensi")
 ```
 
 ```{r}
-ggplot(datadf, aes(y = `Nama Kabupaten`, fill=`Nama Kabupaten`)) + geom_bar() + scale_fill_viridis(discrete = T) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), legend.position = "none") + xlab("Frekuensi")
+ggplot(data, aes(y = `Nama Kabupaten`, fill=`Nama Kabupaten`)) + geom_bar() + scale_fill_viridis(discrete = T) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), legend.position = "none") + xlab("Frekuensi")
 ```
 
 ```{r}
-ggplot(datadf, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + geom_bar() + scale_fill_viridis(discrete = T) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), legend.position = "none") + ylab("Frekuensi") + coord_flip() + ggtitle("Diagram Batang Kabupaten")
+ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + geom_bar() + scale_fill_viridis(discrete = T) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), legend.position = "none") + ylab("Frekuensi") + coord_flip() + ggtitle("Diagram Batang Kabupaten")
 ```
 
 ```{r}
@@ -145,42 +153,42 @@ ggplot(datadf, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + geom_bar() + scal
 #Grouped Bar Chart
 
 ```{r}
-ggplot(datadf, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="dodge")
+ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="dodge")
 ```
 
 ```{r}
-ggplot(datadf, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="stack")
+ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="stack")
 ```
 
 ```{r}
-ggplot(datadf, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="fill")
+ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="fill")
 ```
 
 ```{r}
-ggplot(datadf, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="dodge") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="dodge") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 ```
 
 ```{r}
-ggplot(datadf, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="dodge") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) + scale_fill_viridis(discrete = T)
+ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="dodge") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) + scale_fill_viridis(discrete = T)
 ```
 
 ```{r}
-ggplot(datadf, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="dodge") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) + scale_fill_manual(values = c("red", "green"))
+ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="dodge") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) + scale_fill_manual(values = c("red", "green"))
 ```
 
 ```{r}
-ggplot(datadf, aes(x=`Nama Kabupaten`, fill=Air_Minum_Layak)) + geom_bar(position="dodge") + scale_fill_viridis(discrete = T) + facet_wrap(~Status_Rawan) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+ggplot(data, aes(x=`Nama Kabupaten`, fill=Air_Minum_Layak)) + geom_bar(position="dodge") + scale_fill_viridis(discrete = T) + facet_wrap(~Status_Rawan) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 ```
 
 #Stacked Bar Chart
 
 ```{r}
-ggplot(datadf, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="fill") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="fill") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 ```
 
 ```{r}
 library(dplyr)
-percentDatadaerah <- datadf %>% 
+percentDatadaerah <- data %>% 
   group_by(`Nama Kabupaten`) %>% 
   count(Status_Rawan) %>% 
   mutate(ratio=scales::percent(n/sum(n)))
@@ -188,19 +196,19 @@ head(percentDatadaerah)
 ```
 
 ```{r}
-ggplot(datadf, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="fill") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))+ geom_text(data=percentDatadaerah,aes(y=n,label=ratio),color="white",position=position_fill(vjust=0.5),size = 2)
+ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="fill") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))+ geom_text(data=percentDatadaerah,aes(y=n,label=ratio),color="white",position=position_fill(vjust=0.5),size = 2)
 ```
 
 Mewarnai manual
 
 ```{r}
-ggplot(datadf, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="fill") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) + geom_text(data=percentDatadaerah,aes(y=n,label=ratio),color="white",position=position_fill(vjust=0.5),size = 2)+scale_fill_manual(values=c("#7be217", "#4f58ab"))
+ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="fill") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) + geom_text(data=percentDatadaerah,aes(y=n,label=ratio),color="white",position=position_fill(vjust=0.5),size = 2)+scale_fill_manual(values=c("#7be217", "#4f58ab"))
 ```
 
 #Lollipop Chart
 
 ```{r}
-table(datadf$`Nama Kabupaten`)
+table(data$`Nama Kabupaten`)
 ```
 
 ```{r}
