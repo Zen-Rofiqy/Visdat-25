@@ -43,7 +43,7 @@ install_load <- function (package1, ...)  {
 }
 
 install_load("knitr","ggplot2","viridis","dplyr","DT","stringr","scales","tidyr",
-             "ggmosaic")
+             "waffle","ggtext","lubridate")
 
 # Set wd 
 opts_knit$set(root.dir = normalizePath("./"))
@@ -697,11 +697,83 @@ Digunakan untuk menampilkan proporsi dalam bentuk ikon atau blok.
 
 ![](images/clipboard-3586682718.png){width="203"} ![](images/clipboard-2123779999.png){width="269"} ![](images/clipboard-1414171221.png){width="201"}
 
+### Unit Chart
+
+```{r fig.height=3.5, fig.width=10, dpi=300}
+# Buat dataset grid untuk tahun 2000 (100 kotak) dan tahun 2015 (57 kotak)
+unit_2000 <- expand.grid(x = 1:10, y = 1:10) %>% 
+  mutate(Year = "2000") %>% 
+  slice(1:100)  # Ambil hanya 100 unit
+
+unit_2015 <- expand.grid(x = 1:10, y = 1:10) %>% 
+  mutate(Year = "2015") %>% 
+  slice(1:57)  # Ambil hanya 57 unit
+
+# Gabungkan dataset
+unit_chart_data <- bind_rows(unit_2000, unit_2015)
+
+# Plot Unit Chart
+ggplot(unit_chart_data, aes(x = x, y = y, fill = Year)) +
+  geom_tile(color = "white", size = 0.5) +
+  scale_fill_manual(values = c("2000" = "orange", "2015" = "blue")) +
+  labs(title = "Unit Chart: Poverty Reduction",
+       subtitle = "Each square represents 1 million people",
+       x = "", y = "") +
+  facet_wrap(~Year, scales = "free") +  # Pisahkan per Tahun
+  theme_void() +
+  theme(legend.position = "none")  # Sembunyikan legend
+```
+
+### Waffle Chart
+
+```{r fig.height=3.5, fig.width=10, dpi=300}
+# Buat data proporsi
+poverty_data <- c("Nigeria (54%)" = 54, "Ethiopia (27%)" = 27, "Others" = 19)
+
+# Waffle Chart
+waffle(poverty_data, rows = 10, colors = c("#E15759", "#F28E2B", "#BAB0AC")) +
+  labs(title = "Waffle Chart: Poverty Distribution",
+       subtitle = "Percentage of People in Extreme Poverty") +
+  theme_minimal()
+```
+
 ## Heatmap {#heatmap}
 
 Visualisasi matriks yang menggunakan warna untuk mewakili nilai numerik.
 
 ![](images/clipboard-3277073308.png){width="371"}
+
+```{r fig.height=3.5, fig.width=10, dpi=300}
+# Buat dataset tanggal & aktivitas acak
+set.seed(123)
+data_heatmap <- data.frame(
+  Date = seq(as.Date("2024-01-01"), as.Date("2024-03-31"), by = "day"),
+  Activity = sample(1:10, 91, replace = TRUE)  # Aktivitas acak dari 1-10
+)
+
+# Tambahkan kolom tambahan untuk mempermudah plotting
+data_heatmap <- data_heatmap %>%
+  mutate(
+    Month = factor(month(Date, label = TRUE, abbr = FALSE), levels = c("January", "February", "March")),
+    Weekday = factor(weekdays(Date, abbreviate = TRUE), levels = c("Su", "Mo", "Tu", "We", "Th", "Fr", "Sa")),
+    Week = as.integer(format(Date, "%U")) - min(as.integer(format(Date, "%U"))) + 1
+  )
+
+# Plot Heatmap
+ggplot(data_heatmap, aes(x = Weekday, y = Week, fill = Activity)) +
+  geom_tile(color = "white") +  # Gunakan tile untuk membuat heatmap
+  scale_fill_gradient(low = "#DCEFF3", high = "#045A8D") +  # Warna gradasi dari terang ke gelap
+  facet_wrap(~ Month, ncol = 3) +  # Pisahkan berdasarkan bulan
+  labs(title = "Aktivitas Harian dalam Heatmap",
+       subtitle = "Visualisasi aktivitas harian dalam format kalender",
+       x = "", y = "Minggu",
+       fill = "Level Aktivitas") +
+  theme_minimal() +
+  theme(panel.grid = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        legend.position = "bottom")
+```
 
 ## Gauge and Bullet Charts {#gauge-bullet}
 
