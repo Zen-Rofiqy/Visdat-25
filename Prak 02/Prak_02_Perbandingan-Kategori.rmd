@@ -204,7 +204,7 @@ chart <-
 chart
 
 # Save Chart
-ggsave("Chart/Cobain_Lollipop_Filtered_LabelInside.png", chart, dpi = 300, height = 5, width = 10)
+ggsave("Chart/Cobain.png", chart, dpi = 300, height = 5, width = 10)
 ```
 
 ## Paired Bar {#paired-bar}
