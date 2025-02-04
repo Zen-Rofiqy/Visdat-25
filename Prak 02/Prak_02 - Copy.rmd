@@ -42,18 +42,12 @@ install_load <- function (package1, ...)  {
    } 
 }
 
-install_load("ggplot2","viridis","dplyr","DT")
-# install.packages("ggplot2"); library(ggplot2)
-# install.packages("viridis"); library(viridis)
-# install.packages("dplyr"); library(dplyr)
-# webshot::install_phantomjs()
+install_load("knitr","ggplot2","viridis","dplyr","DT")
 
+# Change \ to /
 path <- function() gsub  ( "\\\\",  "/",  readClipboard ()  )
-```
 
-```{r , include=FALSE, echo=FALSE, warning=FALSE, message = FALSE}
-#Set Working Directory
-require("knitr")
+# Set WD
 opts_knit$set(root.dir = "C:/Users/Fathan/Documents/Obsidian Vault/2. Kuliah/Smt 7 & 8/Visdat-25/Prak 02")
 ```
 
