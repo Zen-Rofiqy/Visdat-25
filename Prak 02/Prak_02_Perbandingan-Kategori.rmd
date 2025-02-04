@@ -9,7 +9,7 @@ output:
     lightbox: true
     gallery: true
     highlight: tango
-    code_folding: show
+    code_folding: hide
     toc_depth: 5
     number_sections: false
     theme: flatly
@@ -68,12 +68,16 @@ Dalam praktikum ini, kita akan mengeksplorasi beberapa jenis visualisasi data ut
 
 ## Data
 
-Data yang akan digunakan adalah
+-   [Placement Prediction Dataset](https://www.kaggle.com/datasets/ruchikakumbhar/placement-prediction-dataset)
+
+-   [Mobile Apps ScreenTime Analysis](https://www.kaggle.com/datasets/anandshaw2001/mobile-apps-screentime-analysis)
+
+-   [Electric Vehicle Population](https://www.kaggle.com/datasets/fatmanur12/electric-vehicle-population)
+
+-   [S&P 500, ETF, FX & Crypto (Daily updated)](https://www.kaggle.com/datasets/benjaminpo/s-and-p-500-with-dividends-and-splits-daily-updated?select=AAPL.csv)
 
 ```{r}
-# Data
 data_ev <- read.csv("Data/EV_Population.csv")
-head(data_ev)
 ```
 
 ------------------------------------------------------------------------
