@@ -202,9 +202,13 @@ Menampilkan perubahan peringkat suatu kategori seiring waktu.
 
 Menampilkan perubahan dalam data kategorikal dengan bentuk yang mengalir.
 
+![](images/clipboard-1563743455.png){width="209"}
+
 ## Horizon Chart {#horizon-chart}
 
-Efektif untuk menampilkan data deret waktu dengan skala besar.
+**Horizon Chart** adalah varian dari **Area Chart** yang digunakan untuk menampilkan **data deret waktu dengan cara yang lebih padat dan efisien**. Grafik ini bekerja dengan **membagi area chart menjadi beberapa band horizontal**, lalu **menumpuknya untuk mengurangi ruang yang digunakan**.
+
+![](images/clipboard-1440192241.png){width="284"}
 
 ## Gantt Chart {#gantt-chart}
 
