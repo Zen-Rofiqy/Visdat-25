@@ -212,11 +212,15 @@ Menampilkan perubahan dalam data kategorikal dengan bentuk yang mengalir.
 
 ## Gantt Chart {#gantt-chart}
 
-Digunakan untuk perencanaan proyek dan menunjukkan jadwal tugas dalam waktu tertentu.
+**Gantt Chart** adalah jenis grafik yang digunakan untuk **menampilkan jadwal, proses, atau durasi tugas** dengan **menggunakan batang horizontal**. Grafik ini sering digunakan dalam **manajemen proyek, shift kerja, dan pelacakan jadwal produksi**.
+
+![](images/clipboard-1815658534.png){width="294"}
 
 ## Flow Charts and Timelines {#flow-chart}
 
-Menunjukkan urutan kejadian atau alur kerja dalam bentuk diagram.
+Flow Charts dan Timelines adalah dua jenis visualisasi yang digunakan untuk **menampilkan perubahan, proses, atau hierarki** secara kronologis atau langkah demi langkah.
+
+![](images/clipboard-1453682947.png){width="239"}
 
 ## Connected Scatterplot {#connected-scatterplot}
 
