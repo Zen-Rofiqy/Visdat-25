@@ -55,7 +55,7 @@ opts_knit$set(root.dir = "C:/Users/Fathan/Documents/Obsidian Vault/2. Kuliah/Smt
 setwd("C:/Users/Fathan/Documents/Obsidian Vault/2. Kuliah/Smt 7 & 8/Visdat-25/Prak 02")
 ```
 
-# Materi Praktikum
+# **Materi Praktikum**
 
 ![](images/clipboard-4160132647.png){width="500px" style="display: block; margin: auto;"}
 
@@ -70,59 +70,65 @@ Materi yang akan dibahas dalam praktikum ini adalah:
 
 # **Perbandingan Kategori** {#perbandingan-kategori}
 
-## **Bar Charts** {#barchart}
+## Bar Charts {#barchart}
 
 Diagram batang digunakan untuk membandingkan kategori.
 
 ![](images/clipboard-792151592.png){width="169"}
 
-## **Paired Bar** {#paired-bar}
+## Paired Bar {#paired-bar}
 
 Membandingkan dua set kategori yang terkait.
 
-![](images/clipboard-1762406163.png){width="181"}
+![](images/clipboard-1762406163.png){width="170"}
 
-## **Stacked Bar** {#stacked-bar}
+## Stacked Bar {#stacked-bar}
 
 Menampilkan perbandingan komposisi antar kategori.
 
-## **Diverging Bar** {#diverging-bar}
+![](images/clipboard-1485803542.png){width="174"}
+
+## Diverging Bar {#diverging-bar}
 
 Menunjukkan distribusi kategori dengan skala positif-negatif.
 
-## **Dot Plot** {#dot-plot}
+![](images/clipboard-3452309680.png){width="216"}
+
+## Dot Plot {#dot-plot}
 
 Digunakan untuk menunjukkan distribusi atau perbandingan antar kategori.
 
-## **Marimekko and Mosaic Charts** {#marimekko-mosaic}
+![](images/clipboard-827714082.png){width="308"}
+
+## Marimekko and Mosaic Charts {#marimekko-mosaic}
 
 Visualisasi untuk membandingkan proporsi dua variabel kategori.
 
-## **Unit, Isotype, and Waffle Charts** {#unit-chart}
+## Unit, Isotype, and Waffle Charts {#unit-chart}
 
 Digunakan untuk menampilkan proporsi dalam bentuk ikon atau blok.
 
-## **Heatmap** {#heatmap}
+## Heatmap {#heatmap}
 
 Visualisasi matriks yang menggunakan warna untuk mewakili nilai numerik.
 
-## **Gauge and Bullet Charts** {#gauge-bullet}
+## Gauge and Bullet Charts {#gauge-bullet}
 
 Menampilkan pengukuran dalam format indikator atau skala.
 
-## **Bubble Comparison and Nested Bubbles** {#bubble-chart}
+## Bubble Comparison and Nested Bubbles {#bubble-chart}
 
 Digunakan untuk menunjukkan hierarki atau hubungan antar data.
 
-## **Sankey Diagram** {#sankey}
+## Sankey Diagram {#sankey}
 
 Diagram aliran yang menunjukkan hubungan antar kategori.
 
-## **Waterfall Chart** {#waterfall}
+## Waterfall Chart {#waterfall}
 
 Menunjukkan perubahan nilai dalam urutan kumulatif.
 
-## **Conclusion**
+## Conclusion
 
 Ringkasan konsep perbandingan kategori.
 
@@ -130,55 +136,55 @@ Ringkasan konsep perbandingan kategori.
 
 # **Deret Waktu** {#deret-waktu}
 
-## **Line Chart** {#line-chart}
+## Line Chart {#line-chart}
 
 Grafik garis untuk menunjukkan perubahan data dalam rentang waktu tertentu.
 
-## **Circular Line Chart** {#circular-line-chart}
+## Circular Line Chart {#circular-line-chart}
 
 Versi melingkar dari grafik garis, sering digunakan untuk data musiman.
 
-## **Slope Chart** {#slope-chart}
+## Slope Chart {#slope-chart}
 
 Menunjukkan perubahan data antara dua titik waktu.
 
-## **Sparklines** {#sparklines}
+## Sparklines {#sparklines}
 
 Garis kecil yang menunjukkan tren singkat dalam dataset.
 
-## **Bump Chart** {#bump-chart}
+## Bump Chart {#bump-chart}
 
 Menampilkan perubahan peringkat suatu kategori seiring waktu.
 
-## **Cycle Chart** {#cycle-chart}
+## Cycle Chart {#cycle-chart}
 
 Menggambarkan pola siklus dalam data deret waktu.
 
-## **Area Chart & Stacked Area Chart** {#area-chart}
+## Area Chart & Stacked Area Chart {#area-chart}
 
 Memvisualisasikan perubahan dalam data kuantitatif menggunakan area yang diisi warna.
 
-## **Streamgraph** {#streamgraph}
+## Streamgraph {#streamgraph}
 
 Menampilkan perubahan dalam data kategorikal dengan bentuk yang mengalir.
 
-## **Horizon Chart** {#horizon-chart}
+## Horizon Chart {#horizon-chart}
 
 Efektif untuk menampilkan data deret waktu dengan skala besar.
 
-## **Gantt Chart** {#gantt-chart}
+## Gantt Chart {#gantt-chart}
 
 Digunakan untuk perencanaan proyek dan menunjukkan jadwal tugas dalam waktu tertentu.
 
-## **Flow Charts and Timelines** {#flow-chart}
+## Flow Charts and Timelines {#flow-chart}
 
 Menunjukkan urutan kejadian atau alur kerja dalam bentuk diagram.
 
-## **Connected Scatterplot** {#connected-scatterplot}
+## Connected Scatterplot {#connected-scatterplot}
 
 Scatterplot dengan garis yang menghubungkan titik-titik berdasarkan urutan waktu.
 
-## **Conclusion**
+## Conclusion
 
 Ringkasan konsep visualisasi deret waktu.
 
@@ -186,43 +192,43 @@ Ringkasan konsep visualisasi deret waktu.
 
 # **Distribusi** {#distribusi}
 
-## **Histogram** {#histogram}
+## Histogram {#histogram}
 
 Visualisasi distribusi data berbasis frekuensi dalam bentuk batang.
 
-## **Pyramid Chart** {#pyramid-chart}
+## Pyramid Chart {#pyramid-chart}
 
 Digunakan untuk membandingkan distribusi kategori dua arah (misalnya populasi pria vs wanita).
 
-## **Visualizing Statistical Uncertainty with Charts** {#statistical-uncertainty}
+## Visualizing Statistical Uncertainty with Charts {#statistical-uncertainty}
 
 Metode visualisasi ketidakpastian statistik dalam data.
 
-## **Box-and-Whisker Plot** {#boxplot}
+## Box-and-Whisker Plot {#boxplot}
 
 Menampilkan lima ringkasan data: minimum, Q1, median, Q3, dan maksimum.
 
-## **Candlestick Chart** {#candlestick-chart}
+## Candlestick Chart {#candlestick-chart}
 
 Digunakan dalam analisis keuangan untuk menunjukkan harga tertinggi, terendah, pembukaan, dan penutupan.
 
-## **Violin Chart** {#violin-chart}
+## Violin Chart {#violin-chart}
 
 Kombinasi antara boxplot dan density plot untuk memahami distribusi data.
 
-## **Ridgeline Plot** {#ridgeline-plot}
+## Ridgeline Plot {#ridgeline-plot}
 
 Menunjukkan distribusi data yang saling tumpang tindih dalam satu grafik.
 
-## **Visualizing Uncertainty by Showing the Data** {#uncertainty}
+## Visualizing Uncertainty by Showing the Data {#uncertainty}
 
 Menunjukkan ketidakpastian dalam visualisasi data.
 
-## **Stem-and-Leaf Plot** {#stem-leaf}
+## Stem-and-Leaf Plot {#stem-leaf}
 
 Digunakan untuk menampilkan distribusi angka dengan tetap mempertahankan nilai aslinya.
 
-## **Conclusion**
+## Conclusion
 
 Ringkasan konsep visualisasi distribusi data.
 
@@ -230,229 +236,23 @@ Ringkasan konsep visualisasi distribusi data.
 
 # **Geospasial** {#geospasial}
 
-## **Choropleth Map** {#choropleth-map}
+## Choropleth Map {#choropleth-map}
 
 Peta yang menggunakan warna untuk mewakili nilai numerik dalam wilayah geografis.
 
-## **Cartogram** {#cartogram}
+## Cartogram {#cartogram}
 
 Peta di mana ukuran geografis diubah berdasarkan nilai data.
 
-## **Proportional Symbol and Dot Density Maps** {#dot-density}
+## Proportional Symbol and Dot Density Maps {#dot-density}
 
 -   **Proportional symbol map**: menggunakan simbol dengan ukuran berbeda untuk mewakili nilai data.
 -   **Dot density map**: menyebarkan titik dalam area geografis untuk menunjukkan kepadatan.
 
-## **Flow Map** {#flow-map}
+## Flow Map {#flow-map}
 
 Menunjukkan pergerakan data (misalnya migrasi populasi, aliran lalu lintas) dalam peta.
 
-## **Conclusion**
+## Conclusion
 
 Ringkasan konsep visualisasi geospasial.
-
-> Data Susenas Provinsi Jawa Barat tahun 2020
-
-```{r}
-susenas <- read.csv("Data/Susenas Jawa Barat 2020.csv", sep = ";")
-head(susenas)
-```
-
-```{r}
-namakabupaten <- read.csv("Data/nama kabupaten.csv",sep = ",")
-head(namakabupaten)
-```
-
-## Data P**reprocessing**
-
-```{r}
-datakab <- namakabupaten[
-  namakabupaten$nama_prov == "JAWA BARAT", 
-  c("nama_kab", "kab")
-]
-colnames(datakab) <- c("Nama Kabupaten", "KabKota")
-
-data <- merge(susenas, datakab, by="KabKota")
-head(data)
-```
-
-## Data Quality Checking
-
-```{r}
-sum(is.na(data))
-```
-
-```{r}
-str(data)
-```
-
-```{r}
-table(data[data$`Nama Kabupaten` == "BANDUNG", ]$KabKota)
-```
-
-# Bar Chart
-
-## Sederhana
-
-```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(Status_Rawan)) + 
-  geom_bar()
-```
-
-> **Dengan Warna default**
-
-```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(Status_Rawan, fill=Status_Rawan)) + 
-  geom_bar()
-```
-
-> **Warna Viridis**
-
-```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(Status_Rawan, fill=Status_Rawan)) + 
-  geom_bar() + 
-  scale_fill_viridis(discrete = T)
-```
-
-> **Warna manual**
-
-```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(Status_Rawan, fill=Status_Rawan)) + 
-  geom_bar() + 
-  scale_fill_manual(values = c("#FF6961", "#8CD47E"))
-```
-
-## Banyak Kategori
-
-```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + 
-  geom_bar() + 
-  scale_fill_viridis(discrete = T)
-```
-
-> **Ubah angle text**
-
-```{r fig.height=5, fig.width=10, dpi=300}
-ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + 
-  geom_bar() + 
-  scale_fill_viridis(discrete = T) + 
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
-```
-
-```{r fig.height=5, fig.width=10, dpi=300}
-ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + 
-  geom_bar() + 
-  scale_fill_viridis(discrete = T) + 
-  theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust = 1))
-```
-
-> **Hapus legend**
-
-```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + 
-  geom_bar() + 
-  scale_fill_viridis(discrete = T) + 
-  theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust = 1), 
-        legend.position = "none") + ylab("Frekuensi")
-```
-
-> **Rotasi Barchart**
-
-```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(y = `Nama Kabupaten`, fill=`Nama Kabupaten`)) + 
-  geom_bar() + 
-  scale_fill_viridis(discrete = T) + 
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), 
-        legend.position = "none") + 
-  xlab("Frekuensi")
-```
-
-```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + 
-  geom_bar() + 
-  scale_fill_viridis(discrete = T) + 
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), 
-        legend.position = "none") + 
-  ylab("Frekuensi") + 
-  coord_flip() + 
-  ggtitle("Diagram Batang Kabupaten")
-```
-
-# Grouped Bar Chart
-
-```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + 
-  geom_bar(position="dodge")
-```
-
-## Stacked Barchart
-
-```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + 
-  geom_bar(position="stack")
-```
-
-## Stacked Barchart 100%
-
-```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + 
-  geom_bar(position="fill")
-```
-
-```{r}
-percentDatadaerah <- data %>% 
-  group_by(`Nama Kabupaten`) %>% 
-  count(Status_Rawan) %>% 
-  mutate(ratio=scales::percent(n/sum(n)))
-
-head(percentDatadaerah)
-```
-
-```{r fig.height=5, fig.width=7, dpi=300}
-ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + 
-  geom_bar(position="fill") + 
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) + 
-  coord_flip() +
-  geom_text(data=percentDatadaerah, aes(y=n, label=ratio),
-            color="white", position=position_fill(vjust=0.5), size = 3.5)
-```
-
-# Lollipop Chart
-
-```{r}
-percentDatadaerah_rawan <- percentDatadaerah %>%
-  filter(Status_Rawan == "Rawan") %>%
-  as.data.frame()
-head(percentDatadaerah_rawan)
-```
-
-```{r}
-ggplot(percentDatadaerah_rawan, aes(x=`Nama Kabupaten`, y=n)) + 
-  geom_segment(aes(x=`Nama Kabupaten`, xend=`Nama Kabupaten`, y=0, yend=n)) +
-  geom_point() + coord_flip()
-```
-
-```{r}
-ggplot(percentDatadaerah_rawan, aes(x = `Nama Kabupaten`, y = n)) + geom_segment(aes(x = `Nama Kabupaten`, xend = `Nama Kabupaten`, y = 0, yend = n)) + geom_point() + coord_flip() + geom_point(size = 4, pch = 21, bg = 5, col = 6)
-```
-
-```{r}
-ggplot(percentDatadaerah_rawan, aes(x = `Nama Kabupaten`, y = n)) + geom_segment(aes(x = `Nama Kabupaten`, xend = `Nama Kabupaten`, y = 0, yend = n), color="grey", lwd=1.5) + geom_point() + coord_flip() + geom_point(size = 5, pch = 21, bg = 6, col = 1) + theme_classic()
-```
-
-```{r}
-ggplot(percentDatadaerah_rawan, aes(x = `Nama Kabupaten`, y = n)) + geom_segment(aes(x = `Nama Kabupaten`, xend = `Nama Kabupaten`, y = 0, yend = n), color="grey", lwd=1.5) + geom_point() + coord_flip() + geom_point(size = 5, pch = 21, bg = 6, col = 1) + theme_classic()
-```
-
-```{r}
-ggplot(percentDatadaerah_rawan, aes(x = `Nama Kabupaten`, y = n)) + geom_segment(aes(x = `Nama Kabupaten`, xend = `Nama Kabupaten`, y = 0, yend = n), color="grey", lwd=1.5) + geom_point() + coord_flip() + geom_point(size = 5, pch = 21, bg = 6, col = 1) + geom_text(aes(label = n), color = "white", size = 2) + theme_classic() 
-```
-
-```{r}
-x = reorder(percentDatadaerah_rawan$`Nama Kabupaten`, percentDatadaerah_rawan$n)
-x
-```
-
-```{r}
-ggplot(percentDatadaerah_rawan, aes(x = reorder(`Nama Kabupaten`, n), y = n)) + geom_segment(aes(xend = `Nama Kabupaten`, y = 0, yend = n), color="grey", lwd=1.5) + geom_point() + coord_flip() + geom_point(size = 5, pch = 21, bg = 6, col = 1) + geom_text(aes(label = n), color = "white", size = 2) + theme_classic()
-```
