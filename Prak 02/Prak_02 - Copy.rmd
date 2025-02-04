@@ -224,7 +224,9 @@ Flow Charts dan Timelines adalah dua jenis visualisasi yang digunakan untuk **me
 
 ## Connected Scatterplot {#connected-scatterplot}
 
-Scatterplot dengan garis yang menghubungkan titik-titik berdasarkan urutan waktu.
+**Connected Scatterplot** adalah metode visualisasi yang digunakan untuk **menunjukkan hubungan antara dua deret waktu dalam satu grafik**, tanpa menggunakan **dual-axis line chart**.
+
+![](images/clipboard-3027502065.png){width="211"} ![](images/clipboard-131536693.png){width="419"}
 
 ## Conclusion
 
