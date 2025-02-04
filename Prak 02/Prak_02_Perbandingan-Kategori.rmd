@@ -43,7 +43,7 @@ install_load <- function (package1, ...)  {
 }
 
 install_load("knitr","ggplot2","viridis","dplyr","DT","stringr","scales","tidyr",
-             "waffle","ggtext","lubridate")
+             "waffle","ggtext","lubridate","reshape2","calendR","plotly","ggforce")
 
 # Set wd 
 opts_knit$set(root.dir = normalizePath("./"))
@@ -744,35 +744,70 @@ Visualisasi matriks yang menggunakan warna untuk mewakili nilai numerik.
 ![](images/clipboard-3277073308.png){width="371"}
 
 ```{r fig.height=3.5, fig.width=10, dpi=300}
-# Buat dataset tanggal & aktivitas acak
+# Membuat data untuk 3 bulan (Januari-Maret 2024)
+dates <- seq(as.Date("2024-01-01"), as.Date("2024-03-31"), by = "day")
 set.seed(123)
-data_heatmap <- data.frame(
-  Date = seq(as.Date("2024-01-01"), as.Date("2024-03-31"), by = "day"),
-  Activity = sample(1:10, 91, replace = TRUE)  # Aktivitas acak dari 1-10
+data <- data.frame(
+  date = dates,
+  value = runif(length(dates), 0, 100)
 )
 
-# Tambahkan kolom tambahan untuk mempermudah plotting
-data_heatmap <- data_heatmap %>%
+# Menambahkan informasi hari dan minggu
+data <- data %>%
   mutate(
-    Month = factor(month(Date, label = TRUE, abbr = FALSE), levels = c("January", "February", "March")),
-    Weekday = factor(weekdays(Date, abbreviate = TRUE), levels = c("Su", "Mo", "Tu", "We", "Th", "Fr", "Sa")),
-    Week = as.integer(format(Date, "%U")) - min(as.integer(format(Date, "%U"))) + 1
+    weekday = wday(date, week_start = 1), # 1 = Senin sebagai awal minggu
+    week = week(date),
+    month = format(date, "%B"),
+    monthweek = as.numeric(format(date, "%W")) - 
+                as.numeric(format(as.Date(paste0(format(date, "%Y-%m"), "-01")), "%W")) + 1
   )
 
-# Plot Heatmap
-ggplot(data_heatmap, aes(x = Weekday, y = Week, fill = Activity)) +
-  geom_tile(color = "white") +  # Gunakan tile untuk membuat heatmap
-  scale_fill_gradient(low = "#DCEFF3", high = "#045A8D") +  # Warna gradasi dari terang ke gelap
-  facet_wrap(~ Month, ncol = 3) +  # Pisahkan berdasarkan bulan
-  labs(title = "Aktivitas Harian dalam Heatmap",
-       subtitle = "Visualisasi aktivitas harian dalam format kalender",
-       x = "", y = "Minggu",
-       fill = "Level Aktivitas") +
+# Membuat plot
+ggplot(data, aes(x = weekday, y = monthweek, fill = value)) +
+  geom_tile(color = "white", size = 0.1) +
+  scale_fill_gradient(low = "#e5f5f9", high = "#2ca25f") +
+  facet_wrap(~month, ncol = 3, scales = "free") +
+  scale_x_continuous(
+    breaks = 1:7,
+    labels = c("Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"),
+    expand = c(0, 0)
+  ) +
+  scale_y_reverse(expand = c(0, 0)) +
   theme_minimal() +
-  theme(panel.grid = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(),
-        legend.position = "bottom")
+  theme(
+    axis.title = element_blank(),
+    panel.grid = element_blank(),
+    legend.position = "none",
+    strip.text = element_text(size = 12, face = "bold"),
+    plot.background = element_rect(fill = "white", color = NA),
+    panel.background = element_rect(fill = "white", color = NA)
+  ) +
+  labs(title = "Calendar Heatmap")
+```
+
+```{r fig.height=3.5, fig.width=10, dpi=300}
+# Alternative menggunakan package calendR
+# Membuat tiga kalender terpisah
+calendR(year = 2024, month = 1, 
+        special.days = runif(31, 0, 100),
+        gradient = TRUE,
+        low.col = "#e5f5f9",
+        special.col = "#2ca25f",
+        title = "January 2024")
+
+calendR(year = 2024, month = 2, 
+        special.days = runif(29, 0, 100),
+        gradient = TRUE,
+        low.col = "#e5f5f9",
+        special.col = "#2ca25f",
+        title = "February 2024")
+
+calendR(year = 2024, month = 3, 
+        special.days = runif(31, 0, 100),
+        gradient = TRUE,
+        low.col = "#e5f5f9",
+        special.col = "#2ca25f",
+        title = "March 2024")
 ```
 
 ## Gauge and Bullet Charts {#gauge-bullet}
@@ -781,17 +816,68 @@ Menampilkan pengukuran dalam format indikator atau skala.
 
 ![](images/clipboard-1430457390.png){width="469"}
 
+```{r fig.height=3.5, fig.width=10, dpi=300}
+# Buat Data Bullet Chart
+bullet_data <- data.frame(
+  Category = c("ALL", "Furniture", "Office Supplies", "Technology"),
+  Target = c(1400000, 500000, 400000, 500000),
+  Actual = c(900000, 350000, 300000, 400000),
+  Range1 = c(500000, 200000, 150000, 250000),
+  Range2 = c(1000000, 400000, 300000, 450000)
+)
+
+# Plot Bullet Chart
+ggplot(bullet_data, aes(y = Category)) +
+  geom_bar(aes(x = Target), stat = "identity", fill = "#D5E5A3", width = 0.6) +  
+  geom_bar(aes(x = Range2), stat = "identity", fill = "#F4D03F", width = 0.6) +  
+  geom_bar(aes(x = Range1), stat = "identity", fill = "#E74C3C", width = 0.6) +  
+  geom_bar(aes(x = Actual), stat = "identity", fill = "black", width = 0.2) +  
+  theme_minimal() +
+  labs(title = "Bullet Chart: Target vs Actual", x = "Nilai (K)", y = "") +
+  scale_x_continuous(labels = scales::comma)
+
+```
+
 ## Bubble Comparison and Nested Bubbles {#bubble-chart}
 
 Digunakan untuk menunjukkan hierarki atau hubungan antar data.
 
 ![](images/clipboard-1881626973.png){width="214"} ![](images/clipboard-3452815468.png){width="189"}
 
+```{r fig.height=5, fig.width=10, dpi=300}
+# Buat data contoh
+bubble_data <- data.frame(
+  Country = c("India", "Nigeria", "China", "Congo", "Indonesia", "Tanzania", "Kenya"),
+  Population = c(208.1, 64.8, 100, 53.2, 15.1, 24.1, 17.8),
+  PovertyRate = c(15, 16, 12, 18, 14, 17, 15)
+)
+
+# Warna berdasarkan tingkat kemiskinan
+bubble_data$Color <- ifelse(bubble_data$PovertyRate >= 14.5, "orange", "blue")
+
+# Plot Bubble Comparison
+ggplot(bubble_data, aes(x = Population, y = PovertyRate, size = Population, fill = Color)) +
+  geom_point(shape = 21, alpha = 0.7, color = "black") +
+  scale_size(range = c(5, 25)) +
+  scale_fill_manual(values = c("orange" = "orange", "blue" = "blue")) +
+  geom_text(aes(label = Country), vjust = 1, color = "black", size = 5) +
+  theme_minimal() +
+  labs(title = "Bubble Comparison: Number of People in Poverty",
+       subtitle = "Orange: Poverty rate > 14.5%, Blue: Poverty rate < 14.5%",
+       x = "Population (millions)",
+       y = "Poverty Rate (%)") +
+  theme(legend.position = "none")
+```
+
 ## Sankey Diagram {#sankey}
 
 Diagram aliran yang menunjukkan hubungan antar kategori.
 
 ![](images/clipboard-4264207325.png){width="259"} ![](images/clipboard-2578743022.png){width="254"}
+
+```{r fig.height=5, fig.width=10, dpi=300}
+
+```
 
 ## Waterfall Chart {#waterfall}
 
