@@ -62,158 +62,194 @@ setwd("C:/Users/Fathan/Documents/Obsidian Vault/2. Kuliah/Smt 7 & 8/Visdat-25/Pr
 Materi yang akan dibahas dalam praktikum ini adalah:
 
 -   [Perbandingan Kategori](#perbandingan-kategori)
--   [Distribusi](#distribusi)
 -   [Deret Waktu](#deret-waktu)
+-   [Distribusi](#distribusi)
 -   [Geospasial](#geospasial)
 
 ------------------------------------------------------------------------
 
-# Perbandingan Kategori {#perbandingan-kategori}
+# **Perbandingan Kategori** {#perbandingan-kategori}
 
-## Diagram Batang (Barchart) & Variasinya {#barchart}
+## **Bar Charts** {#barchart}
 
-Diagram batang digunakan untuk membandingkan kategori. Variasinya meliputi: - Paired bar - Stacked bar - Diverging bar - dll.
+Diagram batang digunakan untuk membandingkan kategori.
 
-## Dot Plot {#dot-plot}
+![](images/clipboard-792151592.png){width="169"}
 
-Dot plot digunakan untuk menunjukkan distribusi frekuensi dengan titik.
+## **Paired Bar** {#paired-bar}
 
-## Marimekko & Mosaic Chart {#marimekko-mosaic}
+Membandingkan dua set kategori yang terkait.
+
+![](images/clipboard-1762406163.png){width="181"}
+
+## **Stacked Bar** {#stacked-bar}
+
+Menampilkan perbandingan komposisi antar kategori.
+
+## **Diverging Bar** {#diverging-bar}
+
+Menunjukkan distribusi kategori dengan skala positif-negatif.
+
+## **Dot Plot** {#dot-plot}
+
+Digunakan untuk menunjukkan distribusi atau perbandingan antar kategori.
+
+## **Marimekko and Mosaic Charts** {#marimekko-mosaic}
 
 Visualisasi untuk membandingkan proporsi dua variabel kategori.
 
-## Unit, Isotype, & Waffle Chart {#unit-chart}
+## **Unit, Isotype, and Waffle Charts** {#unit-chart}
 
 Digunakan untuk menampilkan proporsi dalam bentuk ikon atau blok.
 
-## Heatmap {#heatmap}
+## **Heatmap** {#heatmap}
 
 Visualisasi matriks yang menggunakan warna untuk mewakili nilai numerik.
 
-## Gauge & Bullet Chart {#gauge-bullet}
+## **Gauge and Bullet Charts** {#gauge-bullet}
 
 Menampilkan pengukuran dalam format indikator atau skala.
 
-## Bubble & Nested Bubbles Chart {#bubble-chart}
+## **Bubble Comparison and Nested Bubbles** {#bubble-chart}
 
 Digunakan untuk menunjukkan hierarki atau hubungan antar data.
 
-## Sankey Diagram {#sankey}
+## **Sankey Diagram** {#sankey}
 
 Diagram aliran yang menunjukkan hubungan antar kategori.
 
-## Waterfall Chart {#waterfall}
+## **Waterfall Chart** {#waterfall}
 
 Menunjukkan perubahan nilai dalam urutan kumulatif.
 
-------------------------------------------------------------------------
+## **Conclusion**
 
-# Distribusi {#distribusi}
-
-## Histogram {#histogram}
-
-Visualisasi distribusi data berbasis frekuensi dalam bentuk batang.
-
-## Pyramid Chart {#pyramid-chart}
-
-Digunakan untuk membandingkan distribusi kategori dua arah (misalnya populasi pria vs wanita).
-
-## Visualizing Statistical Uncertainty {#statistical-uncertainty}
-
-Metode visualisasi ketidakpastian statistik dalam data.
-
-## Boxplot {#boxplot}
-
-Menampilkan lima ringkasan data: minimum, Q1, median, Q3, dan maksimum.
-
-## Candlestick Chart {#candlestick-chart}
-
-Digunakan dalam analisis keuangan untuk menunjukkan harga tertinggi, terendah, pembukaan, dan penutupan.
-
-## Violin Chart {#violin-chart}
-
-Kombinasi antara boxplot dan density plot untuk memahami distribusi data.
-
-## Ridgeline Plot {#ridgeline-plot}
-
-Menunjukkan distribusi data yang saling tumpang tindih dalam satu grafik.
-
-## Diagram Dahan Daun (Stem-and-Leaf) {#stem-leaf}
-
-Digunakan untuk menampilkan distribusi angka dengan tetap mempertahankan nilai aslinya.
+Ringkasan konsep perbandingan kategori.
 
 ------------------------------------------------------------------------
 
-# Deret Waktu {#deret-waktu}
+# **Deret Waktu** {#deret-waktu}
 
-## Line Chart {#line-chart}
+## **Line Chart** {#line-chart}
 
 Grafik garis untuk menunjukkan perubahan data dalam rentang waktu tertentu.
 
-## Circular Line Chart {#circular-line-chart}
+## **Circular Line Chart** {#circular-line-chart}
 
 Versi melingkar dari grafik garis, sering digunakan untuk data musiman.
 
-## Slope Chart {#slope-chart}
+## **Slope Chart** {#slope-chart}
 
 Menunjukkan perubahan data antara dua titik waktu.
 
-## Sparklines {#sparklines}
+## **Sparklines** {#sparklines}
 
 Garis kecil yang menunjukkan tren singkat dalam dataset.
 
-## Bump Chart {#bump-chart}
+## **Bump Chart** {#bump-chart}
 
 Menampilkan perubahan peringkat suatu kategori seiring waktu.
 
-## Cycle Chart {#cycle-chart}
+## **Cycle Chart** {#cycle-chart}
 
 Menggambarkan pola siklus dalam data deret waktu.
 
-## Area Chart & Stacked Area Chart {#area-chart}
+## **Area Chart & Stacked Area Chart** {#area-chart}
 
 Memvisualisasikan perubahan dalam data kuantitatif menggunakan area yang diisi warna.
 
-## Streamgraph {#streamgraph}
+## **Streamgraph** {#streamgraph}
 
 Menampilkan perubahan dalam data kategorikal dengan bentuk yang mengalir.
 
-## Horizon Chart {#horizon-chart}
+## **Horizon Chart** {#horizon-chart}
 
 Efektif untuk menampilkan data deret waktu dengan skala besar.
 
-## Gantt Chart {#gantt-chart}
+## **Gantt Chart** {#gantt-chart}
 
 Digunakan untuk perencanaan proyek dan menunjukkan jadwal tugas dalam waktu tertentu.
 
-## Flow Chart & Timeline {#flow-chart}
+## **Flow Charts and Timelines** {#flow-chart}
 
 Menunjukkan urutan kejadian atau alur kerja dalam bentuk diagram.
 
-## Connected Scatterplot {#connected-scatterplot}
+## **Connected Scatterplot** {#connected-scatterplot}
 
 Scatterplot dengan garis yang menghubungkan titik-titik berdasarkan urutan waktu.
 
+## **Conclusion**
+
+Ringkasan konsep visualisasi deret waktu.
+
 ------------------------------------------------------------------------
 
-# Geospasial {#geospasial}
+# **Distribusi** {#distribusi}
 
-## Choropleth Map {#choropleth-map}
+## **Histogram** {#histogram}
+
+Visualisasi distribusi data berbasis frekuensi dalam bentuk batang.
+
+## **Pyramid Chart** {#pyramid-chart}
+
+Digunakan untuk membandingkan distribusi kategori dua arah (misalnya populasi pria vs wanita).
+
+## **Visualizing Statistical Uncertainty with Charts** {#statistical-uncertainty}
+
+Metode visualisasi ketidakpastian statistik dalam data.
+
+## **Box-and-Whisker Plot** {#boxplot}
+
+Menampilkan lima ringkasan data: minimum, Q1, median, Q3, dan maksimum.
+
+## **Candlestick Chart** {#candlestick-chart}
+
+Digunakan dalam analisis keuangan untuk menunjukkan harga tertinggi, terendah, pembukaan, dan penutupan.
+
+## **Violin Chart** {#violin-chart}
+
+Kombinasi antara boxplot dan density plot untuk memahami distribusi data.
+
+## **Ridgeline Plot** {#ridgeline-plot}
+
+Menunjukkan distribusi data yang saling tumpang tindih dalam satu grafik.
+
+## **Visualizing Uncertainty by Showing the Data** {#uncertainty}
+
+Menunjukkan ketidakpastian dalam visualisasi data.
+
+## **Stem-and-Leaf Plot** {#stem-leaf}
+
+Digunakan untuk menampilkan distribusi angka dengan tetap mempertahankan nilai aslinya.
+
+## **Conclusion**
+
+Ringkasan konsep visualisasi distribusi data.
+
+------------------------------------------------------------------------
+
+# **Geospasial** {#geospasial}
+
+## **Choropleth Map** {#choropleth-map}
 
 Peta yang menggunakan warna untuk mewakili nilai numerik dalam wilayah geografis.
 
-## Cartogram {#cartogram}
+## **Cartogram** {#cartogram}
 
 Peta di mana ukuran geografis diubah berdasarkan nilai data.
 
-## Proportional Symbol & Dot Density Maps {#dot-density}
+## **Proportional Symbol and Dot Density Maps** {#dot-density}
 
 -   **Proportional symbol map**: menggunakan simbol dengan ukuran berbeda untuk mewakili nilai data.
 -   **Dot density map**: menyebarkan titik dalam area geografis untuk menunjukkan kepadatan.
 
-## Flow Map {#flow-map}
+## **Flow Map** {#flow-map}
 
 Menunjukkan pergerakan data (misalnya migrasi populasi, aliran lalu lintas) dalam peta.
+
+## **Conclusion**
+
+Ringkasan konsep visualisasi geospasial.
 
 > Data Susenas Provinsi Jawa Barat tahun 2020
 
