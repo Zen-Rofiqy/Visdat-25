@@ -104,29 +104,43 @@ Digunakan untuk menunjukkan distribusi atau perbandingan antar kategori.
 
 Visualisasi untuk membandingkan proporsi dua variabel kategori.
 
+![](images/clipboard-106419168.png){width="291"} ![](images/clipboard-3174332575.png){width="324"}
+
 ## Unit, Isotype, and Waffle Charts {#unit-chart}
 
 Digunakan untuk menampilkan proporsi dalam bentuk ikon atau blok.
+
+![](images/clipboard-3586682718.png){width="203"} ![](images/clipboard-2123779999.png){width="269"} ![](images/clipboard-1414171221.png){width="201"}
 
 ## Heatmap {#heatmap}
 
 Visualisasi matriks yang menggunakan warna untuk mewakili nilai numerik.
 
+![](images/clipboard-3277073308.png){width="371"}
+
 ## Gauge and Bullet Charts {#gauge-bullet}
 
 Menampilkan pengukuran dalam format indikator atau skala.
+
+![](images/clipboard-1430457390.png){width="469"}
 
 ## Bubble Comparison and Nested Bubbles {#bubble-chart}
 
 Digunakan untuk menunjukkan hierarki atau hubungan antar data.
 
+![](images/clipboard-1881626973.png){width="214"} ![](images/clipboard-3452815468.png){width="189"}
+
 ## Sankey Diagram {#sankey}
 
 Diagram aliran yang menunjukkan hubungan antar kategori.
 
+![](images/clipboard-4264207325.png){width="259"} ![](images/clipboard-2578743022.png){width="254"}
+
 ## Waterfall Chart {#waterfall}
 
 Menunjukkan perubahan nilai dalam urutan kumulatif.
+
+![](images/clipboard-923421594.png){width="244"}
 
 ## Conclusion
 
