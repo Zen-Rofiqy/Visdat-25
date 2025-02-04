@@ -182,11 +182,19 @@ Menampilkan perubahan peringkat suatu kategori seiring waktu.
 
 ## Cycle Chart {#cycle-chart}
 
-Menggambarkan pola siklus dalam data deret waktu.
+**Cycle Chart** adalah grafik yang digunakan untuk **membandingkan pola data dalam unit waktu kecil (minggu, bulan, dll.) dalam jangka waktu multi-tahun**. Grafik ini berguna untuk **menampilkan tren musiman** dalam data.
 
-## Area Chart & Stacked Area Chart {#area-chart}
+![](images/clipboard-3777843107.png){width="249"}
+
+## Area Chart {#area-chart}
 
 Memvisualisasikan perubahan dalam data kuantitatif menggunakan area yang diisi warna.
+
+![](images/clipboard-73474564.png)
+
+## Stacked Area Chart {#stacked-area-chart}
+
+**Stacked Area Chart** adalah varian dari **area chart** yang digunakan untuk **menampilkan beberapa seri data secara simultan**, di mana setiap area saling ditumpuk sehingga nilai totalnya dapat terlihat dengan jelas. Grafik ini sering digunakan untuk **menunjukkan perubahan distribusi data seiring waktu**.
 
 ## Streamgraph {#streamgraph}
 
