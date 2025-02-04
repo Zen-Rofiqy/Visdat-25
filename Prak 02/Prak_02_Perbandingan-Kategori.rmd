@@ -120,13 +120,13 @@ chart <-
   theme_minimal() +
   
   labs(title = "Dominasi Tesla dalam Pasar Kendaraan Listrik",
-       subtitle = "Kesenjangan Tesla dan Rivalnya dalam Industri EV",
+       subtitle = "Frekuensi Pendaftaran Kendaraan Listrik dari Berbagai Brand",
        x = "", 
        y = "") +
   theme(axis.text.y = element_text(size = 8, hjust = 1, face = "bold", 
                                    margin = margin(r = -25)),
         plot.title = element_text(hjust = -0.17, size = 14, face = "bold"),
-        plot.subtitle = element_text(hjust = -0.12, size = 8),
+        plot.subtitle = element_text(hjust = -0.13, size = 8),
         panel.grid.major.y = element_blank(),
         panel.grid.major.x = element_line(linetype = "dashed"),
         panel.grid.minor.x = element_line(linetype = "dashed")
@@ -141,11 +141,17 @@ ggsave("Chart/01_Bar.png", chart, dpi = 300, height = 5, width = 10)
 ### Sederhana
 
 ```{r fig.height=5, fig.width=10, dpi=300}
+ggplot(data_ev, aes(x = Make)) +
+  # Bar chart
+  geom_bar(fill = "steelblue")
+```
+
+```{r fig.height=5, fig.width=10, dpi=300}
 ggplot(data_ev_sorted, 
        aes(x = reorder(Make, count), y = count)) +
-# Bar chart
-geom_bar(stat = "identity", width = 0.8, fill = "steelblue") +
-coord_flip()
+  # Bar chart
+  geom_bar(stat = "identity", width = 0.8, fill = "steelblue") +
+  coord_flip()
 ```
 
 ## Lolipop Chart {.tabset}
@@ -271,17 +277,226 @@ chart <-
 chart
 ```
 
-## Paired Bar {#paired-bar}
+## Paired Bar {#paired-bar .tabset}
 
 Membandingkan dua set kategori yang terkait.
 
 ![](images/clipboard-1762406163.png){width="170"}
 
-## Stacked Bar {#stacked-bar}
+### Advanced 1
+
+```{r fig.height=5, fig.width=12, dpi=300}
+data_ev_grouped <- data_ev %>%
+  count(Make, Electric.Vehicle.Type, name = "count") %>%
+  filter(count > 1000) %>%
+  arrange(desc(count)) %>%
+  mutate(Make = str_to_title(Make))  # Kapitalisasi merek
+
+# Top 3 merek berdasarkan total kendaraan
+top3 <- data_ev_grouped %>%
+  group_by(Make) %>%
+  summarise(total = sum(count)) %>%
+  arrange(desc(total)) %>%
+  head(3) %>%
+  pull(Make)
+
+# Paired Bar Chart
+chart <- ggplot(data_ev_grouped, 
+                aes(x = reorder(Make, count), y = count, fill = Electric.Vehicle.Type)) +
+  
+  # Bar chart dengan posisi dodge untuk perbandingan antar kategori
+  geom_bar(stat = "identity", position = "dodge", width = 0.8) +
+  
+  # Label di ujung bar
+  geom_text(aes(label = count), position = position_dodge(width = 0.8), 
+            hjust = -0.2, size = 3) +
+  
+  # Garis grid horizontal
+  geom_hline(yintercept = -0.3, color = "black", linewidth = 0.5) +
+  
+  coord_flip() +
+  theme_minimal() +
+  
+  # Warna berbeda untuk kategori kendaraan listrik
+  scale_fill_manual(values = c("BEV" = "#6a3f48",
+                               "PHEV" = "#caa847")) +
+  
+  labs(title = "Dominasi Tesla dalam Pasar Kendaraan Listrik",
+       subtitle = "Frekuensi Pendaftaran Kendaraan Listrik BEV dan PHEV dari Berbagai Merek",
+       fill = "Jenis Kendaraan",  # Label legend
+       x = "", 
+       y = "") +
+  
+  theme(axis.text.y = element_text(size = 8, hjust = 1, face = "bold", 
+                                   margin = margin(r = -25)),
+        plot.title = element_text(hjust = -0.06, size = 14, face = "bold"),
+        plot.subtitle = element_text(hjust = -0.05, size = 8),
+        panel.grid.major.y = element_blank(),
+        panel.grid.major.x = element_line(linetype = "dashed"),
+        panel.grid.minor.x = element_line(linetype = "dashed"),
+        legend.text = element_text(size = 8),  
+        legend.title = element_text(size = 8), 
+        legend.key.size = unit(0.5, "cm")     
+  )
+
+chart
+
+# Save Chart
+ggsave("Chart/01_Bar_Paired.png", chart, dpi = 300, height = 5, width = 10)
+```
+
+### Advanced 2
+
+```{r fig.height=5, fig.width=12, dpi=300}
+data_ev_grouped <- data_ev %>%
+  count(Make, CAFV.Eligibility.Simple, name = "count") %>%
+  filter(count > 1000) %>%
+  arrange(desc(count)) %>%
+  mutate(Make = str_to_title(Make))  # Kapitalisasi merek
+
+# Top 3 merek berdasarkan total kendaraan
+top3 <- data_ev_grouped %>%
+  group_by(Make) %>%
+  summarise(total = sum(count)) %>%
+  arrange(desc(total)) %>%
+  head(3) %>%
+  pull(Make)
+
+# Paired Bar Chart
+chart <- ggplot(data_ev_grouped, 
+                aes(x = reorder(Make, count), y = count, fill = CAFV.Eligibility.Simple)) +
+  
+  # Bar chart dengan posisi dodge untuk perbandingan antar kategori
+  geom_bar(stat = "identity", position = "dodge", width = 0.8) +
+  
+  # Label di ujung bar
+  geom_text(aes(label = count), position = position_dodge(width = 0.8), 
+            hjust = -0.2, size = 3) +
+  
+  # Garis grid horizontal
+  geom_hline(yintercept = -0.3, color = "black", linewidth = 0.5) +
+  
+  coord_flip() +
+  theme_minimal() +
+  
+  # Warna berbeda untuk kategori kendaraan listrik
+  scale_fill_manual(values = c("Eligible" = "#88b07e",
+                               "Not Eligible" = "#9c3b66")) +
+  
+  labs(title = "Dominasi Tesla dalam Pasar Kendaraan Listrik",
+       subtitle = "Perbandingan Kelayakan Kendaraan Listrik di Berbagai Merek",
+       fill = "Jenis Kendaraan",  # Label legend
+       x = "", 
+       y = "") +
+  
+  theme(axis.text.y = element_text(size = 8, hjust = 1, face = "bold", 
+                                   margin = margin(r = -25)),
+        plot.title = element_text(hjust = -0.06, size = 14, face = "bold"),
+        plot.subtitle = element_text(hjust = -0.05, size = 8),
+        panel.grid.major.y = element_blank(),
+        panel.grid.major.x = element_line(linetype = "dashed"),
+        panel.grid.minor.x = element_line(linetype = "dashed"),
+        legend.text = element_text(size = 8),  
+        legend.title = element_text(size = 8), 
+        legend.key.size = unit(0.5, "cm")     
+  )
+
+chart
+
+# Save Chart
+ggsave("Chart/01_Bar_Paired.png", chart, dpi = 300, height = 5, width = 10)
+```
+
+### Sederhana
+
+```{r fig.height=5, fig.width=10, dpi=300}
+ggplot(data_ev, 
+       aes(x = Make, fill=Electric.Vehicle.Type)) +
+  # Bar chart
+  geom_bar(position="dodge") +
+  coord_flip()
+```
+
+## Stacked Bar {#stacked-bar .tabset}
 
 Menampilkan perbandingan komposisi antar kategori.
 
 ![](images/clipboard-1485803542.png){width="174"}
+
+### Advanced Freq
+
+```{r fig.height=5, fig.width=10, dpi=300}
+data_ev_grouped <- data_ev %>%
+  count(Make, CAFV.Eligibility.Simple, name = "count") %>%
+  filter(count > 1000) %>%
+  arrange(desc(count)) %>%
+  mutate(Make = str_to_title(Make))  # Kapitalisasi merek
+
+# Top 3 merek berdasarkan total kendaraan
+top3 <- data_ev_grouped %>%
+  group_by(Make) %>%
+  summarise(total = sum(count)) %>%
+  arrange(desc(total)) %>%
+  head(3) %>%
+  pull(Make)
+
+# Paired Bar Chart
+chart <- ggplot(data_ev_grouped, 
+                aes(x = reorder(Make, count), y = count, fill = CAFV.Eligibility.Simple)) +
+  
+  # Bar chart dengan posisi dodge untuk perbandingan antar kategori
+  geom_bar(stat = "identity", position = "stack", width = 0.8) +
+  
+  # Label di ujung bar
+  geom_text(aes(label = count), 
+            position = position_stack(vjust = 0.5), 
+            size = 3, color = "white", fontface = "bold") +
+  
+  # Garis grid horizontal
+  geom_hline(yintercept = -0.3, color = "black", linewidth = 0.5) +
+  
+  coord_flip() +
+  theme_minimal() +
+  
+  # Warna berbeda untuk kategori kendaraan listrik
+  scale_fill_manual(values = c("Eligible" = "#88b07e",
+                               "Not Eligible" = "#9c3b66")) +
+  
+  labs(title = "Dominasi Tesla dalam Pasar Kendaraan Listrik",
+       subtitle = "Perbandingan Kelayakan Kendaraan Listrik di Berbagai Merek",
+       fill = "Jenis Kendaraan",  # Label legend
+       x = "", 
+       y = "") +
+  
+  theme(axis.text.y = element_text(size = 8, hjust = 1, face = "bold", 
+                                   margin = margin(r = -25)),
+        plot.title = element_text(hjust = -0.06, size = 14, face = "bold"),
+        plot.subtitle = element_text(hjust = -0.05, size = 8),
+        panel.grid.major.y = element_blank(),
+        panel.grid.major.x = element_line(linetype = "dashed"),
+        panel.grid.minor.x = element_line(linetype = "dashed"),
+        legend.text = element_text(size = 8),  
+        legend.title = element_text(size = 8), 
+        legend.key.size = unit(0.5, "cm")     
+  )
+
+chart
+
+# Save Chart
+ggsave("Chart/01_Bar_Paired.png", chart, dpi = 300, height = 5, width = 10)
+```
+
+### Advanced %
+
+### Sederhana
+
+```{r fig.height=5, fig.width=10, dpi=300}
+ggplot(data_ev, 
+       aes(x = Make, fill=Electric.Vehicle.Type)) +
+  # Bar chart
+  geom_bar(position="stack") +
+  coord_flip()
+```
 
 ## Diverging Bar {#diverging-bar}
 
