@@ -42,10 +42,15 @@ install_load <- function (package1, ...)  {
    } 
 }
 
-install_load("knitr","ggplot2","viridis","dplyr","DT")
+install_load("knitr","ggplot2","viridis","dplyr","DT","stringr")
 
 # Set wd 
 opts_knit$set(root.dir = normalizePath("./"))
+
+# Folder Chart
+if (!dir.exists("Chart")) {
+  dir.create("Chart")
+}
 ```
 
 # Materi Praktikum
@@ -75,15 +80,68 @@ head(data_ev)
 
 # **Perbandingan Kategori** {#perbandingan-kategori}
 
-## Bar Charts {#barchart}
+## Bar Charts {#barchart .tabset}
 
 Diagram batang digunakan untuk membandingkan kategori.
 
 ![](images/clipboard-792151592.png){width="169"}
 
-```{r fig.height=5, fig.width=11.5, dpi=300}
-ggplot(data_ev, aes(Make, fill=Electric.Vehicle.Type)) + 
-  geom_bar() + coord_flip()
+### Advanced
+
+```{r fig.height=5, fig.width=10, dpi=300}
+# Sort
+data_ev_sorted <- data_ev %>%
+  count(Make, name = "count") %>%
+  arrange(desc(count)) %>%
+  mutate(Make = str_to_title(Make))
+
+# Top 3
+top3 <- head(data_ev_sorted$Make, 3)
+
+# Viz
+chart <- 
+  ggplot(data_ev_sorted, 
+         aes(x = reorder(Make, count), y = count, 
+             fill = ifelse(Make %in% top3, "steelblue", "gray50"))) +
+  # Bar chart
+  geom_bar(stat = "identity", width = 0.8) + 
+  scale_fill_identity() +  # Apply warna tanpa legend
+  
+  # Label ujung bar
+  geom_text(aes(label = count), hjust = -0.2, size = 2.5) +
+  
+  # Settings
+  geom_hline(yintercept = -0.3, color = "black", linewidth = 0.5) +  # FIX: Gunakan `linewidth`
+  coord_flip() +
+  theme_minimal() +
+  labs(title = "Dominasi Tesla dalam Pasar Kendaraan Listrik",
+       subtitle = "Kesenjangan Tesla dan Rivalnya dalam Industri EV",
+       x = "", 
+       y = "") +
+  theme(axis.text.y = element_text(size = 8, hjust = 1, face = "bold", 
+                                   margin = margin(r = -25)),
+        plot.title = element_text(hjust = -0.17, size = 14, face = "bold"),
+        plot.subtitle = element_text(hjust = -0.12, size = 8),
+        panel.grid.major.y = element_blank(),
+        panel.grid.major.x = element_line(linetype = "dashed"),
+        panel.grid.minor.x = element_line(linetype = "dashed")
+  )
+
+# Tampilkan chart
+chart
+
+# Save Chart
+ggsave("Chart/Cobain.png", chart, dpi = 300, height = 5, width = 10)
+```
+
+### Sederhana
+
+```{r fig.height=5, fig.width=10, dpi=300}
+ggplot(data_ev_sorted, 
+       aes(x = reorder(Make, count), y = count)) +
+# Bar chart
+geom_bar(stat = "identity", width = 0.8, fill = "steelblue") +
+coord_flip()
 ```
 
 ## Paired Bar {#paired-bar}
