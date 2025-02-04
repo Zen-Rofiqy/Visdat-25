@@ -1,5 +1,5 @@
 ---
-title: "Prak 01 Visdat"
+title: "Prak 02 Visdat"
 author: "Angga Fathan Rofiqy (G1401211006)"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
