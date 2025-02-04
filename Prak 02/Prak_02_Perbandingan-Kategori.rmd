@@ -42,7 +42,7 @@ install_load <- function (package1, ...)  {
    } 
 }
 
-install_load("knitr","ggplot2","viridis","dplyr","DT","stringr")
+install_load("knitr","ggplot2","viridis","dplyr","DT","stringr","scales")
 
 # Set wd 
 opts_knit$set(root.dir = normalizePath("./"))
@@ -487,6 +487,70 @@ ggsave("Chart/01_Bar_Paired.png", chart, dpi = 300, height = 5, width = 10)
 ```
 
 ### Advanced %
+
+```{r fig.height=5, fig.width=10, dpi=300}
+data_ev_grouped <- data_ev %>%
+  count(Make, CAFV.Eligibility.Simple, name = "count") %>%
+  filter(sum(count) > 1000, .by = Make) %>%  # Pastikan hanya merek dengan total >1000 kendaraan
+  arrange(desc(count)) %>%
+  mutate(Make = str_to_title(Make))  # Kapitalisasi merek
+
+# Hitung proporsi dalam setiap merek
+data_ev_grouped <- data_ev_grouped %>%
+  group_by(Make) %>%
+  mutate(percentage = count / sum(count)) %>%
+  ungroup()
+
+# Stacked Bar Chart dengan Persentase
+chart <- ggplot(data_ev_grouped, 
+                aes(x = Make, y = percentage, fill = CAFV.Eligibility.Simple)) +
+  
+  # Bar chart full persentase
+  geom_bar(stat = "identity", position = "fill", width = 0.8) +
+  
+  # Label di tengah bar dalam format persen
+  geom_text(aes(label = scales::percent(percentage, accuracy = 1)), 
+            position = position_fill(vjust = 0.5), 
+            size = 3, color = "white", fontface = "bold") +
+  
+  # Grid horizontal
+  geom_hline(yintercept = 0, color = "black", linewidth = 0.5) +
+  
+  coord_flip() +
+  theme_minimal() +
+  
+  # Warna berbeda untuk kategori eligibility
+  scale_fill_manual(values = c("Not Eligible" = "#9c3b66",
+                               "Eligible" = "#88b07e")) +
+  
+  labs(title = "Dominasi Tesla dalam Pasar Kendaraan Listrik",
+       subtitle = "Distribusi Persentase Kelayakan Kendaraan Listrik di Berbagai Merek",
+       fill = "Jenis Kendaraan",
+       x = "", 
+       y = "Persentase") +
+  
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +  # Pastikan sumbu Y dalam persen
+  
+  theme(axis.text.y = element_text(size = 8, hjust = 1, face = "bold", 
+                                   margin = margin(r = -25)),
+        plot.title = element_text(hjust = -0.07, size = 14, face = "bold"),
+        plot.subtitle = element_text(hjust = -0.06, size = 8),
+        panel.grid.major.y = element_blank(),
+        panel.grid.major.x = element_line(linetype = "dashed"),
+        panel.grid.minor.x = element_line(linetype = "dashed"),
+        legend.text = element_text(size = 8),  
+        legend.key.size = unit(0.5, "cm"),
+        legend.position = "top",
+        legend.direction = "horizontal",
+        legend.justification = c(-0.055, 0.5)
+  ) +
+  guides(fill = guide_legend(title = NULL))
+
+chart
+
+# Save Chart
+ggsave("Chart/Stacked_Bar_Percentage.png", chart, dpi = 300, height = 5, width = 10)
+```
 
 ### Sederhana
 
