@@ -304,11 +304,17 @@ Menunjukkan distribusi data yang saling tumpang tindih dalam satu grafik.
 
 ### Wilkinson Dot Plots and Wheat Plot
 
-![](images/clipboard-2521164228.png){width="161" height="89"} ![](images/clipboard-2082311084.png){width="497"}
+![](images/clipboard-2521164228.png){width="161" height="89"} ![](images/clipboard-2082311084.png){width="315"}
+
+### Raincloud Plot
+
+![](images/clipboard-67481014.png){width="327"}
 
 ## Stem-and-Leaf Plot {#stem-leaf}
 
 Digunakan untuk menampilkan distribusi angka dengan tetap mempertahankan nilai aslinya.
+
+![](images/clipboard-1702212809.png)
 
 ## Conclusion
 
@@ -322,18 +328,29 @@ Ringkasan konsep visualisasi distribusi data.
 
 Peta yang menggunakan warna untuk mewakili nilai numerik dalam wilayah geografis.
 
+![](images/clipboard-2376210583.png){width="313"}
+
 ## Cartogram {#cartogram}
 
 Peta di mana ukuran geografis diubah berdasarkan nilai data.
 
+![](images/clipboard-3681442694.png){width="237" height="165"} ![](images/clipboard-4115455026.png){width="392"}
+
 ## Proportional Symbol and Dot Density Maps {#dot-density}
 
 -   **Proportional symbol map**: menggunakan simbol dengan ukuran berbeda untuk mewakili nilai data.
+
+    ![](images/clipboard-3951358214.png){width="300"}
+
 -   **Dot density map**: menyebarkan titik dalam area geografis untuk menunjukkan kepadatan.
+
+    ![](images/clipboard-408315568.png){width="329"}
 
 ## Flow Map {#flow-map}
 
 Menunjukkan pergerakan data (misalnya migrasi populasi, aliran lalu lintas) dalam peta.
+
+![](images/clipboard-3581638534.png){width="507"}
 
 ## Conclusion
 
