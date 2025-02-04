@@ -135,7 +135,7 @@ chart <-
 chart
 
 # Save Chart
-ggsave("Chart/Cobain.png", chart, dpi = 300, height = 5, width = 10)
+ggsave("Chart/01_Bar.png", chart, dpi = 300, height = 5, width = 10)
 ```
 
 ### Sederhana
@@ -204,7 +204,58 @@ chart <-
 chart
 
 # Save Chart
-ggsave("Chart/Cobain.png", chart, dpi = 300, height = 5, width = 10)
+ggsave("Chart/02_lolipop.png", chart, dpi = 300, height = 5, width = 10)
+```
+
+```{r fig.height=5, fig.width=10, dpi=300}
+# Sort & Filter (hanya kendaraan >2000)
+data_ev_filtered <- data_ev %>%
+  count(Make, name = "count") %>%
+  filter(count > 2000) %>%  
+  arrange(desc(count)) %>%
+  mutate(Make = str_to_title(Make))  
+
+# Top 3
+top3 <- head(data_ev_filtered$Make, 3)
+
+chart <-
+  ggplot(data_ev_filtered, aes(x = reorder(Make, count), y = count)) +
+  
+  # Lolipop Stick
+  geom_segment(aes(xend = Make, y = 0, yend = count), 
+               color = ifelse(data_ev_filtered$Make %in% top3, "steelblue", "gray50"),
+               linewidth = 1.5) +
+  
+  # Lolipop Head dengan ukuran lebih besar
+  geom_point(aes(size = count, color = ifelse(Make %in% top3, "steelblue", "gray50")), 
+             pch = 19) +
+  
+  # Tema dan layout
+  coord_flip() +
+  theme_minimal() +
+  scale_color_identity() +  # Apply warna tanpa legend
+  scale_size_continuous(range = c(2, 14)) +  # Ukuran lebih besar
+  geom_hline(yintercept = -0.3, color = "black", linewidth = 0.5) +  
+  
+  labs(title = "Dominasi Tesla dalam Pasar Kendaraan Listrik",
+       subtitle = "Hanya Menampilkan Brand dengan Lebih 2000 Kendaraan Terdaftar",
+       x = "", 
+       y = "") +
+  
+  theme(axis.text.y = element_text(size = 8, hjust = 1, face = "bold", 
+                                   margin = margin(r = -25)),
+        plot.title = element_text(hjust = -0.05, size = 14, face = "bold"),
+        plot.subtitle = element_text(hjust = -0.04, size = 8),
+        panel.grid.major.y = element_blank(),
+        panel.grid.major.x = element_line(linetype = "dashed"),
+        panel.grid.minor.x = element_line(linetype = "dashed"),
+        legend.position = "none"
+  )
+
+chart
+
+# Save Chart
+ggsave("Chart/02_lolipop_var.png", chart, dpi = 300, height = 5, width = 10)
 ```
 
 ## Paired Bar {#paired-bar}
