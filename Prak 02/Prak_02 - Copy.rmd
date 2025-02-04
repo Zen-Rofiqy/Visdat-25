@@ -154,21 +154,31 @@ Ringkasan konsep perbandingan kategori.
 
 Grafik garis untuk menunjukkan perubahan data dalam rentang waktu tertentu.
 
+![](images/clipboard-421205866.png){width="248"}
+
 ## Circular Line Chart {#circular-line-chart}
 
 Versi melingkar dari grafik garis, sering digunakan untuk data musiman.
+
+![](images/clipboard-213922318.png){width="397"}
 
 ## Slope Chart {#slope-chart}
 
 Menunjukkan perubahan data antara dua titik waktu.
 
+![](images/clipboard-1967735244.png){width="245"}
+
 ## Sparklines {#sparklines}
 
 Garis kecil yang menunjukkan tren singkat dalam dataset.
 
+![](images/clipboard-2076837143.png){width="207"}
+
 ## Bump Chart {#bump-chart}
 
 Menampilkan perubahan peringkat suatu kategori seiring waktu.
+
+![](images/clipboard-808845619.png){width="498"}
 
 ## Cycle Chart {#cycle-chart}
 
