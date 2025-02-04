@@ -42,7 +42,8 @@ install_load <- function (package1, ...)  {
    } 
 }
 
-install_load("knitr","ggplot2","viridis","dplyr","DT","stringr","scales")
+install_load("knitr","ggplot2","viridis","dplyr","DT","stringr","scales","tidyr",
+             "ggmosaic")
 
 # Set wd 
 opts_knit$set(root.dir = normalizePath("./"))
@@ -76,8 +77,11 @@ Dalam praktikum ini, kita akan mengeksplorasi beberapa jenis visualisasi data ut
 
 -   [S&P 500, ETF, FX & Crypto (Daily updated)](https://www.kaggle.com/datasets/benjaminpo/s-and-p-500-with-dividends-and-splits-daily-updated?select=AAPL.csv)
 
+-   [Discover Perspectives: HR Analytics Employee](https://www.kaggle.com/datasets/agungpambudi/workforce-perspectives-hr-employee-survey-analysis?select=employee-survey-insights-analysis.csv)
+
 ```{r}
 data_ev <- read.csv("Data/EV_Population.csv")
+data_survey <- read.csv("Data/employee-survey.csv", sep="|")
 ```
 
 ------------------------------------------------------------------------
@@ -568,11 +572,118 @@ Menunjukkan distribusi kategori dengan skala positif-negatif.
 
 ![](images/clipboard-3452309680.png){width="216"}
 
+```{r}
+# Buat mapping unik untuk setiap pertanyaan
+question_map <- data_survey %>%
+  distinct(Question) %>%
+  mutate(Q_Label = paste0("Q.", str_pad(row_number(), 2, pad = "0")))  # Ubah ke dua digit
+
+# Gabungkan kembali ke data asli
+data_survey <- data_survey %>%
+  left_join(question_map, by = "Question") %>%
+  select(-Question) %>%
+  rename(Question = Q_Label)  # Ganti dengan label baru
+
+# Konversi teks ke angka menggunakan mutate + case_when()
+data_survey_cleaned <- data_survey %>%
+  
+  # Filter hanya respon valid (hapus Not Applicable dan data kosong)
+  filter(Response.Text != "Not Applicable", Response.Text != "") %>%
+  
+  # Ubah Response.Text menjadi angka
+  mutate(Response.Value = case_when(
+    Response.Text == "Strongly Agree" ~ 2,
+    Response.Text == "Agree" ~ 1,
+    Response.Text == "Disagree" ~ -1,
+    Response.Text == "Strongly Disagree" ~ -2
+  )) %>%
+  
+  # Hitung jumlah masing-masing respons per pertanyaan
+  count(Question, Response.Text, Response.Value, name = "Count")
+
+# Pastikan faktor dalam urutan yang benar
+data_survey_cleaned <- data_survey_cleaned %>%
+  mutate(Response.Text = factor(Response.Text, 
+                                levels = c("Strongly Agree", "Agree", "Disagree", "Strongly Disagree")))
+
+# Ubah sisi negatif untuk visualisasi divergen
+data_survey_cleaned <- data_survey_cleaned %>%
+  mutate(Count = ifelse(Response.Value < 0, -Count, Count)) %>%
+  filter(Question != "Q.12") %>%
+  mutate(Question = factor(Question, levels = rev(unique(Question))))
+```
+
+```{r fig.height=5, fig.width=10, dpi=300}
+# Warna divergen
+color_palette <- c("Strongly Agree" = "#08306b",
+                   "Agree" = "#6baed6",
+                   "Disagree" = "#fcae91",
+                   "Strongly Disagree" = "#cb181d")
+
+# Plot diverging bar chart dengan label frekuensi
+ggplot(data_survey_cleaned, aes(x = Question, y = Count, fill = Response.Text)) +
+  geom_bar(stat = "identity", position = "stack", width = 0.8) +
+  scale_fill_manual(values = color_palette) +
+  
+  # Tambahkan label frekuensi di dalam bar
+  geom_text(aes(label = abs(Count)), 
+            position = position_stack(vjust = 0.5), 
+            size = 3, color = "white", fontface = "bold") +
+
+  coord_flip() +
+  theme_minimal() +
+  
+  labs(title = "Survey Responses - Diverging Bar Chart",
+       subtitle = "Distribusi Sentimen Responden Berdasarkan Pertanyaan",
+       x = "", 
+       y = "") +
+  
+  scale_y_continuous(breaks = seq(-50, 50, 10), labels = abs(seq(-50, 50, 10))) +  # Pastikan label y tetap positif
+  theme(panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major.x = element_line(linetype = "dashed"),
+        legend.position = "top",
+        legend.direction = "horizontal",
+        legend.title = element_blank())  # Hilangkan judul legend
+```
+
 ## Dot Plot {#dot-plot}
 
 Digunakan untuk menunjukkan distribusi atau perbandingan antar kategori.
 
 ![](images/clipboard-827714082.png){width="308"}
+
+```{r fig.height=5, fig.width=10, dpi=300}
+# Buat dataset PISA
+data_pisa <- data.frame(
+  Country = c("Japan", "Switzerland", "Denmark", "France", "Australia", 
+              "United States", "Turkey", "Greece", "Chile", "Mexico"),
+  Math = c(532, 520, 509, 495, 503, 487, 454, 437, 423, 408), 
+  Reading = c(520, 506, 497, 493, 499, 480, 460, 440, 420, 405)
+)
+
+# Ubah data ke format long untuk visualisasi dot plot
+data_pisa_long <- data_pisa %>%
+  pivot_longer(cols = c(Math, Reading), names_to = "Subject", values_to = "Score")
+
+# Warna untuk kategori Math dan Reading
+color_palette <- c("Math" = "#1f77b4", "Reading" = "#d62728")
+
+# Plot dot plot
+ggplot(data_pisa_long, aes(x = Score, y = reorder(Country, Score), color = Subject)) +
+  geom_point(size = 4) +  # Titik
+  geom_line(aes(group = Country), color = "black") +  # Garis penghubung antara dua titik
+  scale_color_manual(values = color_palette) +  # Warna kategori
+  theme_minimal() +
+  labs(title = "PISA Scores for Math and Reading among 10 OECD Countries",
+       x = "PISA Score",
+       y = "",
+       color = "Subject") +
+  theme(legend.position = "top",
+        legend.direction = "horizontal",
+        plot.title = element_text(size = 14, face = "bold"),
+        axis.text.y = element_text(face = "bold"))
+```
 
 ## Marimekko and Mosaic Charts {#marimekko-mosaic}
 
