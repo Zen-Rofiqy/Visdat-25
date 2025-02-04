@@ -272,21 +272,39 @@ Metode visualisasi ketidakpastian statistik dalam data.
 
 Menampilkan lima ringkasan data: minimum, Q1, median, Q3, dan maksimum.
 
+![](images/clipboard-3133313176.png){width="222"}
+
 ## Candlestick Chart {#candlestick-chart}
 
 Digunakan dalam analisis keuangan untuk menunjukkan harga tertinggi, terendah, pembukaan, dan penutupan.
+
+![](images/clipboard-52418158.png){width="318"}
 
 ## Violin Chart {#violin-chart}
 
 Kombinasi antara boxplot dan density plot untuk memahami distribusi data.
 
+![](images/clipboard-3558018633.png){width="194" height="194"}
+
 ## Ridgeline Plot {#ridgeline-plot}
 
 Menunjukkan distribusi data yang saling tumpang tindih dalam satu grafik.
 
-## Visualizing Uncertainty by Showing the Data {#uncertainty}
+![](images/clipboard-3261482838.png){width="283"}
 
-Menunjukkan ketidakpastian dalam visualisasi data.
+## Showing the Data {#uncertainty}
+
+### Strip Plot
+
+![](images/clipboard-2235031614.png){width="177"}
+
+### Beeswarm Plot
+
+![](images/clipboard-1465558755.png){width="177"} ![](images/clipboard-812578471.png){width="227"}
+
+### Wilkinson Dot Plots and Wheat Plot
+
+![](images/clipboard-2521164228.png){width="161" height="89"} ![](images/clipboard-2082311084.png){width="497"}
 
 ## Stem-and-Leaf Plot {#stem-leaf}
 
