@@ -5,7 +5,7 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document:
     self_contained: true
-    thumbnails: false
+    thumbnails: true
     lightbox: true
     gallery: true
     highlight: tango
@@ -19,8 +19,6 @@ output:
       smooth_scroll: true
     fig_caption: true
 ---
-
-![](images/Bg_Visdat.png){style="display: block; margin: auto;" width="393"}
 
 ```{r setup, include=FALSE, echo=FALSE, warning=FALSE, message = FALSE}
 #                      -=( Install & Load Package Function )=-
@@ -47,15 +45,15 @@ install_load <- function (package1, ...)  {
 install_load("knitr","ggplot2","viridis","dplyr","DT")
 
 # Change \ to /
-path <- function() gsub  ( "\\\\",  "/",  readClipboard ()  )
+path <- function() gsub  ( "\\\\",  "/",  readClipboad ()  )
 
 # Set WD
 opts_knit$set(root.dir = "C:/Users/Fathan/Documents/Obsidian Vault/2. Kuliah/Smt 7 & 8/Visdat-25/Prak 02")
 ```
 
-# **Materi Praktikum** {style="display: block; margin: auto;"}
+# Materi Praktikum
 
-![](images/clipboard-4160132647.png){style="display: block; margin: auto;" width="500"}
+![](images/clipboard-4160132647.png){width="500"}
 
 Materi yang akan dibahas dalam praktikum ini adalah:
 
