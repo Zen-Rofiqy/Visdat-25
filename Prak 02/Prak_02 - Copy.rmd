@@ -182,31 +182,51 @@ Menampilkan perubahan peringkat suatu kategori seiring waktu.
 
 ## Cycle Chart {#cycle-chart}
 
-Menggambarkan pola siklus dalam data deret waktu.
+**Cycle Chart** adalah grafik yang digunakan untuk **membandingkan pola data dalam unit waktu kecil (minggu, bulan, dll.) dalam jangka waktu multi-tahun**. Grafik ini berguna untuk **menampilkan tren musiman** dalam data.
 
-## Area Chart & Stacked Area Chart {#area-chart}
+![](images/clipboard-3777843107.png){width="249"}
 
-Memvisualisasikan perubahan dalam data kuantitatif menggunakan area yang diisi warna.
+## Area Chart {#area-chart}
+
+**Area Chart** adalah varian dari **line chart** di mana **area di bawah garis diisi dengan warna** untuk memberikan bobot visual yang lebih jelas pada data. Grafik ini digunakan untuk **menunjukkan tren perubahan nilai numerik dari waktu ke waktu**.
+
+![](images/clipboard-2125368945.png){width="213"}
+
+## Stacked Area Chart {#stacked-area-chart}
+
+![](images/clipboard-3655817444.png){width="209" height="209"}
+
+**Stacked Area Chart** adalah varian dari **area chart** yang digunakan untuk **menampilkan beberapa seri data secara simultan**, di mana setiap area saling ditumpuk sehingga nilai totalnya dapat terlihat dengan jelas. Grafik ini sering digunakan untuk **menunjukkan perubahan distribusi data seiring waktu**.
 
 ## Streamgraph {#streamgraph}
 
 Menampilkan perubahan dalam data kategorikal dengan bentuk yang mengalir.
 
+![](images/clipboard-1563743455.png){width="209"}
+
 ## Horizon Chart {#horizon-chart}
 
-Efektif untuk menampilkan data deret waktu dengan skala besar.
+**Horizon Chart** adalah varian dari **Area Chart** yang digunakan untuk menampilkan **data deret waktu dengan cara yang lebih padat dan efisien**. Grafik ini bekerja dengan **membagi area chart menjadi beberapa band horizontal**, lalu **menumpuknya untuk mengurangi ruang yang digunakan**.
+
+![](images/clipboard-1440192241.png){width="284"}
 
 ## Gantt Chart {#gantt-chart}
 
-Digunakan untuk perencanaan proyek dan menunjukkan jadwal tugas dalam waktu tertentu.
+**Gantt Chart** adalah jenis grafik yang digunakan untuk **menampilkan jadwal, proses, atau durasi tugas** dengan **menggunakan batang horizontal**. Grafik ini sering digunakan dalam **manajemen proyek, shift kerja, dan pelacakan jadwal produksi**.
+
+![](images/clipboard-1815658534.png){width="294"}
 
 ## Flow Charts and Timelines {#flow-chart}
 
-Menunjukkan urutan kejadian atau alur kerja dalam bentuk diagram.
+Flow Charts dan Timelines adalah dua jenis visualisasi yang digunakan untuk **menampilkan perubahan, proses, atau hierarki** secara kronologis atau langkah demi langkah.
+
+![](images/clipboard-1453682947.png){width="239"}
 
 ## Connected Scatterplot {#connected-scatterplot}
 
-Scatterplot dengan garis yang menghubungkan titik-titik berdasarkan urutan waktu.
+**Connected Scatterplot** adalah metode visualisasi yang digunakan untuk **menunjukkan hubungan antara dua deret waktu dalam satu grafik**, tanpa menggunakan **dual-axis line chart**.
+
+![](images/clipboard-3027502065.png){width="211"} ![](images/clipboard-131536693.png){width="419"}
 
 ## Conclusion
 
@@ -220,37 +240,81 @@ Ringkasan konsep visualisasi deret waktu.
 
 Visualisasi distribusi data berbasis frekuensi dalam bentuk batang.
 
+![](images/clipboard-1238374112.png){width="202"}
+
 ## Pyramid Chart {#pyramid-chart}
 
 Digunakan untuk membandingkan distribusi kategori dua arah (misalnya populasi pria vs wanita).
+
+![](images/clipboard-4158192479.png){width="198"}
 
 ## Visualizing Statistical Uncertainty with Charts {#statistical-uncertainty}
 
 Metode visualisasi ketidakpastian statistik dalam data.
 
+### Error Bars
+
+![](images/clipboard-955379841.png){width="172"}
+
+### Confidence Interval
+
+![](images/clipboard-1134882823.png){width="229"}
+
+### Gradient Chart
+
+![](images/clipboard-1119979853.png){width="293"}
+
+### Fan Charts
+
+![](images/clipboard-673330419.png){width="254" height="201"}
+
 ## Box-and-Whisker Plot {#boxplot}
 
 Menampilkan lima ringkasan data: minimum, Q1, median, Q3, dan maksimum.
+
+![](images/clipboard-3133313176.png){width="222"}
 
 ## Candlestick Chart {#candlestick-chart}
 
 Digunakan dalam analisis keuangan untuk menunjukkan harga tertinggi, terendah, pembukaan, dan penutupan.
 
+![](images/clipboard-52418158.png){width="318"}
+
 ## Violin Chart {#violin-chart}
 
 Kombinasi antara boxplot dan density plot untuk memahami distribusi data.
+
+![](images/clipboard-3558018633.png){width="194" height="194"}
 
 ## Ridgeline Plot {#ridgeline-plot}
 
 Menunjukkan distribusi data yang saling tumpang tindih dalam satu grafik.
 
-## Visualizing Uncertainty by Showing the Data {#uncertainty}
+![](images/clipboard-3261482838.png){width="283"}
 
-Menunjukkan ketidakpastian dalam visualisasi data.
+## Showing the Data {#uncertainty}
+
+### Strip Plot
+
+![](images/clipboard-2235031614.png){width="177"}
+
+### Beeswarm Plot
+
+![](images/clipboard-1465558755.png){width="177"} ![](images/clipboard-812578471.png){width="227"}
+
+### Wilkinson Dot Plots and Wheat Plot
+
+![](images/clipboard-2521164228.png){width="161" height="89"} ![](images/clipboard-2082311084.png){width="315"}
+
+### Raincloud Plot
+
+![](images/clipboard-67481014.png){width="327"}
 
 ## Stem-and-Leaf Plot {#stem-leaf}
 
 Digunakan untuk menampilkan distribusi angka dengan tetap mempertahankan nilai aslinya.
+
+![](images/clipboard-1702212809.png)
 
 ## Conclusion
 
@@ -264,18 +328,29 @@ Ringkasan konsep visualisasi distribusi data.
 
 Peta yang menggunakan warna untuk mewakili nilai numerik dalam wilayah geografis.
 
+![](images/clipboard-2376210583.png){width="313"}
+
 ## Cartogram {#cartogram}
 
 Peta di mana ukuran geografis diubah berdasarkan nilai data.
 
+![](images/clipboard-3681442694.png){width="237" height="165"} ![](images/clipboard-4115455026.png){width="392"}
+
 ## Proportional Symbol and Dot Density Maps {#dot-density}
 
 -   **Proportional symbol map**: menggunakan simbol dengan ukuran berbeda untuk mewakili nilai data.
+
+    ![](images/clipboard-3951358214.png){width="300"}
+
 -   **Dot density map**: menyebarkan titik dalam area geografis untuk menunjukkan kepadatan.
+
+    ![](images/clipboard-408315568.png){width="329"}
 
 ## Flow Map {#flow-map}
 
 Menunjukkan pergerakan data (misalnya migrasi populasi, aliran lalu lintas) dalam peta.
+
+![](images/clipboard-3581638534.png){width="507"}
 
 ## Conclusion
 
