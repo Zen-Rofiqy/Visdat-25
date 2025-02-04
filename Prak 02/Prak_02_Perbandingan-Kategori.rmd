@@ -1,0 +1,159 @@
+---
+title: "Prak 02 Visdat"
+author: "Angga Fathan Rofiqy (G1401211006)"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    self_contained: true
+    thumbnails: true
+    lightbox: true
+    gallery: true
+    highlight: tango
+    code_folding: show
+    toc_depth: 5
+    number_sections: false
+    theme: flatly
+    toc: yes
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+    fig_caption: true
+---
+
+```{r setup, include=FALSE, echo=FALSE, warning=FALSE, message = FALSE}
+#                      -=( Install & Load Package Function )=-
+install_load <- function (package1, ...)  {   
+
+   # convert arguments to vector
+   packages <- c(package1, ...)
+
+   # start loop to determine if each package is installed
+   for(package in packages){
+
+       # if package is installed locally, load
+       if(package %in% rownames(installed.packages()))
+          do.call('library', list(package))
+
+       # if package is not installed locally, download, then load
+       else {
+          install.packages(package)
+          do.call("library", list(package))
+       }
+   } 
+}
+
+install_load("knitr","ggplot2","viridis","dplyr","DT")
+
+# Set wd 
+opts_knit$set(root.dir = normalizePath("./"))
+```
+
+# Materi Praktikum
+
+![](images/clipboard-4160132647.png){width="450"} ![](images/clipboard-2307206920.png){width="164"}
+
+Materi praktikum ini merujuk pada **buku *Better Data Visualizations* karya Jonathan Schwabish**, yang membahas berbagai teknik visualisasi data untuk menyampaikan informasi secara lebih efektif dan intuitif.
+
+Dalam praktikum ini, kita akan mengeksplorasi beberapa jenis visualisasi data utama, yaitu:
+
+-   [Perbandingan Kategori](#perbandingan-kategori)
+-   [Deret Waktu](#deret-waktu)
+-   [Distribusi](#distribusi)
+-   [Geospasial](#geospasial)
+
+## Data
+
+Data yang akan digunakan adalah
+
+```{r}
+# Data
+data_ev <- read.csv("Data/EV_Population.csv")
+head(data_ev)
+```
+
+------------------------------------------------------------------------
+
+# **Perbandingan Kategori** {#perbandingan-kategori}
+
+## Bar Charts {#barchart}
+
+Diagram batang digunakan untuk membandingkan kategori.
+
+![](images/clipboard-792151592.png){width="169"}
+
+```{r fig.height=5, fig.width=11.5, dpi=300}
+ggplot(data_ev, aes(Make, fill=Electric.Vehicle.Type)) + 
+  geom_bar() + coord_flip()
+```
+
+## Paired Bar {#paired-bar}
+
+Membandingkan dua set kategori yang terkait.
+
+![](images/clipboard-1762406163.png){width="170"}
+
+## Stacked Bar {#stacked-bar}
+
+Menampilkan perbandingan komposisi antar kategori.
+
+![](images/clipboard-1485803542.png){width="174"}
+
+## Diverging Bar {#diverging-bar}
+
+Menunjukkan distribusi kategori dengan skala positif-negatif.
+
+![](images/clipboard-3452309680.png){width="216"}
+
+## Dot Plot {#dot-plot}
+
+Digunakan untuk menunjukkan distribusi atau perbandingan antar kategori.
+
+![](images/clipboard-827714082.png){width="308"}
+
+## Marimekko and Mosaic Charts {#marimekko-mosaic}
+
+Visualisasi untuk membandingkan proporsi dua variabel kategori.
+
+![](images/clipboard-106419168.png){width="291"} ![](images/clipboard-3174332575.png){width="324"}
+
+## Unit, Isotype, and Waffle Charts {#unit-chart}
+
+Digunakan untuk menampilkan proporsi dalam bentuk ikon atau blok.
+
+![](images/clipboard-3586682718.png){width="203"} ![](images/clipboard-2123779999.png){width="269"} ![](images/clipboard-1414171221.png){width="201"}
+
+## Heatmap {#heatmap}
+
+Visualisasi matriks yang menggunakan warna untuk mewakili nilai numerik.
+
+![](images/clipboard-3277073308.png){width="371"}
+
+## Gauge and Bullet Charts {#gauge-bullet}
+
+Menampilkan pengukuran dalam format indikator atau skala.
+
+![](images/clipboard-1430457390.png){width="469"}
+
+## Bubble Comparison and Nested Bubbles {#bubble-chart}
+
+Digunakan untuk menunjukkan hierarki atau hubungan antar data.
+
+![](images/clipboard-1881626973.png){width="214"} ![](images/clipboard-3452815468.png){width="189"}
+
+## Sankey Diagram {#sankey}
+
+Diagram aliran yang menunjukkan hubungan antar kategori.
+
+![](images/clipboard-4264207325.png){width="259"} ![](images/clipboard-2578743022.png){width="254"}
+
+## Waterfall Chart {#waterfall}
+
+Menunjukkan perubahan nilai dalam urutan kumulatif.
+
+![](images/clipboard-923421594.png){width="244"}
+
+## Conclusion
+
+Ringkasan konsep perbandingan kategori.
+
+------------------------------------------------------------------------
