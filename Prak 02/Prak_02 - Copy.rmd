@@ -188,11 +188,13 @@ Menampilkan perubahan peringkat suatu kategori seiring waktu.
 
 ## Area Chart {#area-chart}
 
-Memvisualisasikan perubahan dalam data kuantitatif menggunakan area yang diisi warna.
+**Area Chart** adalah varian dari **line chart** di mana **area di bawah garis diisi dengan warna** untuk memberikan bobot visual yang lebih jelas pada data. Grafik ini digunakan untuk **menunjukkan tren perubahan nilai numerik dari waktu ke waktu**.
 
-![](images/clipboard-73474564.png)
+![](images/clipboard-2125368945.png){width="213"}
 
 ## Stacked Area Chart {#stacked-area-chart}
+
+![](images/clipboard-3655817444.png){width="209" height="209"}
 
 **Stacked Area Chart** adalah varian dari **area chart** yang digunakan untuk **menampilkan beberapa seri data secara simultan**, di mana setiap area saling ditumpuk sehingga nilai totalnya dapat terlihat dengan jelas. Grafik ini sering digunakan untuk **menunjukkan perubahan distribusi data seiring waktu**.
 
