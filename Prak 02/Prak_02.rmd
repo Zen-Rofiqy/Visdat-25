@@ -42,7 +42,7 @@ install_load <- function (package1, ...)  {
    } 
 }
 
-install_load("ggplot2","viridis","dplyr")
+install_load("ggplot2","viridis","dplyr","DT")
 # install.packages("ggplot2"); library(ggplot2)
 # install.packages("viridis"); library(viridis)
 # install.packages("dplyr"); library(dplyr)
@@ -218,6 +218,8 @@ percentDatadaerah <- data %>%
   group_by(`Nama Kabupaten`) %>% 
   count(Status_Rawan) %>% 
   mutate(ratio=scales::percent(n/sum(n)))
+
+head(percentDatadaerah)
 ```
 
 ```{r fig.height=5, fig.width=7, dpi=300}
@@ -229,64 +231,42 @@ ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) +
             color="white", position=position_fill(vjust=0.5), size = 3.5)
 ```
 
-Mewarnai manual
+# Lollipop Chart
 
 ```{r}
-ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + geom_bar(position="fill") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) + geom_text(data=percentDatadaerah,aes(y=n,label=ratio),color="white",position=position_fill(vjust=0.5),size = 2)+scale_fill_manual(values=c("#7be217", "#4f58ab"))
-```
-
-#Lollipop Chart
-
-```{r}
-table(data$`Nama Kabupaten`)
+percentDatadaerah_rawan <- percentDatadaerah %>%
+  filter(Status_Rawan == "Rawan") %>%
+  as.data.frame()
+head(percentDatadaerah_rawan)
 ```
 
 ```{r}
-head(percentDatadaerah)
+ggplot(percentDatadaerah_rawan, aes(x=`Nama Kabupaten`, y=n)) + 
+  geom_segment(aes(x=`Nama Kabupaten`, xend=`Nama Kabupaten`, y=0, yend=n)) +
+  geom_point() + coord_flip()
 ```
 
 ```{r}
-percentDatadaerah2 <- percentDatadaerah[percentDatadaerah$Status_Rawan=="Rawan",]
-percentDatadaerah2 <- as.data.frame(percentDatadaerah2)
+ggplot(percentDatadaerah_rawan, aes(x = `Nama Kabupaten`, y = n)) + geom_segment(aes(x = `Nama Kabupaten`, xend = `Nama Kabupaten`, y = 0, yend = n)) + geom_point() + coord_flip() + geom_point(size = 4, pch = 21, bg = 5, col = 6)
 ```
 
 ```{r}
-ggplot(percentDatadaerah2, aes(x = `Nama Kabupaten`, y = n)) + geom_segment(aes(x = `Nama Kabupaten`, xend = `Nama Kabupaten`, y = 0, yend = n)) + geom_point() 
-```
-
-Option 1: coord_flip
-
-```{r}
-ggplot(percentDatadaerah2, aes(x = `Nama Kabupaten`, y = n)) + geom_segment(aes(x = `Nama Kabupaten`, xend = `Nama Kabupaten`, y = 0, yend = n)) + geom_point() + coord_flip()
-```
-
-Option 2: Ubah X dan Y
-
-```{r}
-ggplot(percentDatadaerah2, aes(y = `Nama Kabupaten`, x = n)) + geom_segment(aes(y = `Nama Kabupaten`, yend = `Nama Kabupaten`, x = 0, xend = n)) + geom_point()
+ggplot(percentDatadaerah_rawan, aes(x = `Nama Kabupaten`, y = n)) + geom_segment(aes(x = `Nama Kabupaten`, xend = `Nama Kabupaten`, y = 0, yend = n), color="grey", lwd=1.5) + geom_point() + coord_flip() + geom_point(size = 5, pch = 21, bg = 6, col = 1) + theme_classic()
 ```
 
 ```{r}
-ggplot(percentDatadaerah2, aes(x = `Nama Kabupaten`, y = n)) + geom_segment(aes(x = `Nama Kabupaten`, xend = `Nama Kabupaten`, y = 0, yend = n)) + geom_point() + coord_flip() + geom_point(size = 4, pch = 21, bg = 5, col = 6)
+ggplot(percentDatadaerah_rawan, aes(x = `Nama Kabupaten`, y = n)) + geom_segment(aes(x = `Nama Kabupaten`, xend = `Nama Kabupaten`, y = 0, yend = n), color="grey", lwd=1.5) + geom_point() + coord_flip() + geom_point(size = 5, pch = 21, bg = 6, col = 1) + theme_classic()
 ```
 
 ```{r}
-ggplot(percentDatadaerah2, aes(x = `Nama Kabupaten`, y = n)) + geom_segment(aes(x = `Nama Kabupaten`, xend = `Nama Kabupaten`, y = 0, yend = n), color="grey", lwd=1.5) + geom_point() + coord_flip() + geom_point(size = 5, pch = 21, bg = 6, col = 1) + theme_classic()
+ggplot(percentDatadaerah_rawan, aes(x = `Nama Kabupaten`, y = n)) + geom_segment(aes(x = `Nama Kabupaten`, xend = `Nama Kabupaten`, y = 0, yend = n), color="grey", lwd=1.5) + geom_point() + coord_flip() + geom_point(size = 5, pch = 21, bg = 6, col = 1) + geom_text(aes(label = n), color = "white", size = 2) + theme_classic() 
 ```
 
 ```{r}
-ggplot(percentDatadaerah2, aes(x = `Nama Kabupaten`, y = n)) + geom_segment(aes(x = `Nama Kabupaten`, xend = `Nama Kabupaten`, y = 0, yend = n), color="grey", lwd=1.5) + geom_point() + coord_flip() + geom_point(size = 5, pch = 21, bg = 6, col = 1) + theme_classic()
-```
-
-```{r}
-ggplot(percentDatadaerah2, aes(x = `Nama Kabupaten`, y = n)) + geom_segment(aes(x = `Nama Kabupaten`, xend = `Nama Kabupaten`, y = 0, yend = n), color="grey", lwd=1.5) + geom_point() + coord_flip() + geom_point(size = 5, pch = 21, bg = 6, col = 1) + geom_text(aes(label = n), color = "white", size = 2) + theme_classic() 
-```
-
-```{r}
-x = reorder(percentDatadaerah2$`Nama Kabupaten`, percentDatadaerah2$n)
+x = reorder(percentDatadaerah_rawan$`Nama Kabupaten`, percentDatadaerah_rawan$n)
 x
 ```
 
 ```{r}
-ggplot(percentDatadaerah2, aes(x = reorder(`Nama Kabupaten`, n), y = n)) + geom_segment(aes(xend = `Nama Kabupaten`, y = 0, yend = n), color="grey", lwd=1.5) + geom_point() + coord_flip() + geom_point(size = 5, pch = 21, bg = 6, col = 1) + geom_text(aes(label = n), color = "white", size = 2) + theme_classic()
+ggplot(percentDatadaerah_rawan, aes(x = reorder(`Nama Kabupaten`, n), y = n)) + geom_segment(aes(xend = `Nama Kabupaten`, y = 0, yend = n), color="grey", lwd=1.5) + geom_point() + coord_flip() + geom_point(size = 5, pch = 21, bg = 6, col = 1) + geom_text(aes(label = n), color = "white", size = 2) + theme_classic()
 ```
