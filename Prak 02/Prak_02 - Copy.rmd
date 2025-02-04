@@ -240,13 +240,33 @@ Ringkasan konsep visualisasi deret waktu.
 
 Visualisasi distribusi data berbasis frekuensi dalam bentuk batang.
 
+![](images/clipboard-1238374112.png){width="202"}
+
 ## Pyramid Chart {#pyramid-chart}
 
 Digunakan untuk membandingkan distribusi kategori dua arah (misalnya populasi pria vs wanita).
 
+![](images/clipboard-4158192479.png){width="198"}
+
 ## Visualizing Statistical Uncertainty with Charts {#statistical-uncertainty}
 
 Metode visualisasi ketidakpastian statistik dalam data.
+
+### Error Bars
+
+![](images/clipboard-955379841.png){width="172"}
+
+### Confidence Interval
+
+![](images/clipboard-1134882823.png){width="229"}
+
+### Gradient Chart
+
+![](images/clipboard-1119979853.png){width="293"}
+
+### Fan Charts
+
+![](images/clipboard-673330419.png){width="254" height="201"}
 
 ## Box-and-Whisker Plot {#boxplot}
 
