@@ -1,0 +1,391 @@
+---
+title: "Prak 02 Visdat"
+author: "Angga Fathan Rofiqy (G1401211006)"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    self_contained: true
+    thumbnails: true
+    lightbox: true
+    gallery: true
+    highlight: tango
+    code_folding: show
+    toc_depth: 5
+    number_sections: false
+    theme: flatly
+    toc: yes
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+    fig_caption: true
+---
+
+```{r setup, include=FALSE, echo=FALSE, warning=FALSE, message = FALSE}
+#                      -=( Install & Load Package Function )=-
+install_load <- function (package1, ...)  {   
+
+   # convert arguments to vector
+   packages <- c(package1, ...)
+
+   # start loop to determine if each package is installed
+   for(package in packages){
+
+       # if package is installed locally, load
+       if(package %in% rownames(installed.packages()))
+          do.call('library', list(package))
+
+       # if package is not installed locally, download, then load
+       else {
+          install.packages(package)
+          do.call("library", list(package))
+       }
+   } 
+}
+
+install_load("knitr","ggplot2","viridis","dplyr","DT","stringr","scales","tidyr",
+             "waffle","ggtext","lubridate","reshape2","calendR","plotly","ggforce"
+             ,"ggalluvial","networkD3")
+
+# Set wd 
+opts_knit$set(root.dir = normalizePath("./"))
+```
+
+# Materi Praktikum
+
+![](images/clipboard-4160132647.png){width="450"} ![](images/clipboard-2307206920.png){width="164"}
+
+Materi praktikum ini merujuk pada **buku *Better Data Visualizations* karya Jonathan Schwabish**, yang membahas berbagai teknik visualisasi data untuk menyampaikan informasi secara lebih efektif dan intuitif.
+
+Dalam praktikum ini, kita akan mengeksplorasi beberapa jenis visualisasi data utama, yaitu:
+
+-   [Perbandingan Kategori](#perbandingan-kategori)
+-   [Deret Waktu](#deret-waktu)
+-   [Distribusi](#distribusi)
+-   [Geospasial](#geospasial)
+
+## Data
+
+Data yang akan digunakan adalah
+
+```{r}
+# Data
+data_ev <- read.csv("Data/EV_Population.csv")
+head(data_ev)
+```
+
+------------------------------------------------------------------------
+
+# **Deret Waktu** {#deret-waktu}
+
+## Line Chart {#line-chart}
+
+Grafik garis untuk menunjukkan perubahan data dalam rentang waktu tertentu.
+
+![](images/clipboard-421205866.png){width="248"}
+
+```{r fig.height=3.5, fig.width=10, dpi=300}
+# Buat Data Contoh
+data_dual <- data.frame(
+  Year = seq(2000, 2018, by = 1),
+  Housing_Debt = c(10, 10.2, 10.5, 10.8, 11.2, 11.5, 11.8, 12.3, 12.8, 13.1, 13.4, 13.2, 12.8, 12.3, 11.7, 11.2, 10.8, 10.5, 10.3),
+  Unemployment_Rate = c(4, 4.2, 5.0, 5.5, 5.8, 6.0, 6.5, 7.0, 9.0, 10.0, 9.8, 9.5, 8.5, 7.5, 6.3, 5.5, 4.8, 4.2, 3.9)
+)
+
+# Reshape data untuk ggplot
+data_long <- data_dual %>%
+  pivot_longer(cols = c("Housing_Debt", "Unemployment_Rate"),
+               names_to = "Variable", values_to = "Value")
+
+# Plot
+ggplot(data_long, aes(x = Year, y = Value, color = Variable)) +
+  geom_line(size = 1.2) +
+  scale_y_continuous(
+    name = "Housing Debt (%)",
+    sec.axis = sec_axis(~ ., name = "Unemployment Rate (%)")
+  ) +
+  scale_color_manual(values = c("Housing_Debt" = "blue", "Unemployment_Rate" = "gold")) +
+  labs(title = "The Economic Climate for Consumers in 2017 and 2018",
+       subtitle = "Comparison of Housing Debt and Unemployment Rate",
+       x = "Year",
+       y = "Housing Debt (%)") +
+  theme_minimal() +
+  theme(legend.title = element_blank())
+```
+
+## Circular Line Chart {#circular-line-chart}
+
+Versi melingkar dari grafik garis, sering digunakan untuk data musiman.
+
+![](images/clipboard-213922318.png){width="397"}
+
+```{r fig.height=5, fig.width=10, dpi=300}
+# Buat Data Simulasi
+set.seed(123)
+data_circular <- expand.grid(
+  Month = month.abb, 
+  Year = c(2014, 2015, 2016, 2017)
+) %>%
+  mutate(ER_Visits = runif(nrow(.), 1, 6))  # Simulasi data kunjungan IGD
+
+# Konversi Bulan ke Faktor agar sesuai urutan
+data_circular$Month <- factor(data_circular$Month, levels = month.abb)
+
+# Plot Circular Line Chart
+ggplot(data_circular, aes(x = Month, y = ER_Visits, group = Year, color = as.factor(Year))) +
+  geom_line(size = 1) +
+  scale_y_continuous(limits = c(0, 7)) +
+  coord_polar(start = 3.14) +  # Mengatur agar Januari dimulai dari atas
+  scale_color_manual(values = c("2014" = "blue", "2015" = "orange", "2016" = "gray", "2017" = "black")) +
+  labs(title = "Percent of ER Visits for the Flu (2014–2017)", 
+       subtitle = "Circular Line Chart Representation",
+       x = "", y = "Percent ER Visits", color = "Year") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(size = 10, face = "bold"),
+        legend.position = "top")
+```
+
+```{r fig.height=3.5, fig.width=10, dpi=300}
+# Buat Data Simulasi (Sama seperti sebelumnya)
+set.seed(123)
+data_line <- expand.grid(
+  Month = month.abb, 
+  Year = c(2014, 2015, 2016, 2017)
+) %>%
+  mutate(ER_Visits = runif(nrow(.), 1, 6))  # Simulasi data kunjungan IGD
+
+# Konversi Bulan ke Faktor agar sesuai urutan
+data_line$Month <- factor(data_line$Month, levels = month.abb)
+
+# Plot Line Chart Standar
+ggplot(data_line, aes(x = Month, y = ER_Visits, group = Year, color = as.factor(Year))) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +  # Tambahkan titik di setiap bulan
+  scale_y_continuous(limits = c(0, 7)) +
+  scale_color_manual(values = c("2014" = "blue", "2015" = "orange", "2016" = "gray", "2017" = "black")) +
+  labs(title = "Percent of ER Visits for the Flu (2014–2017)", 
+       subtitle = "Line Chart Representation",
+       x = "Month", y = "Percent ER Visits", color = "Year") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(size = 10, face = "bold", angle = 45, hjust = 1),
+        legend.position = "top")
+```
+
+## Slope Chart {#slope-chart}
+
+Menunjukkan perubahan data antara dua titik waktu.
+
+![](images/clipboard-1967735244.png){width="245"}
+
+```{r fig.height=3.5, fig.width=10, dpi=300}
+# Buat Data Simulasi
+set.seed(123)
+data_circular <- expand.grid(
+  Month = month.abb, 
+  Year = c(2014, 2015, 2016, 2017)
+) %>%
+  mutate(ER_Visits = runif(nrow(.), 1, 6))  # Simulasi data kunjungan IGD
+
+# Konversi Bulan ke Faktor agar sesuai urutan
+data_circular$Month <- factor(data_circular$Month, levels = month.abb)
+
+# Plot Circular Line Chart
+ggplot(data_circular, aes(x = Month, y = ER_Visits, group = Year, color = as.factor(Year))) +
+  geom_line(size = 1) +
+  scale_y_continuous(limits = c(0, 7)) +
+  coord_polar(start = 3.14) +  # Mengatur agar Januari dimulai dari atas
+  scale_color_manual(values = c("2014" = "blue", "2015" = "orange", "2016" = "gray", "2017" = "black")) +
+  labs(title = "Percent of ER Visits for the Flu (2014–2017)", 
+       subtitle = "Circular Line Chart Representation",
+       x = "", y = "Percent ER Visits", color = "Year") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(size = 10, face = "bold"),
+        legend.position = "top")
+```
+
+## Sparklines {#sparklines}
+
+Garis kecil yang menunjukkan tren singkat dalam dataset.
+
+![](images/clipboard-2076837143.png){width="207"}
+
+## Bump Chart {#bump-chart}
+
+Menampilkan perubahan peringkat suatu kategori seiring waktu.
+
+![](images/clipboard-808845619.png){width="498"}
+
+## Cycle Chart {#cycle-chart}
+
+**Cycle Chart** adalah grafik yang digunakan untuk **membandingkan pola data dalam unit waktu kecil (minggu, bulan, dll.) dalam jangka waktu multi-tahun**. Grafik ini berguna untuk **menampilkan tren musiman** dalam data.
+
+![](images/clipboard-3777843107.png){width="249"}
+
+## Area Chart {#area-chart}
+
+**Area Chart** adalah varian dari **line chart** di mana **area di bawah garis diisi dengan warna** untuk memberikan bobot visual yang lebih jelas pada data. Grafik ini digunakan untuk **menunjukkan tren perubahan nilai numerik dari waktu ke waktu**.
+
+![](images/clipboard-2125368945.png){width="213"}
+
+## Stacked Area Chart {#stacked-area-chart}
+
+![](images/clipboard-3655817444.png){width="209" height="209"}
+
+**Stacked Area Chart** adalah varian dari **area chart** yang digunakan untuk **menampilkan beberapa seri data secara simultan**, di mana setiap area saling ditumpuk sehingga nilai totalnya dapat terlihat dengan jelas. Grafik ini sering digunakan untuk **menunjukkan perubahan distribusi data seiring waktu**.
+
+## Streamgraph {#streamgraph}
+
+Menampilkan perubahan dalam data kategorikal dengan bentuk yang mengalir.
+
+![](images/clipboard-1563743455.png){width="209"}
+
+## Horizon Chart {#horizon-chart}
+
+**Horizon Chart** adalah varian dari **Area Chart** yang digunakan untuk menampilkan **data deret waktu dengan cara yang lebih padat dan efisien**. Grafik ini bekerja dengan **membagi area chart menjadi beberapa band horizontal**, lalu **menumpuknya untuk mengurangi ruang yang digunakan**.
+
+![](images/clipboard-1440192241.png){width="284"}
+
+## Gantt Chart {#gantt-chart}
+
+**Gantt Chart** adalah jenis grafik yang digunakan untuk **menampilkan jadwal, proses, atau durasi tugas** dengan **menggunakan batang horizontal**. Grafik ini sering digunakan dalam **manajemen proyek, shift kerja, dan pelacakan jadwal produksi**.
+
+![](images/clipboard-1815658534.png){width="294"}
+
+## Flow Charts and Timelines {#flow-chart}
+
+Flow Charts dan Timelines adalah dua jenis visualisasi yang digunakan untuk **menampilkan perubahan, proses, atau hierarki** secara kronologis atau langkah demi langkah.
+
+![](images/clipboard-1453682947.png){width="239"}
+
+## Connected Scatterplot {#connected-scatterplot}
+
+**Connected Scatterplot** adalah metode visualisasi yang digunakan untuk **menunjukkan hubungan antara dua deret waktu dalam satu grafik**, tanpa menggunakan **dual-axis line chart**.
+
+![](images/clipboard-3027502065.png){width="211"} ![](images/clipboard-131536693.png){width="419"}
+
+## Conclusion
+
+Ringkasan konsep visualisasi deret waktu.
+
+------------------------------------------------------------------------
+
+# **Distribusi** {#distribusi}
+
+## Histogram {#histogram}
+
+Visualisasi distribusi data berbasis frekuensi dalam bentuk batang.
+
+![](images/clipboard-1238374112.png){width="202"}
+
+## Pyramid Chart {#pyramid-chart}
+
+Digunakan untuk membandingkan distribusi kategori dua arah (misalnya populasi pria vs wanita).
+
+![](images/clipboard-4158192479.png){width="198"}
+
+## **Visualizing Statistical Uncertainty with Charts** {#statistical-uncertainty}
+
+Metode visualisasi ketidakpastian statistik dalam data.
+
+### Error Bars
+
+![](images/clipboard-955379841.png){width="172"}
+
+### Confidence Interval
+
+![](images/clipboard-1134882823.png){width="229"}
+
+### Gradient Chart
+
+![](images/clipboard-1119979853.png){width="293"}
+
+### Fan Charts
+
+![](images/clipboard-673330419.png){width="254" height="201"}
+
+## Box-and-Whisker Plot {#boxplot}
+
+Menampilkan lima ringkasan data: minimum, Q1, median, Q3, dan maksimum.
+
+![](images/clipboard-3133313176.png){width="222"}
+
+## Candlestick Chart {#candlestick-chart}
+
+Digunakan dalam analisis keuangan untuk menunjukkan harga tertinggi, terendah, pembukaan, dan penutupan.
+
+![](images/clipboard-52418158.png){width="318"}
+
+## Violin Chart {#violin-chart}
+
+Kombinasi antara boxplot dan density plot untuk memahami distribusi data.
+
+![](images/clipboard-3558018633.png){width="194" height="194"}
+
+## Ridgeline Plot {#ridgeline-plot}
+
+Menunjukkan distribusi data yang saling tumpang tindih dalam satu grafik.
+
+![](images/clipboard-3261482838.png){width="283"}
+
+## **Showing the Data** {#uncertainty}
+
+### Strip Plot
+
+![](images/clipboard-2235031614.png){width="177"}
+
+### Beeswarm Plot
+
+![](images/clipboard-1465558755.png){width="177"} ![](images/clipboard-812578471.png){width="227"}
+
+### Wilkinson Dot Plots and Wheat Plot
+
+![](images/clipboard-2521164228.png){width="161" height="89"} ![](images/clipboard-2082311084.png){width="315"}
+
+### Raincloud Plot
+
+![](images/clipboard-67481014.png){width="327"}
+
+## Stem-and-Leaf Plot {#stem-leaf}
+
+Digunakan untuk menampilkan distribusi angka dengan tetap mempertahankan nilai aslinya.
+
+![](images/clipboard-1702212809.png)
+
+## Conclusion
+
+Ringkasan konsep visualisasi distribusi data.
+
+------------------------------------------------------------------------
+
+# **Geospasial** {#geospasial}
+
+## Choropleth Map {#choropleth-map}
+
+Peta yang menggunakan warna untuk mewakili nilai numerik dalam wilayah geografis.
+
+![](images/clipboard-2376210583.png){width="313"}
+
+## Cartogram {#cartogram}
+
+Peta di mana ukuran geografis diubah berdasarkan nilai data.
+
+![](images/clipboard-3681442694.png){width="237" height="165"} ![](images/clipboard-4115455026.png){width="392"}
+
+## Proportional Symbol and Dot Density Maps {#dot-density}
+
+-   **Proportional symbol map**: menggunakan simbol dengan ukuran berbeda untuk mewakili nilai data.
+
+    ![](images/clipboard-3951358214.png){width="300"}
+
+-   **Dot density map**: menyebarkan titik dalam area geografis untuk menunjukkan kepadatan.
+
+    ![](images/clipboard-408315568.png){width="329"}
+
+## Flow Map {#flow-map}
+
+Menunjukkan pergerakan data (misalnya migrasi populasi, aliran lalu lintas) dalam peta.
+
+![](images/clipboard-3581638534.png){width="507"}
+
+## Conclusion
+
+Ringkasan konsep visualisasi geospasial.

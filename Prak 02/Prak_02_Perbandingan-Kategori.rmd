@@ -903,23 +903,6 @@ ggplot(sankey_data, aes(axis1 = Source, axis2 = Target, y = Value)) +
   theme(legend.position = "none")
 ```
 
-```{r fig.height=5, fig.width=10, dpi=300}
-library(networkD3)
-
-nodes <- data.frame(name = unique(c(sankey_data$Source, sankey_data$Target)))
-links <- data.frame(
-  source = match(sankey_data$Source, nodes$name) - 1,
-  target = match(sankey_data$Target, nodes$name) - 1,
-  value = sankey_data$Value
-)
-
-sankeyNetwork(Links = links, Nodes = nodes,
-              Source = "source", Target = "target",
-              Value = "value", NodeID = "name",
-              fontSize = 12, nodeWidth = 30)
-
-```
-
 ## Waterfall Chart {#waterfall}
 
 Menunjukkan perubahan nilai dalam urutan kumulatif.
