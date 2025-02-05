@@ -43,7 +43,8 @@ install_load <- function (package1, ...)  {
 }
 
 install_load("knitr","ggplot2","viridis","dplyr","DT","stringr","scales","tidyr",
-             "waffle","ggtext","lubridate","reshape2","calendR","plotly","ggforce")
+             "waffle","ggtext","lubridate","reshape2","calendR","plotly","ggforce"
+             ,"ggalluvial","networkD3")
 
 # Set wd 
 opts_knit$set(root.dir = normalizePath("./"))
@@ -876,6 +877,46 @@ Diagram aliran yang menunjukkan hubungan antar kategori.
 ![](images/clipboard-4264207325.png){width="259"} ![](images/clipboard-2578743022.png){width="254"}
 
 ```{r fig.height=5, fig.width=10, dpi=300}
+# Contoh data untuk aliran dukungan keuangan
+sankey_data <- data.frame(
+  Source = c("Germany", "Germany", "Germany", "Germany", "Germany", 
+             "UK", "UK", "UK", "UK", "UK", 
+             "US", "US", "US", "US", "US"),
+  Target = c("Sub-Saharan Africa", "Southern and Central Asia", "Other Asia and Oceania", 
+             "Middle East and North Africa", "Europe",
+             "Sub-Saharan Africa", "Southern and Central Asia", "Other Asia and Oceania", 
+             "Latin America and Caribbean", "Europe",
+             "Sub-Saharan Africa", "Southern and Central Asia", "Middle East and North Africa", 
+             "Latin America and Caribbean", "Europe"),
+  Value = c(10, 15, 20, 30, 25, 12, 18, 14, 28, 28, 22, 16, 19, 23, 20)
+)
+
+# Plot Sankey Diagram menggunakan ggalluvial
+ggplot(sankey_data, aes(axis1 = Source, axis2 = Target, y = Value)) +
+  geom_alluvium(aes(fill = Source), width = 1/12) +
+  geom_stratum(width = 1/12, fill = "gray") +
+  geom_text(stat = "stratum", aes(label = after_stat(stratum)), size = 5) +
+  theme_minimal() +
+  labs(title = "Aliran Dukungan Keuangan",
+       subtitle = "Dari Jerman, Inggris, dan AS ke Berbagai Wilayah Dunia",
+       x = NULL, y = "Persentase Dukungan") +
+  theme(legend.position = "none")
+```
+
+```{r fig.height=5, fig.width=10, dpi=300}
+library(networkD3)
+
+nodes <- data.frame(name = unique(c(sankey_data$Source, sankey_data$Target)))
+links <- data.frame(
+  source = match(sankey_data$Source, nodes$name) - 1,
+  target = match(sankey_data$Target, nodes$name) - 1,
+  value = sankey_data$Value
+)
+
+sankeyNetwork(Links = links, Nodes = nodes,
+              Source = "source", Target = "target",
+              Value = "value", NodeID = "name",
+              fontSize = 12, nodeWidth = 30)
 
 ```
 
