@@ -177,29 +177,7 @@ Menunjukkan perubahan data antara dua titik waktu.
 ![](images/clipboard-1967735244.png){width="245"}
 
 ```{r fig.height=3.5, fig.width=10, dpi=300}
-# Buat Data Simulasi
-set.seed(123)
-data_circular <- expand.grid(
-  Month = month.abb, 
-  Year = c(2014, 2015, 2016, 2017)
-) %>%
-  mutate(ER_Visits = runif(nrow(.), 1, 6))  # Simulasi data kunjungan IGD
 
-# Konversi Bulan ke Faktor agar sesuai urutan
-data_circular$Month <- factor(data_circular$Month, levels = month.abb)
-
-# Plot Circular Line Chart
-ggplot(data_circular, aes(x = Month, y = ER_Visits, group = Year, color = as.factor(Year))) +
-  geom_line(size = 1) +
-  scale_y_continuous(limits = c(0, 7)) +
-  coord_polar(start = 3.14) +  # Mengatur agar Januari dimulai dari atas
-  scale_color_manual(values = c("2014" = "blue", "2015" = "orange", "2016" = "gray", "2017" = "black")) +
-  labs(title = "Percent of ER Visits for the Flu (2014–2017)", 
-       subtitle = "Circular Line Chart Representation",
-       x = "", y = "Percent ER Visits", color = "Year") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(size = 10, face = "bold"),
-        legend.position = "top")
 ```
 
 ## Sparklines {#sparklines}
@@ -208,11 +186,19 @@ Garis kecil yang menunjukkan tren singkat dalam dataset.
 
 ![](images/clipboard-2076837143.png){width="207"}
 
+```{r fig.height=3.5, fig.width=10, dpi=300}
+
+```
+
 ## Bump Chart {#bump-chart}
 
 Menampilkan perubahan peringkat suatu kategori seiring waktu.
 
 ![](images/clipboard-808845619.png){width="498"}
+
+```{r fig.height=3.5, fig.width=10, dpi=300}
+
+```
 
 ## Cycle Chart {#cycle-chart}
 
@@ -220,11 +206,19 @@ Menampilkan perubahan peringkat suatu kategori seiring waktu.
 
 ![](images/clipboard-3777843107.png){width="249"}
 
+```{r fig.height=3.5, fig.width=10, dpi=300}
+
+```
+
 ## Area Chart {#area-chart}
 
 **Area Chart** adalah varian dari **line chart** di mana **area di bawah garis diisi dengan warna** untuk memberikan bobot visual yang lebih jelas pada data. Grafik ini digunakan untuk **menunjukkan tren perubahan nilai numerik dari waktu ke waktu**.
 
 ![](images/clipboard-2125368945.png){width="213"}
+
+```{r fig.height=3.5, fig.width=10, dpi=300}
+
+```
 
 ## Stacked Area Chart {#stacked-area-chart}
 
