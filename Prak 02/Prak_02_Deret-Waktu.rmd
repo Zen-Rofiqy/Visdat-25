@@ -363,10 +363,6 @@ Flow Charts dan Timelines adalah dua jenis visualisasi yang digunakan untuk **me
 
 ![](images/clipboard-3027502065.png){width="211"} ![](images/clipboard-131536693.png){width="419"}
 
-```{r fig.height=3.5, fig.width=10, dpi=300}
-
-```
-
 ## Conclusion
 
 Ringkasan konsep visualisasi deret waktu.
