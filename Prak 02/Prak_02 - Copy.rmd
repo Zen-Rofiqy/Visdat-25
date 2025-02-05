@@ -5,7 +5,7 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document:
     self_contained: true
-    thumbnails: false
+    thumbnails: true
     lightbox: true
     gallery: true
     highlight: tango
@@ -44,27 +44,32 @@ install_load <- function (package1, ...)  {
 
 install_load("knitr","ggplot2","viridis","dplyr","DT")
 
-# Change \ to /
-path <- function() gsub  ( "\\\\",  "/",  readClipboard ()  )
-
-# Set WD
-opts_knit$set(root.dir = "C:/Users/Fathan/Documents/Obsidian Vault/2. Kuliah/Smt 7 & 8/Visdat-25/Prak 02")
+# Set wd 
+opts_knit$set(root.dir = normalizePath("./"))
 ```
 
-```{r}
-setwd("C:/Users/Fathan/Documents/Obsidian Vault/2. Kuliah/Smt 7 & 8/Visdat-25/Prak 02")
-```
+# Materi Praktikum
 
-# **Materi Praktikum**
+![](images/clipboard-4160132647.png){width="450"} ![](images/clipboard-2307206920.png){width="164"}
 
-![](images/clipboard-4160132647.png){width="500px" style="display: block; margin: auto;"}
+Materi praktikum ini merujuk pada **buku *Better Data Visualizations* karya Jonathan Schwabish**, yang membahas berbagai teknik visualisasi data untuk menyampaikan informasi secara lebih efektif dan intuitif.
 
-Materi yang akan dibahas dalam praktikum ini adalah:
+Dalam praktikum ini, kita akan mengeksplorasi beberapa jenis visualisasi data utama, yaitu:
 
 -   [Perbandingan Kategori](#perbandingan-kategori)
 -   [Deret Waktu](#deret-waktu)
 -   [Distribusi](#distribusi)
 -   [Geospasial](#geospasial)
+
+## Data
+
+Data yang akan digunakan adalah
+
+```{r}
+# Data
+data_ev <- read.csv("Data/EV_Population.csv")
+head(data_ev)
+```
 
 ------------------------------------------------------------------------
 
@@ -75,6 +80,11 @@ Materi yang akan dibahas dalam praktikum ini adalah:
 Diagram batang digunakan untuk membandingkan kategori.
 
 ![](images/clipboard-792151592.png){width="169"}
+
+```{r fig.height=5, fig.width=11.5, dpi=300}
+ggplot(data_ev, aes(Make, fill=Electric.Vehicle.Type)) + 
+  geom_bar() + coord_flip()
+```
 
 ## Paired Bar {#paired-bar}
 
@@ -248,7 +258,7 @@ Digunakan untuk membandingkan distribusi kategori dua arah (misalnya populasi pr
 
 ![](images/clipboard-4158192479.png){width="198"}
 
-## Visualizing Statistical Uncertainty with Charts {#statistical-uncertainty}
+## **Visualizing Statistical Uncertainty with Charts** {#statistical-uncertainty}
 
 Metode visualisasi ketidakpastian statistik dalam data.
 
@@ -292,7 +302,7 @@ Menunjukkan distribusi data yang saling tumpang tindih dalam satu grafik.
 
 ![](images/clipboard-3261482838.png){width="283"}
 
-## Showing the Data {#uncertainty}
+## **Showing the Data** {#uncertainty}
 
 ### Strip Plot
 
