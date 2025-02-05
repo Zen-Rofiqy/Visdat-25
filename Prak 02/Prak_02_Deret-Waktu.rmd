@@ -44,7 +44,7 @@ install_load <- function (package1, ...)  {
 
 install_load("knitr","ggplot2","viridis","dplyr","DT","stringr","scales","tidyr",
              "waffle","ggtext","lubridate","reshape2","calendR","plotly","ggforce"
-             ,"ggalluvial","networkD3","ggbump")
+             ,"ggalluvial","networkD3","ggbump","ggridges")
 
 # Set wd 
 opts_knit$set(root.dir = normalizePath("./"))
@@ -315,35 +315,11 @@ Menampilkan perubahan dalam data kategorikal dengan bentuk yang mengalir.
 
 ![](images/clipboard-1563743455.png){width="209"}
 
-```{r fig.height=3.5, fig.width=10, dpi=300}
-# Buat Data Simulasi
-set.seed(123)
-data <- data.frame(
-  Month = rep(c("JAN", "FE", "MA", "AP"), each = 100),
-  Value = c(rnorm(100, mean = 50, sd = 15),
-            rnorm(100, mean = 55, sd = 20),
-            rnorm(100, mean = 45, sd = 18),
-            rnorm(100, mean = 60, sd = 22)),
-  Category = rep(c("A", "B", "C"), times = c(130, 130, 140))
-)
-
-# Plot Ridgeline Chart (Joyplot)
-ggplot(data, aes(x = Value, y = Month, fill = Category)) +
-  geom_density_ridges(scale = 2, alpha = 0.8) +  # Joyplot dengan smoothing
-  scale_fill_manual(values = c("#1C1F38", "#E63946", "#F76C5E")) +  # Warna sesuai contoh
-  theme_minimal() +
-  labs(title = "Ridgeline Plot (Joyplot)", x = "", y = "")
-```
-
 ## Horizon Chart {#horizon-chart}
 
 **Horizon Chart** adalah varian dari **Area Chart** yang digunakan untuk menampilkan **data deret waktu dengan cara yang lebih padat dan efisien**. Grafik ini bekerja dengan **membagi area chart menjadi beberapa band horizontal**, lalu **menumpuknya untuk mengurangi ruang yang digunakan**.
 
 ![](images/clipboard-1440192241.png){width="284"}
-
-```{r fig.height=3.5, fig.width=10, dpi=300}
-
-```
 
 ## Gantt Chart {#gantt-chart}
 
@@ -352,7 +328,27 @@ ggplot(data, aes(x = Value, y = Month, fill = Category)) +
 ![](images/clipboard-1815658534.png){width="294"}
 
 ```{r fig.height=3.5, fig.width=10, dpi=300}
+# Buat dataset proyek simulasi
+gantt_data <- data.frame(
+  Task = factor(paste("Task", 1:10), levels = rev(paste("Task", 1:10))),  # Nama tugas (dibalik untuk urutan yang lebih baik)
+  Start = seq(1, 40, by = 4),  # Hari mulai
+  Duration = c(3, 5, 6, 4, 8, 7, 6, 5, 4, 3)  # Durasi dalam hari
+)
 
+# Tambahkan kolom End (Hari selesai)
+gantt_data <- gantt_data %>%
+  mutate(End = Start + Duration)
+
+# Plot Gantt Chart
+ggplot(gantt_data, aes(y = Task, xmin = Start, xmax = End, fill = Task)) +
+  geom_rect(aes(xmin = Start, xmax = End, ymin = as.numeric(Task) - 0.4, ymax = as.numeric(Task) + 0.4),
+            color = "black") +
+  scale_fill_viridis_d() +  
+  labs(title = "Gantt Chart",
+       x = "Start on Day",
+       y = "Task") +
+  theme_minimal() +
+  theme(legend.position = "none")
 ```
 
 ## Flow Charts and Timelines {#flow-chart}
