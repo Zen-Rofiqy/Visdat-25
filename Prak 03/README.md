@@ -1,4 +1,4 @@
-# Praktikum 2 visualisasi data
+# Praktikum 3 visualisasi data
 
 ## Materi
 

@@ -2,6 +2,7 @@
 
 ## Materi
 
+- **[Buku Praktikum](https://drive.google.com/file/d/151Zu2OqNlu1mJ5UIGeDMvZyXSwePQtOi/view?usp=sharing)**
 - **[Slide Kuliah](https://drive.google.com/drive/folders/1RRSBQVpkJQO836pm7BQZ-fIHg9wj5UTo)**
 - **[Fundamentals of Data Visualization](https://clauswilke.com/dataviz/)**
 
