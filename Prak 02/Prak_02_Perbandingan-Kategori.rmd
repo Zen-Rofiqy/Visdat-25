@@ -148,7 +148,7 @@ ggsave("Chart/01_Bar.png", chart, dpi = 300, height = 5, width = 10)
 ```{r fig.height=5, fig.width=10, dpi=300}
 ggplot(data_ev, aes(x = Make)) +
   # Bar chart
-  geom_bar(fill = "steelblue")
+  geom_bar(fill = "#f1bb68")
 ```
 
 ```{r fig.height=5, fig.width=10, dpi=300}
