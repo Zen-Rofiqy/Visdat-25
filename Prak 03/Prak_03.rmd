@@ -42,231 +42,145 @@ install_load <- function (package1, ...)  {
    } 
 }
 
-install_load("ggplot2","viridis","dplyr","DT")
-# install.packages("ggplot2"); library(ggplot2)
-# install.packages("viridis"); library(viridis)
-# install.packages("dplyr"); library(dplyr)
-# webshot::install_phantomjs()
-
-path <- function() gsub  ( "\\\\",  "/",  readClipboard ()  )
+# Set wd 
+opts_knit$set(root.dir = normalizePath("./"))
 ```
 
-```{r , include=FALSE, echo=FALSE, warning=FALSE, message = FALSE}
-#Set Working Directory
-require("knitr")
-opts_knit$set(root.dir = "C:/Users/Fathan/Documents/Obsidian Vault/2. Kuliah/Smt 7 & 8/Visdat-25/Prak 02")
-```
+# Materi Praktikum
 
-```{r}
-setwd("C:/Users/Fathan/Documents/Obsidian Vault/2. Kuliah/Smt 7 & 8/Visdat-25/Prak 02")
-```
+# **Praktikum Pekan 3: Visualisasi Data**
 
-# Data
+![](images/clipboard-4160132647.png){width="450"} ![](images/clipboard-2307206920.png){width="164"}
 
-## Import Data
+Materi praktikum ini mengacu pada **buku *Better Data Visualizations* karya Jonathan Schwabish**, yang membahas berbagai teknik visualisasi data untuk menyampaikan informasi secara lebih efektif.
 
-> Data Susenas Provinsi Jawa Barat tahun 2020
+Dalam pekan ini, kita akan mengeksplorasi beberapa teknik visualisasi untuk memahami hubungan antar variabel, proporsi dalam data, analisis data kualitatif, serta penyajian data dalam tabel.
 
-```{r}
-susenas <- read.csv("Data/Susenas Jawa Barat 2020.csv", sep = ";")
-head(susenas)
-```
+## **Navigasi Materi**
 
-```{r}
-namakabupaten <- read.csv("Data/nama kabupaten.csv",sep = ",")
-head(namakabupaten)
-```
+-   [Relationship](#relationship)
+-   [Part-to-Whole](#part-to-whole)
+-   [Qualitative](#qualitative)
+-   [Tables](#tables)
 
-## Data P**reprocessing**
+------------------------------------------------------------------------
 
-```{r}
-datakab <- namakabupaten[
-  namakabupaten$nama_prov == "JAWA BARAT", 
-  c("nama_kab", "kab")
-]
-colnames(datakab) <- c("Nama Kabupaten", "KabKota")
+# **Relationship** {#relationship}
 
-data <- merge(susenas, datakab, by="KabKota")
-head(data)
-```
+Hubungan antar variabel dalam data dapat divisualisasikan menggunakan berbagai teknik yang membantu memahami korelasi dan pola tersembunyi.
 
-## Data Quality Checking
+## Scatterplot {#scatterplot}
 
-```{r}
-sum(is.na(data))
-```
+Scatterplot digunakan untuk menunjukkan hubungan antara dua variabel numerik.
 
-```{r}
-str(data)
-```
+## Parallel Coordinates Plot {#parallel-coordinates-plot}
 
-```{r}
-table(data[data$`Nama Kabupaten` == "BANDUNG", ]$KabKota)
-```
+Visualisasi ini digunakan untuk menganalisis hubungan beberapa variabel numerik sekaligus.
 
-# Bar Chart
+## Radar Charts {#radar-charts}
 
-## Sederhana
+Sering digunakan untuk membandingkan beberapa kategori dengan beberapa atribut dalam satu grafik.
 
-```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(Status_Rawan)) + 
-  geom_bar()
-```
+## Chord Diagram {#chord-diagram}
 
-> **Dengan Warna default**
+Diagram yang digunakan untuk menunjukkan hubungan antara beberapa kategori yang saling berhubungan.
 
-```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(Status_Rawan, fill=Status_Rawan)) + 
-  geom_bar()
-```
+## Arc Chart {#arc-chart}
 
-> **Warna Viridis**
+Menampilkan koneksi antar elemen dalam dataset dengan menggunakan kurva.
 
-```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(Status_Rawan, fill=Status_Rawan)) + 
-  geom_bar() + 
-  scale_fill_viridis(discrete = T)
-```
+## Correlation Matrix {#correlation-matrix}
 
-> **Warna manual**
+Digunakan untuk menunjukkan hubungan antara banyak variabel dalam bentuk matriks.
 
-```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(Status_Rawan, fill=Status_Rawan)) + 
-  geom_bar() + 
-  scale_fill_manual(values = c("#FF6961", "#8CD47E"))
-```
+## Network Diagrams {#network-diagrams}
 
-## Banyak Kategori
+Visualisasi hubungan antar entitas dalam bentuk jaringan.
 
-```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + 
-  geom_bar() + 
-  scale_fill_viridis(discrete = T)
-```
+## Tree Diagrams {#tree-diagrams}
 
-> **Ubah angle text**
+Menampilkan hubungan hierarkis dalam data.
 
-```{r fig.height=5, fig.width=10, dpi=300}
-ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + 
-  geom_bar() + 
-  scale_fill_viridis(discrete = T) + 
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
-```
+------------------------------------------------------------------------
 
-```{r fig.height=5, fig.width=10, dpi=300}
-ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + 
-  geom_bar() + 
-  scale_fill_viridis(discrete = T) + 
-  theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust = 1))
-```
+# **Part-to-Whole** {#part-to-whole}
 
-> **Hapus legend**
+Teknik visualisasi ini digunakan untuk menunjukkan bagaimana suatu bagian berkontribusi terhadap keseluruhan.
 
-```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + 
-  geom_bar() + 
-  scale_fill_viridis(discrete = T) + 
-  theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust = 1), 
-        legend.position = "none") + ylab("Frekuensi")
-```
+## Pie Charts {#pie-charts}
 
-> **Rotasi Barchart**
+Diagram lingkaran yang digunakan untuk menunjukkan distribusi persentase suatu kategori.
 
-```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(y = `Nama Kabupaten`, fill=`Nama Kabupaten`)) + 
-  geom_bar() + 
-  scale_fill_viridis(discrete = T) + 
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), 
-        legend.position = "none") + 
-  xlab("Frekuensi")
-```
+## Treemap {#treemap}
 
-```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(`Nama Kabupaten`, fill=`Nama Kabupaten`)) + 
-  geom_bar() + 
-  scale_fill_viridis(discrete = T) + 
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), 
-        legend.position = "none") + 
-  ylab("Frekuensi") + 
-  coord_flip() + 
-  ggtitle("Diagram Batang Kabupaten")
-```
+Menampilkan hierarki data dalam bentuk persegi panjang bersarang.
 
-# Grouped Bar Chart
+## Sunburst Diagram {#sunburst-diagram}
 
-```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + 
-  geom_bar(position="dodge")
-```
+Mirip dengan treemap, tetapi berbentuk melingkar untuk menunjukkan hierarki.
 
-## Stacked Barchart
+## Nightingale Chart {#nightingale-chart}
 
-```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + 
-  geom_bar(position="stack")
-```
+Variasi dari pie chart yang digunakan untuk menampilkan data dalam bentuk radial.
 
-## Stacked Barchart 100%
+## Voronoi Diagram {#voronoi-diagram}
 
-```{r fig.height=3.5, fig.width=10, dpi=300}
-ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + 
-  geom_bar(position="fill")
-```
+Membagi ruang menjadi wilayah berdasarkan kedekatan titik-titik data.
 
-```{r}
-percentDatadaerah <- data %>% 
-  group_by(`Nama Kabupaten`) %>% 
-  count(Status_Rawan) %>% 
-  mutate(ratio=scales::percent(n/sum(n)))
+------------------------------------------------------------------------
 
-head(percentDatadaerah)
-```
+# **Qualitative** {#qualitative}
 
-```{r fig.height=5, fig.width=7, dpi=300}
-ggplot(data, aes(x=`Nama Kabupaten`, fill=Status_Rawan)) + 
-  geom_bar(position="fill") + 
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) + 
-  coord_flip() +
-  geom_text(data=percentDatadaerah, aes(y=n, label=ratio),
-            color="white", position=position_fill(vjust=0.5), size = 3.5)
-```
+Visualisasi data kualitatif membantu menyampaikan informasi yang lebih deskriptif.
 
-# Lollipop Chart
+## Icons {#icons}
 
-```{r}
-percentDatadaerah_rawan <- percentDatadaerah %>%
-  filter(Status_Rawan == "Rawan") %>%
-  as.data.frame()
-head(percentDatadaerah_rawan)
-```
+Menggunakan ikon sebagai bentuk representasi data.
 
-```{r}
-ggplot(percentDatadaerah_rawan, aes(x=`Nama Kabupaten`, y=n)) + 
-  geom_segment(aes(x=`Nama Kabupaten`, xend=`Nama Kabupaten`, y=0, yend=n)) +
-  geom_point() + coord_flip()
-```
+## Word Clouds and Specific Words {#word-clouds}
 
-```{r}
-ggplot(percentDatadaerah_rawan, aes(x = `Nama Kabupaten`, y = n)) + geom_segment(aes(x = `Nama Kabupaten`, xend = `Nama Kabupaten`, y = 0, yend = n)) + geom_point() + coord_flip() + geom_point(size = 4, pch = 21, bg = 5, col = 6)
-```
+Menampilkan distribusi kata dalam teks berdasarkan frekuensi penggunaannya.
 
-```{r}
-ggplot(percentDatadaerah_rawan, aes(x = `Nama Kabupaten`, y = n)) + geom_segment(aes(x = `Nama Kabupaten`, xend = `Nama Kabupaten`, y = 0, yend = n), color="grey", lwd=1.5) + geom_point() + coord_flip() + geom_point(size = 5, pch = 21, bg = 6, col = 1) + theme_classic()
-```
+## Word Trees {#word-trees}
 
-```{r}
-ggplot(percentDatadaerah_rawan, aes(x = `Nama Kabupaten`, y = n)) + geom_segment(aes(x = `Nama Kabupaten`, xend = `Nama Kabupaten`, y = 0, yend = n), color="grey", lwd=1.5) + geom_point() + coord_flip() + geom_point(size = 5, pch = 21, bg = 6, col = 1) + theme_classic()
-```
+Menampilkan struktur hierarki dari kata atau frasa dalam teks.
 
-```{r}
-ggplot(percentDatadaerah_rawan, aes(x = `Nama Kabupaten`, y = n)) + geom_segment(aes(x = `Nama Kabupaten`, xend = `Nama Kabupaten`, y = 0, yend = n), color="grey", lwd=1.5) + geom_point() + coord_flip() + geom_point(size = 5, pch = 21, bg = 6, col = 1) + geom_text(aes(label = n), color = "white", size = 2) + theme_classic() 
-```
+## Specific Words {#specific-words}
 
-```{r}
-x = reorder(percentDatadaerah_rawan$`Nama Kabupaten`, percentDatadaerah_rawan$n)
-x
-```
+Menyoroti kata-kata spesifik dalam teks yang memiliki makna penting.
 
-```{r}
-ggplot(percentDatadaerah_rawan, aes(x = reorder(`Nama Kabupaten`, n), y = n)) + geom_segment(aes(xend = `Nama Kabupaten`, y = 0, yend = n), color="grey", lwd=1.5) + geom_point() + coord_flip() + geom_point(size = 5, pch = 21, bg = 6, col = 1) + geom_text(aes(label = n), color = "white", size = 2) + theme_classic()
-```
+## Quotes {#quotes}
+
+Menampilkan kutipan dengan cara yang lebih visual dan menarik.
+
+## Coloring Phrases {#coloring-phrases}
+
+Menggunakan warna untuk menyoroti kata atau frasa penting dalam teks.
+
+## Matrices and Lists {#matrices-lists}
+
+Struktur tabel dan daftar untuk merapikan data kualitatif.
+
+------------------------------------------------------------------------
+
+# **Tables** {#tables}
+
+Tabel digunakan untuk menyajikan data numerik dan kategorikal dalam format yang mudah dibaca.
+
+## The Ten Guidelines of Better Tables {#better-tables}
+
+Sepuluh prinsip utama dalam mendesain tabel yang lebih baik.
+
+## Demonstration: A Basic Data Table Redesign {#basic-table-redesign}
+
+Contoh perbaikan desain tabel dasar agar lebih mudah dipahami.
+
+## Demonstration: A Regression Table Redesign {#regression-table-redesign}
+
+Contoh penyajian hasil regresi dalam format tabel yang lebih efektif.
+
+------------------------------------------------------------------------
+
+## **Kesimpulan**
+
+Pada praktikum ini, kita telah membahas berbagai teknik visualisasi untuk menunjukkan hubungan antar variabel, distribusi bagian ke keseluruhan, data kualitatif, serta penyajian tabel yang lebih efektif. Pemilihan jenis visualisasi yang tepat bergantung pada karakteristik data dan tujuan analisis yang ingin dicapai.
