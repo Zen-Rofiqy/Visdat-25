@@ -105,28 +105,34 @@ Hubungan antar variabel dalam data dapat divisualisasikan menggunakan berbagai t
 
 Scatterplot digunakan untuk menunjukkan hubungan antara dua variabel numerik.
 
-```{r fig.height=5, fig.width=11.5, dpi=300}
+```{r fig.height=5, fig.width=8, dpi=300}
 chart <-
-ggplot(data_cars, 
-       aes(x = cc, y = mpg, color = factor(cyl), shape = factor(trans), size = hp)) +
+ggplot(data_cars,
+       aes(x = cc, y = mpg, 
+           fill = factor(cyl), color = factor(cyl), 
+           shape = factor(trans), size = hp)) +  
   # Scatterplot
-  geom_point() +  
+  geom_point(stroke = 1, alpha = 0.5) +  
+  
+  scale_shape_manual(values = c(21, 23)) +
+  scale_size_continuous(range = c(1, 10)) +
   
   # Setting 
   labs(title = "Efek Silinder & Transmisi terhadap Efisiensi BBM",
        subtitle = "Ukuran plot mengartikan tenaga (hp)",
        x = "Kapasitas Mesin (cc)",
        y = "← Boros          Efisiensi BBM          Irit →",
-       color = "Jumlah Silinder",
-       shape = "Transmisi") +
+       color = "Jumlah Silinder") +
   
   guides(
-    size = "none", # Hapus legend size(hp)
+    size = "none", 
+    fill = "none",
     shape = guide_legend(title = NULL)
   ) + 
   
-  theme_minimal(base_size = 40) +
+  theme_minimal(base_size = 35) + # Global Font size
   theme(
+    axis.title.y = element_text(size = 30, face = "bold"),
     axis.text.y = element_text(hjust = 1, face = "bold", 
                                margin = margin(r = 1)),
     plot.title = element_text(hjust = 0, face = "bold"),
@@ -150,7 +156,7 @@ ggplot(data_cars,
 chart
 
 # Simpan Chart
-ggsave("Chart/01_Scatterplot.png", chart, dpi = 300, height = 5, width = 10)
+ggsave("Chart/01_Scatterplot.png", chart, dpi = 300, height = 5, width = 9)
 ```
 
 ## Parallel Coordinates Plot {#parallel-coordinates-plot}
