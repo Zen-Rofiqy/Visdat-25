@@ -46,6 +46,11 @@ install_load("knitr","ggplot2","viridis","dplyr","DT")
 
 # Set wd 
 opts_knit$set(root.dir = normalizePath("./"))
+
+# Folder Chart
+if (!dir.exists("Chart")) {
+  dir.create("Chart")
+}
 ```
 
 # Materi Praktikum
@@ -93,12 +98,35 @@ Hubungan antar variabel dalam data dapat divisualisasikan menggunakan berbagai t
 Scatterplot digunakan untuk menunjukkan hubungan antara dua variabel numerik.
 
 ```{r fig.height=5, fig.width=11.5, dpi=300}
-ggplot(data_cars, aes(x = cc, y = hp)) +
-  geom_point(color = "blue") +  # Titik berwarna biru
-  labs(title = "Hubungan Displacement (cc) dengan Horsepower",
-       x = "Displacement (cc)",
-       y = "Horsepower") +
-  theme_minimal()
+chart <-
+ggplot(data_cars, aes(x = cc, y = mpg, color = factor(cyl), shape = factor(am))) +
+  # Scatterplot
+  geom_point(size = 3) +  
+  
+  # Setting 
+  labs(title = "Efek Silinder & Transmisi terhadap Efisiensi BBM",
+       subtitle = "(Semakin Rendah mpg, Semakin Boros)",
+       x = "Kapasitas Mesin (cc)",
+       y = "Efisiensi BBM     Irit",
+       color = "Jumlah Silinder",
+       shape = "Transmisi") +
+  
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 8, hjust = 1, face = "bold", 
+                                   margin = margin(r = 1)),
+        plot.title = element_text(hjust = 0, size = 14, face = "bold"),
+        plot.subtitle = element_text(hjust = -0.05, size = 8),
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        axis.line = element_line(linewidth = 0.5, colour = "black")
+  )
+
+chart
+
+# Simpan Chart
+ggsave("Chart/01_Scatterplot.png", chart, dpi = 300, height = 5, width = 10)
 ```
 
 ## Parallel Coordinates Plot {#parallel-coordinates-plot}
