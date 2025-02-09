@@ -1,0 +1,320 @@
+---
+title: "Prak 03 Visdat"
+author: "Angga Fathan Rofiqy (G1401211006)"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    self_contained: true
+    thumbnails: false
+    lightbox: true
+    gallery: true
+    highlight: tango
+    code_folding: show
+    toc_depth: 5
+    number_sections: false
+    theme: flatly
+    toc: yes
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+    fig_caption: true
+---
+
+```{r setup, include=FALSE, echo=FALSE, warning=FALSE, message = FALSE}
+#                      -=( Install & Load Package Function )=-
+install_load <- function (package1, ...)  {   
+
+   # convert arguments to vector
+   packages <- c(package1, ...)
+
+   # start loop to determine if each package is installed
+   for(package in packages){
+
+       # if package is installed locally, load
+       if(package %in% rownames(installed.packages()))
+          do.call('library', list(package))
+
+       # if package is not installed locally, download, then load
+       else {
+          install.packages(package)
+          do.call("library", list(package))
+       }
+   } 
+}
+
+install_load("knitr","ggplot2","viridis","dplyr","DT","showtext","ggrepel")
+
+# Set wd 
+opts_knit$set(root.dir = normalizePath("./"))
+
+# Folder Chart
+if (!dir.exists("Chart")) {
+  dir.create("Chart")
+}
+
+# Add Google Fonts 
+font_add_google("Lato", "lato")
+showtext_auto()
+```
+
+# Materi Praktikum
+
+# **Praktikum Pekan 3: Visualisasi Data**
+
+![](images/clipboard-4160132647.png){width="450"} ![](images/clipboard-2307206920.png){width="164"}
+
+Materi praktikum ini mengacu pada **buku *Better Data Visualizations* karya Jonathan Schwabish**, yang membahas berbagai teknik visualisasi data untuk menyampaikan informasi secara lebih efektif.
+
+Dalam pekan ini, kita akan mengeksplorasi beberapa teknik visualisasi untuk memahami hubungan antar variabel, proporsi dalam data, analisis data kualitatif, serta penyajian data dalam tabel.
+
+## **Navigasi Materi**
+
+-   [Relationship](#relationship)
+-   [Part-to-Whole](#part-to-whole)
+-   [Qualitative](#qualitative)
+-   [Tables](#tables)
+
+## Data
+
+Data yang akan digunakan adalah
+
+```{r}
+# Data
+data_cars <- mtcars %>%
+  mutate(
+    cc = disp * 16.3871, # konversi volume mesin ke cc
+    engine = ifelse(vs == 0, "V-Engine", "Inline"),
+    trans = ifelse(am == 0, "Automatic", "Manual")
+    ) %>% 
+  select(-disp, -vs, -am) 
+  
+View(data_cars)
+```
+
+------------------------------------------------------------------------
+
+# **Relationship** {#relationship}
+
+Hubungan antar variabel dalam data dapat divisualisasikan menggunakan berbagai teknik yang membantu memahami korelasi dan pola tersembunyi.
+
+## Scatterplot {#scatterplot .tabset}
+
+![](images/clipboard-3388423406.png){width="168"}
+
+![](images/clipboard-176516700.png){width="168"}
+
+Scatterplot digunakan untuk menunjukkan hubungan antara dua variabel numerik.
+
+```{r}
+# Cari nama mobil
+boros <- data_cars[which.min(data_cars$mpg), ]   
+irit <- data_cars[which.max(data_cars$mpg), ]    
+menengah <- data_cars[which.min(abs(data_cars$mpg - median(data_cars$mpg) )), ]   
+
+label_cars <- rbind(boros, irit, menengah)
+label_cars$car_name <- rownames(label_cars)  
+
+
+colors <- c("#ad0c1b", "#967349", "#21637b")
+```
+
+### Advanced
+
+```{r fig.height=5, fig.width=8, dpi=300}
+# viz
+chart <-
+ggplot(data_cars,
+       aes(x = cc, y = mpg, 
+           fill = factor(cyl), color = factor(cyl), 
+           shape = factor(trans), size = hp)) +  
+  
+  # Scatterplot
+  geom_point(stroke = 1, alpha = 0.5) +  
+  
+  # Aes
+  scale_shape_manual(values = c(21, 23)) +
+  scale_size_continuous(range = c(1, 10)) +
+  scale_fill_manual(values = colors) +  
+  scale_color_manual(values = colors) +
+  
+  # Label
+  geom_text_repel(
+    data = label_cars, aes(label = car_name), 
+    size = 6, fontface = "bold", color = "black", 
+    box.padding = 0.5, point.padding = 0.5, 
+    nudge_x = 15, 
+    nudge_y = 2,
+    segment.color = "black", segment.size = 0.5, 
+    arrow = arrow(length = unit(0.01, "npc"))
+  ) +
+  
+  # Setting 
+  labs(title = "Efek Mesin & Transmisi terhadap Efisiensi BBM",
+       subtitle = "(Ukuran simbol menunjukkan tenaga mesin (hp))",
+       x = "Kapasitas Mesin (cc)",
+       y = "← Boros          Efisiensi BBM          Irit →",
+       color = "Jumlah Silinder") +
+  
+  guides(
+    size = "none", 
+    fill = "none",
+    shape = guide_legend(title = NULL)
+  ) + 
+  
+  theme_minimal(base_size = 35) + # Global Font size
+  theme(
+    axis.title.y = element_text(size = 30, face = "bold"),
+    axis.text.y = element_text(hjust = 1, face = "bold", 
+                               margin = margin(r = 1)),
+    plot.title = element_text(hjust = -0.2, face = "bold",
+                              margin = margin(b = 5)),
+    plot.subtitle = element_text(hjust = -0.115, size=25),
+    
+    # Garis
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.line = element_line(linewidth = 0.5, colour = "black"),
+    
+    # Legend
+    legend.title = element_text(size = 30),
+    legend.position = "top",
+    legend.direction = "horizontal",
+    legend.justification = c(-0.25, 0),
+    legend.margin = margin(t = -10, b = -25), 
+    legend.text = element_text(margin = margin(r = -1, l = -1))
+  ) 
+
+chart
+
+# Simpan Chart
+ggsave("Chart/01_Scatterplot.png", chart, dpi = 300, height = 5, width = 9)
+```
+
+### Sederhana
+
+```{r fig.height=5, fig.width=8, dpi=300}
+ggplot(data_cars, aes(x = cc, y = mpg)) +  
+  # Scatterplot
+  geom_point() +
+  theme_gray(base_size = 35) #efek pake font google
+```
+
+## Parallel Coordinates Plot {#parallel-coordinates-plot}
+
+![](images/clipboard-3705109929.png){width="168"}
+
+Visualisasi ini digunakan untuk menganalisis hubungan beberapa variabel numerik sekaligus.
+
+## Radar Charts {#radar-charts}
+
+![](images/clipboard-2138198961.png){width="167"}
+
+Sering digunakan untuk membandingkan beberapa kategori dengan beberapa atribut dalam satu grafik.
+
+## Chord Diagram {#chord-diagram}
+
+![](images/clipboard-1694170991.png){width="166"}
+
+Diagram yang digunakan untuk menunjukkan hubungan antara beberapa kategori yang saling berhubungan.
+
+## Arc Chart {#arc-chart}
+
+![](images/clipboard-2882260559.png){width="162"}
+
+Menampilkan koneksi antar elemen dalam dataset dengan menggunakan kurva.
+
+## Correlation Matrix {#correlation-matrix}
+
+![](images/clipboard-3620313916.png){width="310"}
+
+Digunakan untuk menunjukkan hubungan antara banyak variabel dalam bentuk matriks.
+
+## Network Diagrams {#network-diagrams}
+
+![](images/clipboard-383863851.png){width="184"}
+
+Visualisasi hubungan antar entitas dalam bentuk jaringan.
+
+## Tree Diagrams {#tree-diagrams}
+
+![](images/clipboard-1815889749.png){width="176"}
+
+Menampilkan hubungan hierarkis dalam data.
+
+------------------------------------------------------------------------
+
+# **Part-to-Whole** {#part-to-whole}
+
+Teknik visualisasi ini digunakan untuk menunjukkan bagaimana suatu bagian berkontribusi terhadap keseluruhan.
+
+## Pie Charts {#pie-charts}
+
+![](images/clipboard-2008946585.png){width="179"} ![](images/clipboard-1387908395.png){width="180"}
+
+Diagram lingkaran yang digunakan untuk menunjukkan distribusi persentase suatu kategori.
+
+## Treemap {#treemap}
+
+![](images/clipboard-1039790995.png){width="189"} ![](images/clipboard-3374195326.png){width="188"}
+
+Menampilkan hierarki data dalam bentuk persegi panjang bersarang.
+
+## Sunburst Diagram {#sunburst-diagram}
+
+![](images/clipboard-3806900106.png){width="186"} ![](images/clipboard-2190878593.png){width="186"}
+
+Mirip dengan treemap, tetapi berbentuk melingkar untuk menunjukkan hierarki.
+
+## Nightingale Chart {#nightingale-chart}
+
+![](images/clipboard-2076041745.png){width="183"}
+
+Variasi dari pie chart yang digunakan untuk menampilkan data dalam bentuk radial.
+
+## Voronoi Diagram {#voronoi-diagram}
+
+![](images/clipboard-2530505370.png){width="204"}
+
+Membagi ruang menjadi wilayah berdasarkan kedekatan titik-titik data.
+
+------------------------------------------------------------------------
+
+# **Qualitative** {#qualitative}
+
+Visualisasi data kualitatif membantu menyampaikan informasi yang lebih deskriptif.
+
+## Word Clouds and Specific Words {#word-clouds}
+
+![](images/clipboard-3852347363.png){width="198"}
+
+Menampilkan distribusi kata dalam teks berdasarkan frekuensi penggunaannya.
+
+## Word Trees {#word-trees}
+
+![](images/clipboard-3911942585.png){width="201"}
+
+Menampilkan struktur hierarki dari kata atau frasa dalam teks.
+
+# **Tables** {#tables}
+
+Tabel digunakan untuk menyajikan data numerik dan kategorikal dalam format yang mudah dibaca.
+
+## The Ten Guidelines of Better Tables {#better-tables}
+
+Sepuluh prinsip utama dalam mendesain tabel yang lebih baik.
+
+## Demonstration: A Basic Data Table Redesign {#basic-table-redesign}
+
+Contoh perbaikan desain tabel dasar agar lebih mudah dipahami.
+
+## Demonstration: A Regression Table Redesign {#regression-table-redesign}
+
+Contoh penyajian hasil regresi dalam format tabel yang lebih efektif.
+
+------------------------------------------------------------------------
+
+## **Kesimpulan**
+
+Pada praktikum ini, kita telah membahas berbagai teknik visualisasi untuk menunjukkan hubungan antar variabel, distribusi bagian ke keseluruhan, data kualitatif, serta penyajian tabel yang lebih efektif. Pemilihan jenis visualisasi yang tepat bergantung pada karakteristik data dan tujuan analisis yang ingin dicapai.
