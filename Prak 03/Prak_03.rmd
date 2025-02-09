@@ -97,7 +97,7 @@ View(data_cars)
 
 Hubungan antar variabel dalam data dapat divisualisasikan menggunakan berbagai teknik yang membantu memahami korelasi dan pola tersembunyi.
 
-## Scatterplot {#scatterplot}
+## Scatterplot {#scatterplot .tabset}
 
 ![](images/clipboard-3388423406.png){width="168"}
 
@@ -117,6 +117,8 @@ label_cars$car_name <- rownames(label_cars)
 
 colors <- c("#ad0c1b", "#967349", "#21637b")
 ```
+
+### Advanced
 
 ```{r fig.height=5, fig.width=8, dpi=300}
 # viz
@@ -147,7 +149,7 @@ ggplot(data_cars,
   ) +
   
   # Setting 
-  labs(title = "Efek Silinder & Transmisi terhadap Efisiensi BBM",
+  labs(title = "Efek Mesin & Transmisi terhadap Efisiensi BBM",
        subtitle = "(Ukuran simbol menunjukkan tenaga mesin (hp))",
        x = "Kapasitas Mesin (cc)",
        y = "← Boros          Efisiensi BBM          Irit →",
@@ -166,7 +168,7 @@ ggplot(data_cars,
                                margin = margin(r = 1)),
     plot.title = element_text(hjust = -0.2, face = "bold",
                               margin = margin(b = 5)),
-    plot.subtitle = element_text(hjust = -0.11, size=25),
+    plot.subtitle = element_text(hjust = -0.115, size=25),
     
     # Garis
     panel.grid.major.y = element_blank(),
@@ -188,6 +190,15 @@ chart
 
 # Simpan Chart
 ggsave("Chart/01_Scatterplot.png", chart, dpi = 300, height = 5, width = 9)
+```
+
+### Sederhana
+
+```{r fig.height=5, fig.width=8, dpi=300}
+ggplot(data_cars, aes(x = cc, y = mpg)) +  
+  # Scatterplot
+  geom_point() +
+  theme_gray(base_size = 35) #efek pake font google
 ```
 
 ## Parallel Coordinates Plot {#parallel-coordinates-plot}
