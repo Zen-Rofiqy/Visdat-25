@@ -71,33 +71,51 @@ Hubungan antar variabel dalam data dapat divisualisasikan menggunakan berbagai t
 
 ## Scatterplot {#scatterplot}
 
+![](images/clipboard-3388423406.png){width="168"}
+
+![](images/clipboard-176516700.png){width="168"}
+
 Scatterplot digunakan untuk menunjukkan hubungan antara dua variabel numerik.
 
 ## Parallel Coordinates Plot {#parallel-coordinates-plot}
+
+![](images/clipboard-3705109929.png){width="168"}
 
 Visualisasi ini digunakan untuk menganalisis hubungan beberapa variabel numerik sekaligus.
 
 ## Radar Charts {#radar-charts}
 
+![](images/clipboard-2138198961.png){width="167"}
+
 Sering digunakan untuk membandingkan beberapa kategori dengan beberapa atribut dalam satu grafik.
 
 ## Chord Diagram {#chord-diagram}
+
+![](images/clipboard-1694170991.png){width="166"}
 
 Diagram yang digunakan untuk menunjukkan hubungan antara beberapa kategori yang saling berhubungan.
 
 ## Arc Chart {#arc-chart}
 
+![](images/clipboard-2882260559.png){width="162"}
+
 Menampilkan koneksi antar elemen dalam dataset dengan menggunakan kurva.
 
 ## Correlation Matrix {#correlation-matrix}
+
+![](images/clipboard-3620313916.png){width="310"}
 
 Digunakan untuk menunjukkan hubungan antara banyak variabel dalam bentuk matriks.
 
 ## Network Diagrams {#network-diagrams}
 
+![](images/clipboard-383863851.png){width="184"}
+
 Visualisasi hubungan antar entitas dalam bentuk jaringan.
 
 ## Tree Diagrams {#tree-diagrams}
+
+![](images/clipboard-1815889749.png){width="176"}
 
 Menampilkan hubungan hierarkis dalam data.
 
@@ -109,21 +127,31 @@ Teknik visualisasi ini digunakan untuk menunjukkan bagaimana suatu bagian berkon
 
 ## Pie Charts {#pie-charts}
 
+![](images/clipboard-2008946585.png){width="179"} ![](images/clipboard-1387908395.png){width="180"}
+
 Diagram lingkaran yang digunakan untuk menunjukkan distribusi persentase suatu kategori.
 
 ## Treemap {#treemap}
+
+![](images/clipboard-1039790995.png){width="189"} ![](images/clipboard-3374195326.png){width="188"}
 
 Menampilkan hierarki data dalam bentuk persegi panjang bersarang.
 
 ## Sunburst Diagram {#sunburst-diagram}
 
+![](images/clipboard-3806900106.png){width="186"} ![](images/clipboard-2190878593.png){width="186"}
+
 Mirip dengan treemap, tetapi berbentuk melingkar untuk menunjukkan hierarki.
 
 ## Nightingale Chart {#nightingale-chart}
 
+![](images/clipboard-2076041745.png){width="183"}
+
 Variasi dari pie chart yang digunakan untuk menampilkan data dalam bentuk radial.
 
 ## Voronoi Diagram {#voronoi-diagram}
+
+![](images/clipboard-2530505370.png){width="204"}
 
 Membagi ruang menjadi wilayah berdasarkan kedekatan titik-titik data.
 
@@ -133,35 +161,17 @@ Membagi ruang menjadi wilayah berdasarkan kedekatan titik-titik data.
 
 Visualisasi data kualitatif membantu menyampaikan informasi yang lebih deskriptif.
 
-## Icons {#icons}
-
-Menggunakan ikon sebagai bentuk representasi data.
-
 ## Word Clouds and Specific Words {#word-clouds}
+
+![](images/clipboard-3852347363.png){width="198"}
 
 Menampilkan distribusi kata dalam teks berdasarkan frekuensi penggunaannya.
 
 ## Word Trees {#word-trees}
 
+![](images/clipboard-3911942585.png){width="201"}
+
 Menampilkan struktur hierarki dari kata atau frasa dalam teks.
-
-## Specific Words {#specific-words}
-
-Menyoroti kata-kata spesifik dalam teks yang memiliki makna penting.
-
-## Quotes {#quotes}
-
-Menampilkan kutipan dengan cara yang lebih visual dan menarik.
-
-## Coloring Phrases {#coloring-phrases}
-
-Menggunakan warna untuk menyoroti kata atau frasa penting dalam teks.
-
-## Matrices and Lists {#matrices-lists}
-
-Struktur tabel dan daftar untuk merapikan data kualitatif.
-
-------------------------------------------------------------------------
 
 # **Tables** {#tables}
 
