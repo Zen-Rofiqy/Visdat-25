@@ -42,7 +42,7 @@ install_load <- function (package1, ...)  {
    } 
 }
 
-install_load("knitr","ggplot2","viridis","dplyr","DT","showtext")
+install_load("knitr","ggplot2","viridis","dplyr","DT","showtext","ggrepel")
 
 # Set wd 
 opts_knit$set(root.dir = normalizePath("./"))
@@ -105,21 +105,57 @@ Hubungan antar variabel dalam data dapat divisualisasikan menggunakan berbagai t
 
 Scatterplot digunakan untuk menunjukkan hubungan antara dua variabel numerik.
 
+```{r}
+boros <- data_cars[which.min(data_cars$mpg), ]   
+irit <- data_cars[which.max(data_cars$mpg), ]    
+menengah <- data_cars[which.min(abs(data_cars$mpg - median(data_cars$mpg) )), ]   
+
+label_cars <- rbind(boros, irit, menengah)
+label_cars$car_name <- rownames(label_cars)
+```
+
 ```{r fig.height=5, fig.width=8, dpi=300}
+# Cari nama mobil
+boros <- data_cars[which.min(data_cars$mpg), ]   
+irit <- data_cars[which.max(data_cars$mpg), ]    
+menengah <- data_cars[which.min(abs(data_cars$mpg - median(data_cars$mpg) )), ]   
+
+label_cars <- rbind(boros, irit, menengah)
+label_cars$car_name <- rownames(label_cars)  
+
+
+colors <- c("#ad0c1b", "#967349", "#21637b")
+
+# viz
 chart <-
 ggplot(data_cars,
        aes(x = cc, y = mpg, 
            fill = factor(cyl), color = factor(cyl), 
            shape = factor(trans), size = hp)) +  
+  
   # Scatterplot
   geom_point(stroke = 1, alpha = 0.5) +  
   
+  # Aes
   scale_shape_manual(values = c(21, 23)) +
   scale_size_continuous(range = c(1, 10)) +
+  scale_fill_manual(values = colors) +  
+  scale_color_manual(values = colors) +
+  
+  # Label
+  geom_text_repel(
+    data = label_cars, aes(label = car_name), 
+    size = 6, fontface = "bold", color = "black", 
+    box.padding = 0.5, point.padding = 0.5, 
+    nudge_x = 15, 
+    nudge_y = 2,
+    segment.color = "black", segment.size = 0.5, 
+    arrow = arrow(length = unit(0.01, "npc"))
+  ) +
   
   # Setting 
   labs(title = "Efek Silinder & Transmisi terhadap Efisiensi BBM",
-       subtitle = "Ukuran plot mengartikan tenaga (hp)",
+       subtitle = "Ukuran simbol menunjukkan tenaga mesin (hp)",
        x = "Kapasitas Mesin (cc)",
        y = "← Boros          Efisiensi BBM          Irit →",
        color = "Jumlah Silinder") +
@@ -146,11 +182,12 @@ ggplot(data_cars,
     axis.line = element_line(linewidth = 0.5, colour = "black"),
     
     # Legend
+    legend.title = element_text(size = 30),
     legend.key.size = unit(0.5, "cm"),
     legend.position = "top",
     legend.direction = "horizontal",
     legend.justification = c(-0.055, 0),
-    legend.margin = margin(t = -10, b = -10)
+    legend.margin = margin(t = -10, b = -10, r = -15, l = -15)
   ) 
 
 chart
