@@ -63,6 +63,10 @@ Dalam pekan ini, kita akan mengeksplorasi beberapa teknik visualisasi untuk mema
 -   [Qualitative](#qualitative)
 -   [Tables](#tables)
 
+## Data
+
+Data yang akan digunakan adalah
+
 ------------------------------------------------------------------------
 
 # **Relationship** {#relationship}
