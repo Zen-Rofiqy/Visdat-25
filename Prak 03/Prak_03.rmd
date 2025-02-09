@@ -106,15 +106,6 @@ Hubungan antar variabel dalam data dapat divisualisasikan menggunakan berbagai t
 Scatterplot digunakan untuk menunjukkan hubungan antara dua variabel numerik.
 
 ```{r}
-boros <- data_cars[which.min(data_cars$mpg), ]   
-irit <- data_cars[which.max(data_cars$mpg), ]    
-menengah <- data_cars[which.min(abs(data_cars$mpg - median(data_cars$mpg) )), ]   
-
-label_cars <- rbind(boros, irit, menengah)
-label_cars$car_name <- rownames(label_cars)
-```
-
-```{r fig.height=5, fig.width=8, dpi=300}
 # Cari nama mobil
 boros <- data_cars[which.min(data_cars$mpg), ]   
 irit <- data_cars[which.max(data_cars$mpg), ]    
@@ -125,7 +116,9 @@ label_cars$car_name <- rownames(label_cars)
 
 
 colors <- c("#ad0c1b", "#967349", "#21637b")
+```
 
+```{r fig.height=5, fig.width=8, dpi=300}
 # viz
 chart <-
 ggplot(data_cars,
@@ -155,7 +148,7 @@ ggplot(data_cars,
   
   # Setting 
   labs(title = "Efek Silinder & Transmisi terhadap Efisiensi BBM",
-       subtitle = "Ukuran simbol menunjukkan tenaga mesin (hp)",
+       subtitle = "(Ukuran simbol menunjukkan tenaga mesin (hp))",
        x = "Kapasitas Mesin (cc)",
        y = "← Boros          Efisiensi BBM          Irit →",
        color = "Jumlah Silinder") +
@@ -171,8 +164,9 @@ ggplot(data_cars,
     axis.title.y = element_text(size = 30, face = "bold"),
     axis.text.y = element_text(hjust = 1, face = "bold", 
                                margin = margin(r = 1)),
-    plot.title = element_text(hjust = 0, face = "bold"),
-    plot.subtitle = element_text(hjust = -0.05),
+    plot.title = element_text(hjust = -0.2, face = "bold",
+                              margin = margin(b = 5)),
+    plot.subtitle = element_text(hjust = -0.11, size=25),
     
     # Garis
     panel.grid.major.y = element_blank(),
@@ -183,11 +177,11 @@ ggplot(data_cars,
     
     # Legend
     legend.title = element_text(size = 30),
-    legend.key.size = unit(0.5, "cm"),
     legend.position = "top",
     legend.direction = "horizontal",
-    legend.justification = c(-0.055, 0),
-    legend.margin = margin(t = -10, b = -10, r = -15, l = -15)
+    legend.justification = c(-0.25, 0),
+    legend.margin = margin(t = -10, b = -25), 
+    legend.text = element_text(margin = margin(r = -1, l = -1))
   ) 
 
 chart
