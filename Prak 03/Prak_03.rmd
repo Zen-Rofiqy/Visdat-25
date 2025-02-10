@@ -109,17 +109,21 @@ Hubungan antar variabel dalam data dapat divisualisasikan menggunakan berbagai t
 Scatterplot digunakan untuk menunjukkan hubungan antara dua variabel numerik.
 
 ```{r}
-# Cari nama mobil
 label_cars <- bind_rows(
-  data_cars %>% slice_max(mpg, n = 1, with_ties = FALSE),  # Mobil paling irit
+  # Mobil paling irit
+  data_cars %>% slice_max(mpg, n = 1, with_ties = FALSE), 
+  
+  # Mobil menengah
   data_cars %>% 
-    mutate(dist_to_median = abs(mpg - median(mpg))) %>%   # Hitung selisih dengan median
-    slice_min(dist_to_median, n = 1, with_ties = FALSE) %>%  # Pilih mobil menengah
-    select(-dist_to_median),  # Hapus kolom tambahan
-  data_cars %>% slice_min(mpg, n = 1, with_ties = FALSE)  # Mobil paling boros
+    mutate(dist_to_median = abs(mpg - median(mpg))) %>%   
+    slice_min(dist_to_median, n = 1, with_ties = FALSE) %>%  
+    select(-dist_to_median),  
+  
+  # Mobil paling boros
+  data_cars %>% slice_min(mpg, n = 1, with_ties = FALSE)  
 ) %>%
-  arrange(desc(mpg)) %>%  # Urutkan berdasarkan mpg (irit → menengah → boros)
-  mutate(car_name = rownames(.))  # Tambahkan nama mobil
+  arrange(desc(mpg)) %>%  
+  mutate(car_name = rownames(.))  # 
 
 colors <- c("#21637b", "#967349", "#ad0c1b")
 ```
@@ -217,12 +221,18 @@ Visualisasi ini digunakan untuk menganalisis hubungan beberapa variabel numerik 
 data_cars <- data_cars %>%
   mutate(
     highlight = ifelse(rownames(.) %in% label_cars$car_name, rownames(.), "Lainnya"),
-    highlight = factor(highlight, levels = c(label_cars$car_name, "Lainnya"))  
+    highlight = factor(highlight, levels = c(label_cars$car_name, "Lainnya"))
   )
 
+# Warna khusus
 highlight_colors <- c("#21637b", "#967349", "#ad0c1b", "grey70")  
 color_mapping <- setNames(highlight_colors, levels(data_cars$highlight))
 
+# Ukuran garis (tebal untuk 3 mobil utama, tipis untuk lainnya)
+linewidth_mapping <- c(2.5, 2.5, 2.5, 0.5)  
+size_mapping <- setNames(linewidth_mapping, levels(data_cars$highlight))
+
+# Pilih kolom berdasarkan nama
 selected_columns <- which(colnames(data_cars) %in% 
                             c("mpg", "hp", "drat", "wt", "qsec", "cc"))
 
@@ -230,15 +240,16 @@ selected_columns <- which(colnames(data_cars) %in%
 ggparcoord(data_cars, 
            columns = selected_columns,   
            groupColumn = "highlight",          
-           scale = "uniminmax") +        # Normalisasi 0-1
+           scale = "uniminmax") +  # Normalisasi 0-1
   scale_color_manual(values = color_mapping) +  
+  scale_size_manual(values = size_mapping) +  # Atur ketebalan garis
   labs(title = "Parallel Coordinates Plot: data_cars",
        x = "Variabel", y = "Skala 0-100") +
   
   # Setting
-  theme_minimal(base_size = 35) +  # Global Font size
-  
-  # Garis
+  theme_minimal(base_size = 35) +  
+
+  # Grid & Line settings
   theme(
     axis.title.y = element_text(size = 30, face = "bold"),
     axis.text.y = element_text(hjust = 1, face = "bold", 
@@ -246,14 +257,13 @@ ggparcoord(data_cars,
     plot.title = element_text(hjust = -0.2, face = "bold",
                               margin = margin(b = 5)),
     plot.subtitle = element_text(hjust = -0.115, size=25),
-    
-    # Garis
+
+    # Grid lebih ramping
+    panel.grid.major = element_line(linewidth = 0.3),  
+    panel.grid.minor = element_line(linewidth = 0.2),
     panel.grid.major.y = element_blank(),
     panel.grid.minor.y = element_blank()
-  ) +
-  
-  # Konversi ke skala 0-100 secara visual (opsional)
-  scale_y_continuous(labels = function(x) x * 100)
+  )
 ```
 
 ## Radar Charts {#radar-charts}
