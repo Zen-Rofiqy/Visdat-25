@@ -42,7 +42,7 @@ install_load <- function (package1, ...)  {
    } 
 }
 
-install_load("knitr","ggplot2","viridis","dplyr","DT","showtext","ggrepel")
+install_load("knitr","ggplot2","viridis","dplyr","DT","showtext","ggrepel","GGally")
 
 # Set wd 
 opts_knit$set(root.dir = normalizePath("./"))
@@ -82,9 +82,12 @@ Data yang akan digunakan adalah
 # Data
 data_cars <- mtcars %>%
   mutate(
+    cyl = as.factor(cyl),   
+    gear = as.factor(gear), 
+    carb = as.factor(carb),
     cc = disp * 16.3871, # konversi volume mesin ke cc
-    engine = ifelse(vs == 0, "V-Engine", "Inline"),
-    trans = ifelse(am == 0, "Automatic", "Manual")
+    engine = factor(ifelse(vs == 0, "V-Engine", "Inline")),
+    trans = factor(ifelse(am == 0, "Automatic", "Manual"))
     ) %>% 
   select(-disp, -vs, -am) 
   
@@ -206,6 +209,42 @@ ggplot(data_cars, aes(x = cc, y = mpg)) +
 ![](images/clipboard-3705109929.png){width="168"}
 
 Visualisasi ini digunakan untuk menganalisis hubungan beberapa variabel numerik sekaligus.
+
+```{r fig.height=5, fig.width=8, dpi=300}
+colors <- c("#ad0c1b", "#967349", "#21637b")  
+
+selected_columns <- which(colnames(data_cars) %in% 
+                            c("mpg", "hp", "drat", "wt", "qsec", "cc"))
+
+# Viz
+ggparcoord(data_cars, 
+           columns = selected_columns,   
+           groupColumn = "cyl",          
+           scale = "uniminmax") +        # Normalisasi 0-1
+  scale_color_manual(values = colors) +  
+  labs(title = "Parallel Coordinates Plot: data_cars",
+       x = "Variabel", y = "Skala 0-100") +
+  
+  # Setting
+  theme_minimal(base_size = 35) +  # Global Font size
+  
+  # Garis
+  theme(
+    axis.title.y = element_text(size = 30, face = "bold"),
+    axis.text.y = element_text(hjust = 1, face = "bold", 
+                               margin = margin(r = 1)),
+    plot.title = element_text(hjust = -0.2, face = "bold",
+                              margin = margin(b = 5)),
+    plot.subtitle = element_text(hjust = -0.115, size=25),
+    
+    # Garis
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank()
+  ) +
+  
+  # Konversi ke skala 0-100 secara visual (opsional)
+  scale_y_continuous(labels = function(x) x * 100)
+```
 
 ## Radar Charts {#radar-charts}
 
