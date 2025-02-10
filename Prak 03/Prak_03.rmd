@@ -228,10 +228,6 @@ data_cars <- data_cars %>%
 highlight_colors <- c("#21637b", "#967349", "#ad0c1b", "grey70")  
 color_mapping <- setNames(highlight_colors, levels(data_cars$highlight))
 
-# Ukuran garis (tebal untuk 3 mobil utama, tipis untuk lainnya)
-linewidth_mapping <- c(2.5, 2.5, 2.5, 0.5)  
-size_mapping <- setNames(linewidth_mapping, levels(data_cars$highlight))
-
 # Pilih kolom berdasarkan nama
 selected_columns <- which(colnames(data_cars) %in% 
                             c("mpg", "hp", "drat", "wt", "qsec", "cc"))
@@ -242,10 +238,12 @@ ggparcoord(data_cars,
            groupColumn = "highlight",          
            scale = "uniminmax") +  # Normalisasi 0-1
   scale_color_manual(values = color_mapping) +  
-  scale_size_manual(values = size_mapping) +  # Atur ketebalan garis
   labs(title = "Parallel Coordinates Plot: data_cars",
        x = "Variabel", y = "Skala 0-100") +
-  
+
+  # Gunakan guides untuk mengatur ketebalan garis
+  guides(color = guide_legend(override.aes = list(linewidth = c(2.5, 2.5, 2.5, 0.5)))) +  
+
   # Setting
   theme_minimal(base_size = 35) +  
 
