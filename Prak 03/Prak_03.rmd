@@ -91,7 +91,7 @@ data_cars <- mtcars %>%
     ) %>% 
   select(-disp, -vs, -am) 
   
-View(data_cars)
+head(data_cars)
 ```
 
 ------------------------------------------------------------------------
@@ -110,15 +110,18 @@ Scatterplot digunakan untuk menunjukkan hubungan antara dua variabel numerik.
 
 ```{r}
 # Cari nama mobil
-boros <- data_cars[which.min(data_cars$mpg), ]   
-irit <- data_cars[which.max(data_cars$mpg), ]    
-menengah <- data_cars[which.min(abs(data_cars$mpg - median(data_cars$mpg) )), ]   
+label_cars <- bind_rows(
+  data_cars %>% slice_max(mpg, n = 1, with_ties = FALSE),  # Mobil paling irit
+  data_cars %>% 
+    mutate(dist_to_median = abs(mpg - median(mpg))) %>%   # Hitung selisih dengan median
+    slice_min(dist_to_median, n = 1, with_ties = FALSE) %>%  # Pilih mobil menengah
+    select(-dist_to_median),  # Hapus kolom tambahan
+  data_cars %>% slice_min(mpg, n = 1, with_ties = FALSE)  # Mobil paling boros
+) %>%
+  arrange(desc(mpg)) %>%  # Urutkan berdasarkan mpg (irit → menengah → boros)
+  mutate(car_name = rownames(.))  # Tambahkan nama mobil
 
-label_cars <- rbind(boros, irit, menengah)
-label_cars$car_name <- rownames(label_cars)  
-
-
-colors <- c("#ad0c1b", "#967349", "#21637b")
+colors <- c("#21637b", "#967349", "#ad0c1b")
 ```
 
 ### Advanced
@@ -211,7 +214,14 @@ ggplot(data_cars, aes(x = cc, y = mpg)) +
 Visualisasi ini digunakan untuk menganalisis hubungan beberapa variabel numerik sekaligus.
 
 ```{r fig.height=5, fig.width=8, dpi=300}
-colors <- c("#ad0c1b", "#967349", "#21637b")  
+data_cars <- data_cars %>%
+  mutate(
+    highlight = ifelse(rownames(.) %in% label_cars$car_name, rownames(.), "Lainnya"),
+    highlight = factor(highlight, levels = c(label_cars$car_name, "Lainnya"))  
+  )
+
+highlight_colors <- c("#21637b", "#967349", "#ad0c1b", "grey70")  
+color_mapping <- setNames(highlight_colors, levels(data_cars$highlight))
 
 selected_columns <- which(colnames(data_cars) %in% 
                             c("mpg", "hp", "drat", "wt", "qsec", "cc"))
@@ -219,9 +229,9 @@ selected_columns <- which(colnames(data_cars) %in%
 # Viz
 ggparcoord(data_cars, 
            columns = selected_columns,   
-           groupColumn = "cyl",          
+           groupColumn = "highlight",          
            scale = "uniminmax") +        # Normalisasi 0-1
-  scale_color_manual(values = colors) +  
+  scale_color_manual(values = color_mapping) +  
   labs(title = "Parallel Coordinates Plot: data_cars",
        x = "Variabel", y = "Skala 0-100") +
   
