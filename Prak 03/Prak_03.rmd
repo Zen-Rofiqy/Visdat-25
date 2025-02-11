@@ -88,7 +88,7 @@ data_cars <- mtcars %>%
     cc = disp * 16.3871, # konversi volume mesin ke cc
     engine = factor(ifelse(vs == 0, "V-Engine", "Inline")),
     trans = factor(ifelse(am == 0, "Automatic", "Manual"))
-    ) %>% 
+  ) %>% 
   select(-disp, -vs, -am) 
   
 head(data_cars)
@@ -123,7 +123,7 @@ label_cars <- bind_rows(
   data_cars %>% slice_min(mpg, n = 1, with_ties = FALSE)  
 ) %>%
   arrange(desc(mpg)) %>%  
-  mutate(car_name = rownames(.))  # 
+  mutate(car_name = rownames(.))
 
 colors <- c("#21637b", "#967349", "#ad0c1b")
 ```
@@ -217,7 +217,8 @@ ggplot(data_cars, aes(x = cc, y = mpg)) +
 
 Visualisasi ini digunakan untuk menganalisis hubungan beberapa variabel numerik sekaligus.
 
-```{r fig.height=5, fig.width=8, dpi=300}
+```{r}
+# Tambahkan kolom highlight
 data_cars <- data_cars %>%
   mutate(
     highlight = ifelse(rownames(.) %in% label_cars$car_name, rownames(.), "Lainnya"),
@@ -229,20 +230,37 @@ highlight_colors <- c("#21637b", "#967349", "#ad0c1b", "grey70")
 color_mapping <- setNames(highlight_colors, levels(data_cars$highlight))
 
 # Pilih kolom berdasarkan nama
-selected_columns <- which(colnames(data_cars) %in% 
-                            c("mpg", "hp", "drat", "wt", "qsec", "cc"))
+selected_columns <- c("mpg", "hp", "drat", "wt", "qsec", "cc")
 
+# Ubah data ke format long untuk memudahkan penempatan label
+data_long <- data_cars %>%
+  pivot_longer(cols = all_of(selected_columns), names_to = "Variable", values_to = "Value") %>%
+  mutate(car_name = rep(rownames(data_cars), length(selected_columns)))
+
+# Filter hanya mobil yang di-highlight untuk diberi label
+label_positions <- data_long %>%
+  filter(car_name %in% label_cars$car_name) %>%
+  group_by(car_name) %>%
+  slice_max(Variable, n = 1)  # Ambil titik terakhir di sumbu X
+```
+
+```{r fig.height=5, fig.width=8, dpi=300}
 # Viz
 ggparcoord(data_cars, 
-           columns = selected_columns,   
+           columns = match(selected_columns, colnames(data_cars)),   
            groupColumn = "highlight",          
-           scale = "uniminmax") +  # Normalisasi 0-1
+           scale = "uniminmax") +  
   scale_color_manual(values = color_mapping) +  
   labs(title = "Parallel Coordinates Plot: data_cars",
-       x = "Variabel", y = "Skala 0-100") +
+       x = "", y = "") +
+  
+  # Tambahkan label di ujung garis (hanya untuk 3 mobil terpilih)
+  geom_text(data = label_positions, 
+            aes(x = Variable, y = Value, label = car_name, color = highlight), 
+            hjust = -0.2, size = 7, fontface = "bold") +
 
-  # Gunakan guides untuk mengatur ketebalan garis
-  guides(color = guide_legend(override.aes = list(linewidth = c(2.5, 2.5, 2.5, 0.5)))) +  
+  # Hapus legend
+  theme(legend.position = "none") +
 
   # Setting
   theme_minimal(base_size = 35) +  
