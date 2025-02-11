@@ -275,32 +275,35 @@ ggparcoord(data_cars_norm,
            scale = "uniminmax",  
            showPoints = TRUE,    
            alphaLines = 0.6) +   
-  
-  # **Pastikan warna tetap**
-  scale_color_manual(values = color_mapping) +  
+
+  # **Pastikan warna tetap dan perbesar garis utama**
+  scale_color_manual(values = color_mapping, guide = "none") +  
   scale_alpha_identity() +  
-  
-  # **Tambahkan label di ujung garis**
+
+  # **Tambahkan label di ujung garis & geser lebih ke kiri**
   geom_text(data = label_positions, 
-            aes(x = x_max, y = cc, label = car_name, color = highlight), 
-            fontface = "bold", size = 6, hjust = 0, inherit.aes = FALSE) +
-  
-  # **Hapus legend**
-  theme(legend.position = "none") +
+            aes(x = x_max - 0.2, y = cc, label = car_name, color = highlight), 
+            fontface = "bold", size = 8, hjust = 0, inherit.aes = FALSE) +
+
+  # **Hapus legend sepenuhnya**
+  guides(color = "none") +
 
   # **Styling tema**
-  theme_minimal(base_size = 20) +  
+  theme_minimal(base_size = 26) +  # **Perbesar font global**
   theme(
-    axis.title.y = element_text(size = 20, face = "bold"),
-    axis.text.y = element_text(hjust = 1, face = "bold", margin = margin(r = 1)),
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 22),
-    plot.subtitle = element_text(hjust = 0.5, size = 18),
+    axis.title.y = element_text(size = 24, face = "bold"),
+    axis.text.y = element_text(hjust = 1, face = "bold", margin = margin(r = 5), size = 22),
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 30),
+    plot.subtitle = element_text(hjust = 0.5, size = 24),
 
-    # **Grid lebih ramping**
-    panel.grid.major = element_line(linewidth = 0.3),  
-    panel.grid.minor = element_line(linewidth = 0.2),
+    # **Pertebal grid utama**
+    panel.grid.major = element_line(linewidth = 0.5),  
+    panel.grid.minor = element_line(linewidth = 0.3),
     panel.grid.major.y = element_blank(),
-    panel.grid.minor.y = element_blank()
+    panel.grid.minor.y = element_blank(),
+
+    # **Geser grafik lebih ke kiri**
+    plot.margin = margin(l = -10, t = 10, r = 100, b = 10)
   )
 ```
 
