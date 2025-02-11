@@ -280,6 +280,7 @@ Highlight 3 mobil berdasarkan Efisiensi bahan bakar.
 
 ```{r fig.height=5, fig.width=9, dpi=300}
 # PLOT
+chart <- 
 ggparcoord(data_cars_norm, 
            columns = match(selected_columns, colnames(data_cars_norm)),   
            groupColumn = "highlight",          
@@ -325,6 +326,12 @@ ggparcoord(data_cars_norm,
     panel.grid.minor.y = element_blank()
   ) + 
   coord_cartesian(clip = "off")
+
+chart 
+
+# Simpan Chart
+ggsave("Chart/02_Paralell-Coordinates.png", 
+       chart, dpi = 300, height = 5, width = 9)
 ```
 
 ### Advanced 2
@@ -363,6 +370,7 @@ x_max <- length(selected_columns) + 0.3  # Posisi label di ujung sumbu
 
 ```{r fig.height=5, fig.width=9, dpi=300}
 # PLOT
+chart <- 
 ggparcoord(data_cars_norm, 
            columns = match(selected_columns, colnames(data_cars_norm)),   
            groupColumn = "highlight",          
@@ -408,6 +416,12 @@ ggparcoord(data_cars_norm,
     panel.grid.minor.y = element_blank()
   ) + 
   coord_cartesian(clip = "off")
+
+chart 
+
+# Simpan chart
+ggsave("Chart/02_Paralell-Coordinates-2.png", 
+       chart, dpi = 300, height = 5, width = 9)
 ```
 
 ### Sederhana
