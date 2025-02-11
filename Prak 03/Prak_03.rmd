@@ -43,7 +43,8 @@ install_load <- function (package1, ...)  {
 }
 
 install_load("knitr","ggplot2","viridis","dplyr","DT","showtext","ggrepel",
-             "GGally","tibble","scales","tidyverse","fmsb","devtools")
+             "GGally","tibble","scales","tidyverse","fmsb","devtools",
+             "ggiraphExtra")
 
 # Set wd 
 opts_knit$set(root.dir = normalizePath("./"))
@@ -440,34 +441,6 @@ ggparcoord(data_cars,
 
 Sering digunakan untuk membandingkan beberapa kategori dengan beberapa atribut dalam satu grafik.
 
-```{r}
-# Install dulu :
-## devtools::install_github("ricardo-bion/ggradar")
-library(ggiraphExtra)
-
-# Normalisasi data numerik agar berada di rentang [0,1]
-normalize <- function(x) {
-  (x - min(x)) / (max(x) - min(x))
-}
-
-# Normalisasi dan filter hanya mobil yang kita butuhkan
-data_cars_norm <- data_cars %>%
-  mutate(across(c(mpg, hp, drat, wt, qsec, cc), normalize)) %>%
-  filter(car_name %in% c("Mazda RX4", "Datsun 710", "Hornet 4 Drive"))
-
-# Pastikan data dalam format wide dengan car_name sebagai faktor
-data_radar <- data_cars_norm %>%
-  select(car_name, mpg, hp, drat, wt, qsec, cc) %>%
-  as_tibble()
-
-```
-
-### Advanced
-
-```{r}
-
-```
-
 ### Sederhana
 
 ```{r fig.height=5, fig.width=8, dpi=300}
@@ -536,6 +509,29 @@ legend("topright",
 ![](images/clipboard-1694170991.png){width="166"}
 
 Diagram yang digunakan untuk menunjukkan hubungan antara beberapa kategori yang saling berhubungan.
+
+```{r}
+# Install dan load library jika belum ada
+if (!requireNamespace("circlize", quietly = TRUE)) install.packages("circlize")
+library(circlize)
+
+# Load dataset
+data("mtcars")
+
+# Membuat data hubungan antara jumlah silinder dan jenis transmisi
+mtcars$group <- as.character(mtcars$cyl)  # Mengubah cyl menjadi faktor karakter
+mtcars$transmission <- ifelse(mtcars$am == 0, "Automatic", "Manual")
+
+# Hitung frekuensi kombinasi
+chord_data <- as.data.frame(table(mtcars$group, mtcars$transmission))
+
+# Ubah nama kolom agar lebih mudah dipahami
+colnames(chord_data) <- c("Cylinders", "Transmission", "Count")
+
+# Buat chord diagram
+chordDiagram(chord_data, transparency = 0.5, col = c("red", "blue", "green"))
+
+```
 
 ## Arc Chart {#arc-chart}
 
