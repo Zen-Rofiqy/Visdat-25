@@ -376,7 +376,7 @@ ggparcoord(data_cars_norm,
   
   # TEXT ----------------
   # Judul
-  labs(title = "Perbandingan Karakteristik Mobil Berdasarkan Tenaga mobil",
+  labs(title = "Perbandingan Karakteristik Mobil Berdasarkan Tenaga",
        x = NULL,  
        y = NULL) +
   
@@ -408,6 +408,16 @@ ggparcoord(data_cars_norm,
     panel.grid.minor.y = element_blank()
   ) + 
   coord_cartesian(clip = "off")
+```
+
+### Sederhana
+
+```{r fig.height=5, fig.width=9, dpi=300}
+ggparcoord(data_cars, 
+           columns = match(selected_columns, colnames(data_cars)),  
+           groupColumn = "cyl",
+           scale = "uniminmax") +
+  theme_gray(base_size = 35)
 ```
 
 ## Radar Charts {#radar-charts}
