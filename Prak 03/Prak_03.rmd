@@ -213,7 +213,7 @@ ggplot(data_cars, aes(x = cc, y = mpg)) +
   theme_gray(base_size = 35) #efek pake font google
 ```
 
-## Parallel Coordinates Plot {#parallel-coordinates-plot}
+## Parallel Coordinates Plot {#parallel-coordinates-plot .tabset}
 
 ![](images/clipboard-3705109929.png){width="168"}
 
@@ -227,19 +227,26 @@ new_labels <- c("Efisiensi BBM", "Tenaga", "Rasio Driveshaft",
                 "Berat Mobil", "Waktu 1/4 Mil", "Kapasitas Mesin")
 
 # HIGHTLIGHT---------------------------------
+highlight_cars <- function(data, col) {
+  selected <- bind_rows(
+    # Mobil dengan nilai tertinggi
+    data %>% slice_max({{col}}, n = 1, with_ties = FALSE),  
+    
+    # Mobil dengan nilai median terdekat
+    data %>% mutate(dist_to_median = abs({{col}} - median({{col}}))) %>% 
+      slice_min(dist_to_median, n = 1, with_ties = FALSE) %>% 
+      select(-dist_to_median),  
+    
+    # Mobil dengan nilai terendah
+    data %>% slice_min({{col}}, n = 1, with_ties = FALSE)  
+  ) %>%
+    arrange(desc({{col}}))  
+  
+  return(selected)
+}
+
 # Pilih 3 mobil yang akan di-highlight
-label_cars <- bind_rows(
-  # Mobil paling irit
-  data_cars %>% slice_max(mpg, n = 1, with_ties = FALSE),  
-  
-  # Mobil menengah
-  data_cars %>% mutate(dist_to_median = abs(mpg - median(mpg))) %>% 
-    slice_min(dist_to_median, n = 1, with_ties = FALSE) %>% select(-dist_to_median),  
-  
-  # Mobil paling boros
-  data_cars %>% slice_min(mpg, n = 1, with_ties = FALSE)  
-) %>%
-  arrange(desc(mpg))  
+label_cars <- highlight_cars(data_cars, mpg)  # Berdasarkan efisiensi BBM
 
 # Tambahkan kolom highlight dan alpha transparansi
 data_cars <- data_cars %>%
@@ -266,6 +273,10 @@ label_positions <- data_cars_norm %>%
 
 x_max <- length(selected_columns) + 0.3  # Posisi label di ujung sumbu
 ```
+
+### Advanced 1
+
+Highlight 3 mobil berdasarkan Efisiensi bahan bakar.
 
 ```{r fig.height=5, fig.width=9, dpi=300}
 # PLOT
@@ -316,51 +327,87 @@ ggparcoord(data_cars_norm,
   coord_cartesian(clip = "off")
 ```
 
-```{r fig.height=5, fig.width=8, dpi=300}
+### Advanced 2
+
+Hightlight mobil berdasarkan tenaga.
+
+```{r}
+# Pilih 3 mobil yang akan di-highlight
+label_cars <- highlight_cars(data_cars, hp)  # Berdasarkan tenaga
+
+# Tambahkan kolom highlight dan alpha transparansi
 data_cars <- data_cars %>%
   mutate(
-    highlight = ifelse(rownames(.) %in% label_cars$car_name, rownames(.), "Lainnya"),
-    highlight = factor(highlight, levels = c(label_cars$car_name, "Lainnya"))
+    highlight = ifelse(car_name %in% label_cars$car_name, car_name, "Lainnya"),
+    highlight = factor(highlight, levels = c(label_cars$car_name, "Lainnya")),
+    alpha_val = ifelse(highlight == "Lainnya", 0.2, 1)
   )
 
-# Warna khusus
-highlight_colors <- c("#21637b", "#967349", "#ad0c1b", "grey70")  
+# Warna khusus: 3 mobil utama + lainnya dalam warna abu-abu
+highlight_colors <- c("#21637b", "#967349", "#ad0c1b", "#E8E8E8")  
 color_mapping <- setNames(highlight_colors, levels(data_cars$highlight))
 
-# Pilih kolom berdasarkan nama
-selected_columns <- which(colnames(data_cars) %in% 
-                            c("mpg", "hp", "drat", "wt", "qsec", "cc"))
 
-# Viz
-ggparcoord(data_cars, 
-           columns = selected_columns,   
+# NORMALISASI DATA ---------------------------------
+# **Normalisasi data ke skala 0-1 secara manual**
+data_cars_norm <- data_cars %>%
+  mutate(across(all_of(selected_columns), rescale))
+
+# **Pastikan label_positions memiliki skala yang sudah dinormalisasi**
+label_positions <- data_cars_norm %>%
+  filter(car_name %in% label_cars$car_name) %>%
+  select(car_name, cc, highlight)  # Tambahkan highlight agar sesuai dengan warna
+
+x_max <- length(selected_columns) + 0.3  # Posisi label di ujung sumbu
+```
+
+```{r fig.height=5, fig.width=9, dpi=300}
+# PLOT
+ggparcoord(data_cars_norm, 
+           columns = match(selected_columns, colnames(data_cars_norm)),   
            groupColumn = "highlight",          
-           scale = "uniminmax") +  # Normalisasi 0-100
-  scale_color_manual(values = color_mapping) +  
-  labs(title = "Parallel Coordinates Plot: data_cars",
-       x = "", y = "") +
+           scale = "uniminmax",  
+           showPoints = TRUE,    
+           alphaLines = 0.6) +   
+  
+  # Warna
+  scale_color_manual(values = color_mapping, guide = "none") +  
+  scale_alpha_identity() +  
+  
+  # TEXT ----------------
+  # Judul
+  labs(title = "Perbandingan Karakteristik Mobil Berdasarkan Tenaga mobil",
+       x = NULL,  
+       y = NULL) +
+  
+  # Ganti label sumbu x
+  scale_x_discrete(labels = new_labels) +
 
-  # Gunakan guides untuk mengatur ketebalan garis
-  guides(color = guide_legend(override.aes = list(linewidth = c(2.5, 2.5, 2.5, 0.5)))) +  
+  # **Tambahkan label di ujung garis & geser lebih ke kiri**
+  geom_text(data = label_positions, 
+            aes(x = x_max - 0.2, y = cc, label = car_name, color = highlight), 
+            fontface = "bold", size = 8, hjust = 0, inherit.aes = FALSE) +
 
-  # Setting
+  
+  # THEME -------------------
+  # Hapus Legend
+  guides(color = "none") +
+
+  # **Styling tema**
   theme_minimal(base_size = 35) +  
-
-  # Grid & Line settings
   theme(
-    axis.title.y = element_text(size = 30, face = "bold"),
+    axis.title.y = element_text(size = 24, face = "bold"),
     axis.text.y = element_text(hjust = 1, face = "bold", 
-                               margin = margin(r = 1)),
-    plot.title = element_text(hjust = -0.2, face = "bold",
-                              margin = margin(b = 5)),
-    plot.subtitle = element_text(hjust = -0.115, size=25),
+                               margin = margin(r = -30), size = 22),
+    plot.title = element_text(hjust = 0, face = "bold", size = 30),
 
-    # Grid lebih ramping
-    panel.grid.major = element_line(linewidth = 0.3),  
-    panel.grid.minor = element_line(linewidth = 0.2),
+    # **Pertebal grid utama**
+    panel.grid.major = element_line(linewidth = 0.5),  
+    panel.grid.minor = element_line(linewidth = 0.3),
     panel.grid.major.y = element_blank(),
     panel.grid.minor.y = element_blank()
-  )
+  ) + 
+  coord_cartesian(clip = "off")
 ```
 
 ## Radar Charts {#radar-charts}
