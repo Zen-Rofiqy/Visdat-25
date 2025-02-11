@@ -220,6 +220,28 @@ ggplot(data_cars, aes(x = cc, y = mpg)) +
 Visualisasi ini digunakan untuk menganalisis hubungan beberapa variabel numerik sekaligus.
 
 ```{r fig.height=5, fig.width=8, dpi=300}
+# Data
+data_cars <- mtcars %>%
+  mutate(
+    cyl = as.factor(cyl),   
+    gear = as.factor(gear), 
+    carb = as.factor(carb),
+    cc = disp * 16.3871, # konversi volume mesin ke cc
+    engine = factor(ifelse(vs == 0, "V-Engine", "Inline")),
+    trans = factor(ifelse(am == 0, "Automatic", "Manual"))
+  ) %>% 
+  rownames_to_column(var = "car_name") %>% 
+  select(-disp, -vs, -am) 
+
+# Pilih 3 mobil yang akan di-highlight
+label_cars <- bind_rows(
+  data_cars %>% slice_max(mpg, n = 1, with_ties = FALSE),  
+  data_cars %>% mutate(dist_to_median = abs(mpg - median(mpg))) %>% 
+    slice_min(dist_to_median, n = 1, with_ties = FALSE) %>% select(-dist_to_median),  
+  data_cars %>% slice_min(mpg, n = 1, with_ties = FALSE)  
+) %>%
+  arrange(desc(mpg))  
+
 # Tambahkan kolom highlight dan alpha transparansi
 data_cars <- data_cars %>%
   mutate(
@@ -239,29 +261,30 @@ selected_columns <- c("mpg", "hp", "drat", "wt", "qsec", "cc")
 data_cars_norm <- data_cars %>%
   mutate(across(all_of(selected_columns), rescale))
 
-# **Ambil nilai cc yang sudah dinormalisasi untuk label**
+# **Pastikan label_positions memiliki skala yang sudah dinormalisasi**
 label_positions <- data_cars_norm %>%
   filter(car_name %in% label_cars$car_name) %>%
-  select(car_name, cc)  # Gunakan nilai cc yang sudah dinormalisasi
+  select(car_name, cc, highlight)  # Tambahkan highlight agar sesuai dengan warna
 
-x_max <- length(selected_columns) + 0.5  # Tempatkan label sedikit di luar grafik
+x_max <- length(selected_columns) + 0.3  # Posisi label di ujung sumbu
 
-# **Plot**
-ggparcoord(data_cars, 
-           columns = match(selected_columns, colnames(data_cars)),   
+# **Plot Parallel Coordinates dengan Label**
+ggparcoord(data_cars_norm, 
+           columns = match(selected_columns, colnames(data_cars_norm)),   
            groupColumn = "highlight",          
-           scale = "uniminmax",  # Pastikan skala normalisasi
+           scale = "uniminmax",  
            showPoints = TRUE,    
            alphaLines = 0.6) +   
+  
+  # **Pastikan warna tetap**
   scale_color_manual(values = color_mapping) +  
   scale_alpha_identity() +  
-  labs(title = "Parallel Coordinates Plot: data_cars",
-       x = "", y = "Skala Normalisasi (0 - 1)") +
-
-  # **Tambahkan label di ujung garis menggunakan annotate()**
-  annotate("text", x = x_max, y = label_positions$cc, 
-           label = label_positions$car_name, color = "black", size = 6, fontface = "bold", hjust = -0.2) +
-
+  
+  # **Tambahkan label di ujung garis**
+  geom_text(data = label_positions, 
+            aes(x = x_max, y = cc, label = car_name, color = highlight), 
+            fontface = "bold", size = 6, hjust = 0, inherit.aes = FALSE) +
+  
   # **Hapus legend**
   theme(legend.position = "none") +
 
