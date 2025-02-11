@@ -219,25 +219,24 @@ ggplot(data_cars, aes(x = cc, y = mpg)) +
 
 Visualisasi ini digunakan untuk menganalisis hubungan beberapa variabel numerik sekaligus.
 
-```{r fig.height=5, fig.width=8, dpi=300}
-# Data
-data_cars <- mtcars %>%
-  mutate(
-    cyl = as.factor(cyl),   
-    gear = as.factor(gear), 
-    carb = as.factor(carb),
-    cc = disp * 16.3871, # konversi volume mesin ke cc
-    engine = factor(ifelse(vs == 0, "V-Engine", "Inline")),
-    trans = factor(ifelse(am == 0, "Automatic", "Manual"))
-  ) %>% 
-  rownames_to_column(var = "car_name") %>% 
-  select(-disp, -vs, -am) 
+```{r}
+# Pilih kolom
+selected_columns <- c("mpg", "hp", "drat", "wt", "qsec", "cc")
 
+new_labels <- c("Efisiensi BBM", "Tenaga", "Rasio Driveshaft", 
+                "Berat Mobil", "Waktu 1/4 Mil", "Kapasitas Mesin")
+
+# HIGHTLIGHT---------------------------------
 # Pilih 3 mobil yang akan di-highlight
 label_cars <- bind_rows(
+  # Mobil paling irit
   data_cars %>% slice_max(mpg, n = 1, with_ties = FALSE),  
+  
+  # Mobil menengah
   data_cars %>% mutate(dist_to_median = abs(mpg - median(mpg))) %>% 
     slice_min(dist_to_median, n = 1, with_ties = FALSE) %>% select(-dist_to_median),  
+  
+  # Mobil paling boros
   data_cars %>% slice_min(mpg, n = 1, with_ties = FALSE)  
 ) %>%
   arrange(desc(mpg))  
@@ -254,9 +253,8 @@ data_cars <- data_cars %>%
 highlight_colors <- c("#21637b", "#967349", "#ad0c1b", "#E8E8E8")  
 color_mapping <- setNames(highlight_colors, levels(data_cars$highlight))
 
-# Pilih kolom numerik untuk normalisasi
-selected_columns <- c("mpg", "hp", "drat", "wt", "qsec", "cc")
 
+# NORMALISASI DATA ---------------------------------
 # **Normalisasi data ke skala 0-1 secara manual**
 data_cars_norm <- data_cars %>%
   mutate(across(all_of(selected_columns), rescale))
@@ -267,35 +265,47 @@ label_positions <- data_cars_norm %>%
   select(car_name, cc, highlight)  # Tambahkan highlight agar sesuai dengan warna
 
 x_max <- length(selected_columns) + 0.3  # Posisi label di ujung sumbu
+```
 
-# **Plot Parallel Coordinates dengan Label**
+```{r fig.height=5, fig.width=9, dpi=300}
+# PLOT
 ggparcoord(data_cars_norm, 
            columns = match(selected_columns, colnames(data_cars_norm)),   
            groupColumn = "highlight",          
            scale = "uniminmax",  
            showPoints = TRUE,    
            alphaLines = 0.6) +   
-
-  # **Pastikan warna tetap dan perbesar garis utama**
+  
+  # Warna
   scale_color_manual(values = color_mapping, guide = "none") +  
   scale_alpha_identity() +  
+  
+  # TEXT ----------------
+  # Judul
+  labs(title = "Perbandingan Karakteristik Mobil Berdasarkan Efisiensi BBM",
+       x = NULL,  
+       y = NULL) +
+  
+  # Ganti label sumbu x
+  scale_x_discrete(labels = new_labels) +
 
   # **Tambahkan label di ujung garis & geser lebih ke kiri**
   geom_text(data = label_positions, 
             aes(x = x_max - 0.2, y = cc, label = car_name, color = highlight), 
             fontface = "bold", size = 8, hjust = 0, inherit.aes = FALSE) +
 
-  # **Hapus legend sepenuhnya**
+  
+  # THEME -------------------
+  # Hapus Legend
   guides(color = "none") +
 
   # **Styling tema**
-  theme_minimal(base_size = 26) +  # **Perbesar font global**
+  theme_minimal(base_size = 35) +  
   theme(
     axis.title.y = element_text(size = 24, face = "bold"),
     axis.text.y = element_text(hjust = 1, face = "bold", 
                                margin = margin(r = -30), size = 22),
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 30),
-    plot.subtitle = element_text(hjust = 0.5, size = 24),
+    plot.title = element_text(hjust = 0, face = "bold", size = 30),
 
     # **Pertebal grid utama**
     panel.grid.major = element_line(linewidth = 0.5),  
