@@ -292,7 +292,8 @@ ggparcoord(data_cars_norm,
   theme_minimal(base_size = 26) +  # **Perbesar font global**
   theme(
     axis.title.y = element_text(size = 24, face = "bold"),
-    axis.text.y = element_text(hjust = 1, face = "bold", margin = margin(r = 5), size = 22),
+    axis.text.y = element_text(hjust = 1, face = "bold", 
+                               margin = margin(r = -30), size = 22),
     plot.title = element_text(hjust = 0.5, face = "bold", size = 30),
     plot.subtitle = element_text(hjust = 0.5, size = 24),
 
@@ -300,11 +301,9 @@ ggparcoord(data_cars_norm,
     panel.grid.major = element_line(linewidth = 0.5),  
     panel.grid.minor = element_line(linewidth = 0.3),
     panel.grid.major.y = element_blank(),
-    panel.grid.minor.y = element_blank(),
-
-    # **Geser grafik lebih ke kiri**
-    plot.margin = margin(l = -10, t = 10, r = 100, b = 10)
-  )
+    panel.grid.minor.y = element_blank()
+  ) + 
+  coord_cartesian(clip = "off")
 ```
 
 ```{r fig.height=5, fig.width=8, dpi=300}
