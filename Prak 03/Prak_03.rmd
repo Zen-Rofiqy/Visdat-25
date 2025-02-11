@@ -43,7 +43,7 @@ install_load <- function (package1, ...)  {
 }
 
 install_load("knitr","ggplot2","viridis","dplyr","DT","showtext","ggrepel",
-             "GGally","tibble","scales","tidyverse","fmsb")
+             "GGally","tibble","scales","tidyverse","fmsb","devtools")
 
 # Set wd 
 opts_knit$set(root.dir = normalizePath("./"))
@@ -440,6 +440,52 @@ ggparcoord(data_cars,
 
 Sering digunakan untuk membandingkan beberapa kategori dengan beberapa atribut dalam satu grafik.
 
+```{r}
+# Install dulu :
+## devtools::install_github("ricardo-bion/ggradar")
+library(ggiraphExtra)
+
+# Normalisasi data numerik agar berada di rentang [0,1]
+normalize <- function(x) {
+  (x - min(x)) / (max(x) - min(x))
+}
+
+# Normalisasi dan filter hanya mobil yang kita butuhkan
+data_cars_norm <- data_cars %>%
+  mutate(across(c(mpg, hp, drat, wt, qsec, cc), normalize)) %>%
+  filter(car_name %in% c("Mazda RX4", "Datsun 710", "Hornet 4 Drive"))
+
+# Pastikan data dalam format wide dengan car_name sebagai faktor
+data_radar <- data_cars_norm %>%
+  select(car_name, mpg, hp, drat, wt, qsec, cc) %>%
+  as_tibble()
+
+```
+
+### Advanced
+
+```{r}
+
+```
+
+### Sederhana
+
+```{r fig.height=5, fig.width=8, dpi=300}
+ggRadar(data=iris,aes(group=Species))
+```
+
+```{r}
+ggRadar(data=mtcars,interactive=TRUE)
+```
+
+```{r}
+ggRadar(data=mtcars,aes(colour=am,facet=cyl),interactive=TRUE)
+```
+
+```{r}
+ggRadar(iris, aes(x=c(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)))
+```
+
 ```{r fig.height=5, fig.width=8, dpi=300}
 # Normalisasi data numerik untuk radar chart
 normalize <- function(x) {
@@ -463,16 +509,26 @@ data_radar <- rbind(max_min, data_selected[-1])
 
 # Plot radar chart
 radarchart(data_radar,
-           cglty = 1,       # Grid line type
-           cglcol = "gray", # Grid line color
-           pcol = c("red", "blue", "green"), # Warna untuk masing-masing mobil
-           plwd = 2,        # Ketebalan garis
-           plty = 1,        # Tipe garis
-           pfcol = c(rgb(1, 0, 0, 0.25), rgb(0, 0, 1, 0.25), rgb(0, 1, 0, 0.25)))  # Warna area transparan
+           axistype = 1,        # Menampilkan nilai pada sumbu
+           caxislabels = c("0", "2", "4", "6", "8", "10"), # Ubah label sumbu
+           calcex = 1.2,        # Ukuran font untuk label sumbu
+           cglty = 1,           # Grid line type
+           cglcol = "gray",     # Grid line color
+           pcol = c("red", "blue", "green"), # Warna garis untuk tiap mobil
+           plwd = 2,            # Ketebalan garis
+           plty = 1,            # Tipe garis
+           pfcol = c(rgb(1, 0, 0, 0.25), # Warna isi
+                     rgb(0, 0, 1, 0.25), 
+                     rgb(0, 1, 0, 0.25)))  
 
-legend("topright", legend = c("Mazda RX4", "Datsun 710", "Hornet 4 Drive"),
-       bty = "n", pch = 20, col = c("red", "blue", "green"),
-       text.col = "grey25", pt.cex = 2)
+legend("topright", 
+       legend = c("Mazda RX4", "Datsun 710", "Hornet 4 Drive"),
+       bty = "n", 
+       pch = 20, 
+       col = c("red", "blue", "green"),
+       text.col = "grey25", 
+       pt.cex = 2,  # Ukuran simbol dalam legenda
+       cex = 1.5)   # Ukuran font pada legenda
 ```
 
 ## Chord Diagram {#chord-diagram}
