@@ -510,9 +510,23 @@ legend("topright",
 
 Diagram yang digunakan untuk menunjukkan hubungan antara beberapa kategori yang saling berhubungan.
 
+> **Install Package Manual**
+
+-   **Buka link ini di browser:**\
+    👉 <https://cran.r-project.org/bin/windows/contrib/4.2/>
+
+-   **Cari `circlize_0.4.16.zip`** atau versi terbaru.
+
+-   **Download file tersebut ke komputer Anda**.
+
+-   `install.packages("C:/Users/NAMA_USER/Downloads/circlize_0.4.16.zip", repos = NULL, type = "win.binary")`
+
 ```{r}
 # Install dan load library jika belum ada
-if (!requireNamespace("circlize", quietly = TRUE)) install.packages("circlize")
+# install.packages("circlize")
+# Kalo gak bisa, coba ini
+# install.packages("C:/Users/NAMA_USER/Downloads/circlize_0.4.16.zip", repos = NULL, type = "win.binary")
+
 library(circlize)
 
 # Load dataset
@@ -538,6 +552,10 @@ chordDiagram(chord_data, transparency = 0.5, col = c("red", "blue", "green"))
 ![](images/clipboard-2882260559.png){width="162"}
 
 Menampilkan koneksi antar elemen dalam dataset dengan menggunakan kurva.
+
+```{r}
+
+```
 
 ## Correlation Matrix {#correlation-matrix}
 
