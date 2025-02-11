@@ -42,7 +42,7 @@ install_load <- function (package1, ...)  {
    } 
 }
 
-install_load("knitr","ggplot2","viridis","dplyr","DT","showtext","ggrepel","GGally")
+install_load("knitr","ggplot2","viridis","dplyr","DT","showtext","ggrepel","GGally","tibble")
 
 # Set wd 
 opts_knit$set(root.dir = normalizePath("./"))
@@ -89,6 +89,7 @@ data_cars <- mtcars %>%
     engine = factor(ifelse(vs == 0, "V-Engine", "Inline")),
     trans = factor(ifelse(am == 0, "Automatic", "Manual"))
   ) %>% 
+  rownames_to_column(var = "car_name") %>% 
   select(-disp, -vs, -am) 
   
 head(data_cars)
@@ -109,6 +110,7 @@ Hubungan antar variabel dalam data dapat divisualisasikan menggunakan berbagai t
 Scatterplot digunakan untuk menunjukkan hubungan antara dua variabel numerik.
 
 ```{r}
+# Pilih 3 mobil yang akan di-highlight
 label_cars <- bind_rows(
   # Mobil paling irit
   data_cars %>% slice_max(mpg, n = 1, with_ties = FALSE), 
@@ -122,8 +124,7 @@ label_cars <- bind_rows(
   # Mobil paling boros
   data_cars %>% slice_min(mpg, n = 1, with_ties = FALSE)  
 ) %>%
-  arrange(desc(mpg)) %>%  
-  mutate(car_name = rownames(.))
+  arrange(desc(mpg)) 
 
 colors <- c("#21637b", "#967349", "#ad0c1b")
 ```
@@ -232,35 +233,103 @@ color_mapping <- setNames(highlight_colors, levels(data_cars$highlight))
 # Pilih kolom berdasarkan nama
 selected_columns <- c("mpg", "hp", "drat", "wt", "qsec", "cc")
 
-# Ubah data ke format long untuk memudahkan penempatan label
-data_long <- data_cars %>%
-  pivot_longer(cols = all_of(selected_columns), names_to = "Variable", values_to = "Value") %>%
-  mutate(car_name = rep(rownames(data_cars), length(selected_columns)))
-
-# Filter hanya mobil yang di-highlight untuk diberi label
-label_positions <- data_long %>%
-  filter(car_name %in% label_cars$car_name) %>%
-  group_by(car_name) %>%
-  slice_max(Variable, n = 1)  # Ambil titik terakhir di sumbu X
+# Tentukan posisi label di ujung garis (sumbu X terakhir)
+x_max <- length(selected_columns)  # Posisi sumbu X paling kanan
+label_positions <- data_cars %>%
+  filter(rownames(.) %in% label_cars$car_name) %>%
+  select(all_of(selected_columns)) %>%
+  mutate(car_name = rownames(.),
+         x = x_max,  # Posisi label di ujung kanan
+         # Ambil nilai terakhir
+         y = select(., all_of(selected_columns[length(selected_columns)]))[[1]])  
 ```
 
 ```{r fig.height=5, fig.width=8, dpi=300}
-# Viz
+# Tambahkan kolom highlight dan alpha transparansi
+data_cars <- data_cars %>%
+  mutate(
+    highlight = ifelse(car_name %in% label_cars$car_name, car_name, "Lainnya"),
+    highlight = factor(highlight, levels = c(label_cars$car_name, "Lainnya")),
+    alpha_val = ifelse(highlight == "Lainnya", 0.2, 1)  # Buat mobil lain lebih transparan
+  )
+
+# Warna khusus: 3 mobil utama + lainnya dalam warna abu-abu
+highlight_colors <- c("#21637b", "#967349", "#ad0c1b", "grey80")  
+color_mapping <- setNames(highlight_colors, levels(data_cars$highlight))
+
+# Pilih kolom berdasarkan nama
+selected_columns <- c("mpg", "hp", "drat", "wt", "qsec", "cc")
+
+# **Pastikan `label_positions` mengambil nilai dari `cc` sebagai y**
+x_max <- length(selected_columns) + 0.5  # Tempatkan label sedikit di luar grafik
+label_positions <- data_cars %>%
+  filter(car_name %in% label_cars$car_name) %>%
+  select(car_name, cc)  # Ambil nilai cc sebagai y_position
+
+# **Plot**
 ggparcoord(data_cars, 
            columns = match(selected_columns, colnames(data_cars)),   
            groupColumn = "highlight",          
-           scale = "uniminmax") +  
+           scale = "globalminmax",  # Normalisasi agar lebih proporsional
+           showPoints = TRUE,    
+           alphaLines = 0.6) +   # Pastikan garis terlihat
+  scale_color_manual(values = color_mapping) +  
+  scale_alpha_identity() +  # Pastikan alpha bekerja
+  labs(title = "Parallel Coordinates Plot: data_cars",
+       x = "", y = "") +
+
+  # **Tambahkan label di ujung garis menggunakan annotate()**
+  annotate("text", x = x_max, y = label_positions$cc, 
+           label = label_positions$car_name, color = "black", size = 6, fontface = "bold", hjust = -0.2) +
+
+  # **Pastikan skala y sesuai**
+  scale_y_continuous(expand = expansion(mult = c(0.1, 0.1))) +
+
+  # **Hapus legend**
+  theme(legend.position = "none") +
+
+  # **Styling tema**
+  theme_minimal(base_size = 20) +  
+  theme(
+    axis.title.y = element_text(size = 20, face = "bold"),
+    axis.text.y = element_text(hjust = 1, face = "bold", margin = margin(r = 1)),
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 22),
+    plot.subtitle = element_text(hjust = 0.5, size = 18),
+
+    # **Grid lebih ramping**
+    panel.grid.major = element_line(linewidth = 0.3),  
+    panel.grid.minor = element_line(linewidth = 0.2),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank()
+  )
+```
+
+```{r fig.height=5, fig.width=8, dpi=300}
+data_cars <- data_cars %>%
+  mutate(
+    highlight = ifelse(rownames(.) %in% label_cars$car_name, rownames(.), "Lainnya"),
+    highlight = factor(highlight, levels = c(label_cars$car_name, "Lainnya"))
+  )
+
+# Warna khusus
+highlight_colors <- c("#21637b", "#967349", "#ad0c1b", "grey70")  
+color_mapping <- setNames(highlight_colors, levels(data_cars$highlight))
+
+# Pilih kolom berdasarkan nama
+selected_columns <- which(colnames(data_cars) %in% 
+                            c("mpg", "hp", "drat", "wt", "qsec", "cc"))
+
+# Viz
+ggparcoord(data_cars, 
+           columns = selected_columns,   
+           groupColumn = "highlight",          
+           scale = "uniminmax") +  # Normalisasi 0-100
   scale_color_manual(values = color_mapping) +  
   labs(title = "Parallel Coordinates Plot: data_cars",
        x = "", y = "") +
-  
-  # Tambahkan label di ujung garis (hanya untuk 3 mobil terpilih)
-  geom_text(data = label_positions, 
-            aes(x = Variable, y = Value, label = car_name, color = highlight), 
-            hjust = -0.2, size = 7, fontface = "bold") +
 
-  # Hapus legend
-  theme(legend.position = "none") +
+  # Gunakan guides untuk mengatur ketebalan garis
+  guides(color = guide_legend(override.aes = list(linewidth = c(2.5, 2.5, 2.5, 0.5)))) +  
 
   # Setting
   theme_minimal(base_size = 35) +  
