@@ -42,7 +42,9 @@ install_load <- function (package1, ...)  {
    } 
 }
 
-install_load("knitr","ggplot2","viridis","dplyr","DT","showtext","ggrepel")
+install_load("knitr","ggplot2","viridis","dplyr","DT","showtext","ggrepel",
+             "GGally","tibble","scales","tidyverse","fmsb","devtools",
+             "ggiraphExtra")
 
 # Set wd 
 opts_knit$set(root.dir = normalizePath("./"))
@@ -67,6 +69,8 @@ Materi praktikum ini mengacu pada **buku *Better Data Visualizations* karya Jona
 
 Dalam pekan ini, kita akan mengeksplorasi beberapa teknik visualisasi untuk memahami hubungan antar variabel, proporsi dalam data, analisis data kualitatif, serta penyajian data dalam tabel.
 
+Referensi: <https://r-charts.com/>
+
 ## **Navigasi Materi**
 
 -   [Relationship](#relationship)
@@ -82,13 +86,17 @@ Data yang akan digunakan adalah
 # Data
 data_cars <- mtcars %>%
   mutate(
+    cyl = as.factor(cyl),   
+    gear = as.factor(gear), 
+    carb = as.factor(carb),
     cc = disp * 16.3871, # konversi volume mesin ke cc
-    engine = ifelse(vs == 0, "V-Engine", "Inline"),
-    trans = ifelse(am == 0, "Automatic", "Manual")
-    ) %>% 
+    engine = factor(ifelse(vs == 0, "V-Engine", "Inline")),
+    trans = factor(ifelse(am == 0, "Automatic", "Manual"))
+  ) %>% 
+  rownames_to_column(var = "car_name") %>% 
   select(-disp, -vs, -am) 
   
-View(data_cars)
+head(data_cars)
 ```
 
 ------------------------------------------------------------------------
@@ -106,16 +114,23 @@ Hubungan antar variabel dalam data dapat divisualisasikan menggunakan berbagai t
 Scatterplot digunakan untuk menunjukkan hubungan antara dua variabel numerik.
 
 ```{r}
-# Cari nama mobil
-boros <- data_cars[which.min(data_cars$mpg), ]   
-irit <- data_cars[which.max(data_cars$mpg), ]    
-menengah <- data_cars[which.min(abs(data_cars$mpg - median(data_cars$mpg) )), ]   
+# Pilih 3 mobil yang akan di-highlight
+label_cars <- bind_rows(
+  # Mobil paling irit
+  data_cars %>% slice_max(mpg, n = 1, with_ties = FALSE), 
+  
+  # Mobil menengah
+  data_cars %>% 
+    mutate(dist_to_median = abs(mpg - median(mpg))) %>%   
+    slice_min(dist_to_median, n = 1, with_ties = FALSE) %>%  
+    select(-dist_to_median),  
+  
+  # Mobil paling boros
+  data_cars %>% slice_min(mpg, n = 1, with_ties = FALSE)  
+) %>%
+  arrange(desc(mpg)) 
 
-label_cars <- rbind(boros, irit, menengah)
-label_cars$car_name <- rownames(label_cars)  
-
-
-colors <- c("#ad0c1b", "#967349", "#21637b")
+colors <- c("#21637b", "#967349", "#ad0c1b")
 ```
 
 ### Advanced
@@ -201,11 +216,226 @@ ggplot(data_cars, aes(x = cc, y = mpg)) +
   theme_gray(base_size = 35) #efek pake font google
 ```
 
-## Parallel Coordinates Plot {#parallel-coordinates-plot}
+## Parallel Coordinates Plot {#parallel-coordinates-plot .tabset}
 
 ![](images/clipboard-3705109929.png){width="168"}
 
 Visualisasi ini digunakan untuk menganalisis hubungan beberapa variabel numerik sekaligus.
+
+```{r}
+# Pilih kolom
+selected_columns <- c("mpg", "hp", "drat", "wt", "qsec", "cc")
+
+new_labels <- c("Efisiensi BBM", "Tenaga", "Rasio Driveshaft", 
+                "Berat Mobil", "Waktu 1/4 Mil", "Kapasitas Mesin")
+
+# HIGHTLIGHT---------------------------------
+highlight_cars <- function(data, col) {
+  selected <- bind_rows(
+    # Mobil dengan nilai tertinggi
+    data %>% slice_max({{col}}, n = 1, with_ties = FALSE),  
+    
+    # Mobil dengan nilai median terdekat
+    data %>% mutate(dist_to_median = abs({{col}} - median({{col}}))) %>% 
+      slice_min(dist_to_median, n = 1, with_ties = FALSE) %>% 
+      select(-dist_to_median),  
+    
+    # Mobil dengan nilai terendah
+    data %>% slice_min({{col}}, n = 1, with_ties = FALSE)  
+  ) %>%
+    arrange(desc({{col}}))  
+  
+  return(selected)
+}
+
+# Pilih 3 mobil yang akan di-highlight
+label_cars <- highlight_cars(data_cars, mpg)  # Berdasarkan efisiensi BBM
+
+# Tambahkan kolom highlight dan alpha transparansi
+data_cars <- data_cars %>%
+  mutate(
+    highlight = ifelse(car_name %in% label_cars$car_name, car_name, "Lainnya"),
+    highlight = factor(highlight, levels = c(label_cars$car_name, "Lainnya")),
+    alpha_val = ifelse(highlight == "Lainnya", 0.2, 1)
+  )
+
+# Warna khusus: 3 mobil utama + lainnya dalam warna abu-abu
+highlight_colors <- c("#21637b", "#967349", "#ad0c1b", "#E8E8E8")  
+color_mapping <- setNames(highlight_colors, levels(data_cars$highlight))
+
+
+# NORMALISASI DATA ---------------------------------
+# **Normalisasi data ke skala 0-1 secara manual**
+data_cars_norm <- data_cars %>%
+  mutate(across(all_of(selected_columns), rescale))
+
+# **Pastikan label_positions memiliki skala yang sudah dinormalisasi**
+label_positions <- data_cars_norm %>%
+  filter(car_name %in% label_cars$car_name) %>%
+  select(car_name, cc, highlight)  # Tambahkan highlight agar sesuai dengan warna
+
+x_max <- length(selected_columns) + 0.3  # Posisi label di ujung sumbu
+```
+
+### Advanced 1
+
+Highlight 3 mobil berdasarkan Efisiensi bahan bakar.
+
+```{r fig.height=5, fig.width=9, dpi=300}
+# PLOT
+chart <- 
+ggparcoord(data_cars_norm, 
+           columns = match(selected_columns, colnames(data_cars_norm)),   
+           groupColumn = "highlight",          
+           scale = "uniminmax",  
+           showPoints = TRUE,    
+           alphaLines = 0.6) +   
+  
+  # Warna
+  scale_color_manual(values = color_mapping, guide = "none") +  
+  scale_alpha_identity() +  
+  
+  # TEXT ----------------
+  # Judul
+  labs(title = "Perbandingan Karakteristik Mobil Berdasarkan Efisiensi BBM",
+       x = NULL,  
+       y = NULL) +
+  
+  # Ganti label sumbu x
+  scale_x_discrete(labels = new_labels) +
+
+  # **Tambahkan label di ujung garis & geser lebih ke kiri**
+  geom_text(data = label_positions, 
+            aes(x = x_max - 0.2, y = cc, label = car_name, color = highlight), 
+            fontface = "bold", size = 8, hjust = 0, inherit.aes = FALSE) +
+
+  
+  # THEME -------------------
+  # Hapus Legend
+  guides(color = "none") +
+
+  # **Styling tema**
+  theme_minimal(base_size = 35) +  
+  theme(
+    axis.title.y = element_text(size = 24, face = "bold"),
+    axis.text.y = element_text(hjust = 1, face = "bold", 
+                               margin = margin(r = -30), size = 22),
+    plot.title = element_text(hjust = 0, face = "bold", size = 30),
+
+    # **Pertebal grid utama**
+    panel.grid.major = element_line(linewidth = 0.5),  
+    panel.grid.minor = element_line(linewidth = 0.3),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank()
+  ) + 
+  coord_cartesian(clip = "off")
+
+chart 
+
+# Simpan Chart
+ggsave("Chart/02_Paralell-Coordinates.png", 
+       chart, dpi = 300, height = 5, width = 9)
+```
+
+### Advanced 2
+
+Hightlight mobil berdasarkan tenaga.
+
+```{r}
+# Pilih 3 mobil yang akan di-highlight
+label_cars <- highlight_cars(data_cars, hp)  # Berdasarkan tenaga
+
+# Tambahkan kolom highlight dan alpha transparansi
+data_cars <- data_cars %>%
+  mutate(
+    highlight = ifelse(car_name %in% label_cars$car_name, car_name, "Lainnya"),
+    highlight = factor(highlight, levels = c(label_cars$car_name, "Lainnya")),
+    alpha_val = ifelse(highlight == "Lainnya", 0.2, 1)
+  )
+
+# Warna khusus: 3 mobil utama + lainnya dalam warna abu-abu
+highlight_colors <- c("#21637b", "#967349", "#ad0c1b", "#E8E8E8")  
+color_mapping <- setNames(highlight_colors, levels(data_cars$highlight))
+
+
+# NORMALISASI DATA ---------------------------------
+# **Normalisasi data ke skala 0-1 secara manual**
+data_cars_norm <- data_cars %>%
+  mutate(across(all_of(selected_columns), rescale))
+
+# **Pastikan label_positions memiliki skala yang sudah dinormalisasi**
+label_positions <- data_cars_norm %>%
+  filter(car_name %in% label_cars$car_name) %>%
+  select(car_name, cc, highlight)  # Tambahkan highlight agar sesuai dengan warna
+
+x_max <- length(selected_columns) + 0.3  # Posisi label di ujung sumbu
+```
+
+```{r fig.height=5, fig.width=9, dpi=300}
+# PLOT
+chart <- 
+ggparcoord(data_cars_norm, 
+           columns = match(selected_columns, colnames(data_cars_norm)),   
+           groupColumn = "highlight",          
+           scale = "uniminmax",  
+           showPoints = TRUE,    
+           alphaLines = 0.6) +   
+  
+  # Warna
+  scale_color_manual(values = color_mapping, guide = "none") +  
+  scale_alpha_identity() +  
+  
+  # TEXT ----------------
+  # Judul
+  labs(title = "Perbandingan Karakteristik Mobil Berdasarkan Tenaga",
+       x = NULL,  
+       y = NULL) +
+  
+  # Ganti label sumbu x
+  scale_x_discrete(labels = new_labels) +
+
+  # **Tambahkan label di ujung garis & geser lebih ke kiri**
+  geom_text(data = label_positions, 
+            aes(x = x_max - 0.2, y = cc, label = car_name, color = highlight), 
+            fontface = "bold", size = 8, hjust = 0, inherit.aes = FALSE) +
+
+  
+  # THEME -------------------
+  # Hapus Legend
+  guides(color = "none") +
+
+  # **Styling tema**
+  theme_minimal(base_size = 35) +  
+  theme(
+    axis.title.y = element_text(size = 24, face = "bold"),
+    axis.text.y = element_text(hjust = 1, face = "bold", 
+                               margin = margin(r = -30), size = 22),
+    plot.title = element_text(hjust = 0, face = "bold", size = 30),
+
+    # **Pertebal grid utama**
+    panel.grid.major = element_line(linewidth = 0.5),  
+    panel.grid.minor = element_line(linewidth = 0.3),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank()
+  ) + 
+  coord_cartesian(clip = "off")
+
+chart 
+
+# Simpan chart
+ggsave("Chart/02_Paralell-Coordinates-2.png", 
+       chart, dpi = 300, height = 5, width = 9)
+```
+
+### Sederhana
+
+```{r fig.height=5, fig.width=9, dpi=300}
+ggparcoord(data_cars, 
+           columns = match(selected_columns, colnames(data_cars)),  
+           groupColumn = "cyl",
+           scale = "uniminmax") +
+  theme_gray(base_size = 35)
+```
 
 ## Radar Charts {#radar-charts}
 
@@ -213,11 +443,66 @@ Visualisasi ini digunakan untuk menganalisis hubungan beberapa variabel numerik 
 
 Sering digunakan untuk membandingkan beberapa kategori dengan beberapa atribut dalam satu grafik.
 
+### Sederhana
+
+```{r fig.height=5, fig.width=8, dpi=300}
+ggRadar(data=iris,aes(group=Species))
+```
+
+```{r}
+ggRadar(data=mtcars,interactive=TRUE)
+```
+
+```{r}
+ggRadar(data=mtcars,aes(colour=am,facet=cyl),interactive=TRUE)
+```
+
+```{r}
+ggRadar(iris, aes(x=c(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)))
+```
+
 ## Chord Diagram {#chord-diagram}
 
 ![](images/clipboard-1694170991.png){width="166"}
 
 Diagram yang digunakan untuk menunjukkan hubungan antara beberapa kategori yang saling berhubungan.
+
+> **Install Package Manual**
+
+-   **Buka link ini di browser:**\
+    👉 <https://cran.r-project.org/bin/windows/contrib/4.2/>
+
+-   **Cari `circlize_0.4.16.zip`** atau versi terbaru.
+
+-   **Download file tersebut ke komputer Anda**.
+
+-   `install.packages("C:/Users/NAMA_USER/Downloads/circlize_0.4.16.zip", repos = NULL, type = "win.binary")`
+
+```{r}
+# Install dan load library jika belum ada
+# install.packages("circlize")
+# Kalo gak bisa, coba ini
+# install.packages("C:/Users/NAMA_USER/Downloads/circlize_0.4.16.zip", repos = NULL, type = "win.binary")
+
+library(circlize)
+
+# Load dataset
+data("mtcars")
+
+# Membuat data hubungan antara jumlah silinder dan jenis transmisi
+mtcars$group <- as.character(mtcars$cyl)  # Mengubah cyl menjadi faktor karakter
+mtcars$transmission <- ifelse(mtcars$am == 0, "Automatic", "Manual")
+
+# Hitung frekuensi kombinasi
+chord_data <- as.data.frame(table(mtcars$group, mtcars$transmission))
+
+# Ubah nama kolom agar lebih mudah dipahami
+colnames(chord_data) <- c("Cylinders", "Transmission", "Count")
+
+# Buat chord diagram
+chordDiagram(chord_data, transparency = 0.5, col = c("red", "blue", "green"))
+
+```
 
 ## Arc Chart {#arc-chart}
 
@@ -255,11 +540,296 @@ Teknik visualisasi ini digunakan untuk menunjukkan bagaimana suatu bagian berkon
 
 Diagram lingkaran yang digunakan untuk menunjukkan distribusi persentase suatu kategori.
 
+### Pie
+
+```{r}
+df <- data.frame(value = c(15, 25, 32, 28),
+                 group = paste0("G", 1:4))
+
+# Get the positions
+df2 <- df %>% 
+  mutate(csum = rev(cumsum(rev(value))), 
+         pos = value/2 + lead(csum, 1),
+         pos = if_else(is.na(pos), value/2, pos))
+
+ggplot(df, aes(x = "" , y = value, fill = fct_inorder(group))) +
+  geom_col(width = 1, color = 1) +
+  coord_polar(theta = "y") +
+  scale_fill_brewer(palette = "Pastel1") +
+  geom_label_repel(data = df2,
+                   aes(y = pos, label = paste0(value, "%")),
+                   size = 4.5, nudge_x = 1, show.legend = FALSE) +
+  guides(fill = guide_legend(title = "Group")) +
+  theme_void()
+```
+
+```{r}
+# Get the positions
+df2 <- df %>% 
+  mutate(csum = rev(cumsum(rev(value))), 
+         pos = value/2 + lead(csum, 1),
+         pos = if_else(is.na(pos), value/2, pos))
+
+ggplot(df, aes(x = "", y = value, fill = fct_inorder(group))) +
+  geom_col(width = 1, color = 1) +
+  geom_text(aes(label = value),
+            position = position_stack(vjust = 0.5)) +
+  coord_polar(theta = "y") +
+  guides(fill = guide_legend(title = "Group")) +
+  scale_y_continuous(breaks = df2$pos, labels = df$group) +
+  theme(axis.ticks = element_blank(),
+        axis.title = element_blank(),
+        axis.text = element_text(size = 15), 
+        legend.position = "none", # Removes the legend
+        panel.background = element_rect(fill = "white"))
+```
+
+### Donut
+
+```{r}
+df <- data.frame(value = c(10, 30, 32, 28),
+                 group = paste0("G", 1:4))
+
+# Increase the value to make the hole bigger
+# Decrease the value to make the hole smaller
+hsize <- 4
+
+df <- df %>% 
+  mutate(x = hsize)
+
+ggplot(df, aes(x = hsize, y = value, fill = group)) +
+  geom_col() +
+  coord_polar(theta = "y") +
+  xlim(c(0.2, hsize + 0.5))
+```
+
+```{r}
+# Hole size
+hsize <- 3.5
+
+df <- df %>% 
+  mutate(x = hsize)
+
+ggplot(df, aes(x = hsize, y = value, fill = group)) +
+  geom_col() +
+  geom_text(aes(label = value),
+            position = position_stack(vjust = 0.5)) +
+  coord_polar(theta = "y") +
+  xlim(c(0.2, hsize + 0.5))
+```
+
+```{r}
+# Hole size
+hsize <- 3
+
+df <- df %>% 
+  mutate(x = hsize)
+
+ggplot(df, aes(x = hsize, y = value, fill = group)) +
+  geom_col() +
+  geom_label(aes(label = value),
+             position = position_stack(vjust = 0.5),
+             show.legend = FALSE) +
+  coord_polar(theta = "y") +
+  xlim(c(0.2, hsize + 0.5))
+```
+
+```{r}
+# Hole size
+hsize <- 3
+
+df <- df %>% 
+  mutate(x = hsize)
+
+ggplot(df, aes(x = hsize, y = value, fill = group)) +
+  geom_col(color = "black") +
+  geom_label(aes(label = value),
+             position = position_stack(vjust = 0.5),
+             show.legend = FALSE) +
+  coord_polar(theta = "y") +
+  xlim(c(0.2, hsize + 0.5))
+```
+
+```{r}
+# Hole size
+hsize <- 3
+
+df <- df %>% 
+  mutate(x = hsize)
+
+ggplot(df, aes(x = hsize, y = value, fill = group)) +
+  geom_col(color = "black") +
+  coord_polar(theta = "y") +
+  scale_fill_manual(values = c("#FFF7FB", "#D0D1E6",
+                               "#74A9CF", "#0570B0")) +
+  xlim(c(0.2, hsize + 0.5))
+```
+
+```{r}
+# Hole size
+hsize <- 3
+
+df <- df %>% 
+  mutate(x = hsize)
+
+ggplot(df, aes(x = hsize, y = value, fill = group)) +
+  geom_col(color = "black") +
+  geom_text(aes(label = value),
+             position = position_stack(vjust = 0.5)) +
+  coord_polar(theta = "y") +
+  scale_fill_brewer(palette = "GnBu") +
+  xlim(c(0.2, hsize + 0.5)) +
+  theme(panel.background = element_rect(fill = "white"),
+        panel.grid = element_blank(),
+        axis.title = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text = element_blank())
+```
+
+```{r}
+# Hole size
+hsize <- 3
+
+df <- df %>% 
+  mutate(x = hsize)
+
+ggplot(df, aes(x = hsize, y = value, fill = group)) +
+  geom_col(color = "black") +
+  coord_polar(theta = "y") +
+  xlim(c(0.2, hsize + 0.5)) +
+  scale_fill_discrete(labels = c("A", "B", "C", "D")) 
+
+```
+
+```{r}
+# Hole size
+hsize <- 3
+
+df <- df %>% 
+  mutate(x = hsize)
+
+ggplot(df, aes(x = hsize, y = value, fill = group)) +
+  geom_col(color = "black") +
+  coord_polar(theta = "y") +
+  xlim(c(0.2, hsize + 0.5)) +
+  guides(fill = guide_legend(title = "Title"))
+```
+
+```{r}
+# Hole size
+hsize <- 3
+
+df <- df %>% 
+  mutate(x = hsize)
+
+ggplot(df, aes(x = hsize, y = value, fill = group)) +
+  geom_col(color = "black") +
+  coord_polar(theta = "y") +
+  xlim(c(0.2, hsize + 0.5)) +
+  theme(legend.position = "none")
+```
+
 ## Treemap {#treemap}
 
 ![](images/clipboard-1039790995.png){width="189"} ![](images/clipboard-3374195326.png){width="188"}
 
 Menampilkan hierarki data dalam bentuk persegi panjang bersarang.
+
+```{r}
+group <- paste("Group", 1:9)
+subgroup <- c("A", "C", "B", "A", "A",
+              "C", "C", "B", "B")
+value <- c(7, 25, 50, 5, 16,
+           18, 30, 12, 41)
+
+df <- data.frame(group, subgroup, value) 
+```
+
+```{r}
+# install.packages("treemapify")
+library(treemapify)
+# install.packages("ggplot2")
+library(ggplot2)
+
+ggplot(df, aes(area = value, fill = group)) +
+  geom_treemap()
+```
+
+```{r}
+ggplot(df, aes(area = value, fill = value)) +
+  geom_treemap()
+```
+
+```{r}
+ggplot(df, aes(area = value, fill = group, label = value)) +
+  geom_treemap() +
+  geom_treemap_text()
+```
+
+```{r}
+ggplot(df, aes(area = value, fill = group, label = value)) +
+  geom_treemap() +
+  geom_treemap_text(colour = "white",
+                    place = "centre",
+                    size = 15)
+```
+
+```{r}
+ggplot(df, aes(area = value, fill = group,
+               label = paste(group, value, sep = "\n"))) +
+  geom_treemap() +
+  geom_treemap_text(colour = "white",
+                    place = "centre",
+                    size = 15) +
+  theme(legend.position = "none")
+```
+
+```{r}
+ggplot(df, aes(area = value, fill = value, label = group)) +
+  geom_treemap() +
+  geom_treemap_text(colour = "white",
+                    place = "centre",
+                    size = 15)
+```
+
+```{r}
+ggplot(df, aes(area = value, fill = value, label = group)) +
+  geom_treemap() +
+  geom_treemap_text(colour = "white",
+                    place = "centre",
+                    size = 15,
+                    grow = TRUE)
+```
+
+```{r}
+ggplot(df, aes(area = value, fill = value,
+               label = group, subgroup = subgroup)) +
+  geom_treemap() +
+  geom_treemap_subgroup_border(colour = "white", size = 5) +
+  geom_treemap_subgroup_text(place = "centre", grow = TRUE,
+                             alpha = 0.25, colour = "black",
+                             fontface = "italic") +
+  geom_treemap_text(colour = "white", place = "centre",
+                    size = 15, grow = TRUE)
+```
+
+```{r}
+ggplot(df, aes(area = value, fill = value, label = group)) +
+  geom_treemap() +
+  geom_treemap_text(colour = c(rep("white", 2),
+                               1, rep("white", 6)),
+                    place = "centre", size = 15) +
+  scale_fill_viridis_c()
+```
+
+```{r}
+ggplot(df, aes(area = value, fill = group, label = value)) +
+  geom_treemap() +
+  geom_treemap_text(colour = "white",
+                    place = "centre",
+                    size = 15) +
+  scale_fill_brewer(palette = "Blues")
+```
 
 ## Sunburst Diagram {#sunburst-diagram}
 
@@ -267,17 +837,212 @@ Menampilkan hierarki data dalam bentuk persegi panjang bersarang.
 
 Mirip dengan treemap, tetapi berbentuk melingkar untuk menunjukkan hierarki.
 
+```{r}
+# install.packages("plotly")
+library(plotly)
+
+# Create data
+data <- list(
+  label = c("A", "B", "C", "D"),
+  parent = c("", "A", "A", "B"),
+  value = c(10, 20, 30, 40)
+)
+data<-data.frame(data)
+# Create sunburst chart
+fig <- plot_ly(data, ids = ~label, labels = ~label, 
+               parents = ~parent, values = ~value,
+               type = 'sunburst')
+fig
+```
+
+```{r}
+# Sample hierarchical data (Organization Structure)
+data <- list(
+  id = c("CEO", "HR", "HR-Manager", "HR-TeamLead", "HR-Staff", "Finance", 
+         "Finance-Manager", "Finance-Accountant", "Finance-Analyst", "IT", 
+         "IT-Manager",
+         "IT-Developer", "IT-QA"),
+  parent = c("", "CEO", "HR", "HR", "HR", "CEO", "Finance", "Finance", 
+             "Finance", "CEO", 
+             "IT", "IT", "IT"),
+  value = c(1, 1, 3, 10, 1, 1, 1, 4, 2, 1, 1, 6, 3)
+)
+data<-data.frame(data)
+# Create sunburst chart for organization structure
+organization_sunburst <- plot_ly(data, ids = ~id, labels = ~id, parents = ~parent, 
+                                 values = ~value, type = "sunburst")
+
+# Display the chart
+organization_sunburst
+```
+
+```{r}
+# Sample hierarchical data (File System Usage)
+data <- list(
+  id = c("Root", "usr", "usr-bin", "usr-lib", "usr-local", "home", "home-user1", 
+         "home-user2", "home-user3", "var", "var-log", "var-tmp", "var-cache"),
+  parent = c("", "Root", "usr", "usr", "usr", "Root", "home", "home", "home", "Root",
+             "var", "var", "var"),
+  value = c(100, 50, 30, 20, 10, 50, 20, 15, 15, 30, 25, 15, 10)
+)
+data<-data.frame(data)
+# Create sunburst chart for file system usage
+file_system_sunburst <- plot_ly(data, ids = ~id, labels = ~id, parents = ~parent, 
+                                values = ~value, type = "sunburst")
+
+# Display the chart
+file_system_sunburst
+```
+
 ## Nightingale Chart {#nightingale-chart}
 
 ![](images/clipboard-2076041745.png){width="183"}
 
 Variasi dari pie chart yang digunakan untuk menampilkan data dalam bentuk radial.
 
+```{r}
+# Simulasi data mirip dengan Nightingale dataset
+set.seed(123)
+nightingale_sim <- data.frame(
+  Month = rep(month.abb, 2),  # 12 bulan, 2 periode
+  Year = rep(c(1854, 1855), each = 12),
+  Disease = sample(50:150, 24, replace = TRUE),  # Kematian karena penyakit
+  Wounds = sample(10:50, 24, replace = TRUE),    # Kematian karena luka
+  Other = sample(5:30, 24, replace = TRUE)       # Kematian lainnya
+)
+
+# Ubah data ke long format
+nightingale_long <- nightingale_sim %>%
+  pivot_longer(cols = c(Disease, Wounds, Other), names_to = "Cause", values_to = "Rate") %>%
+  mutate(
+    Month = factor(Month, levels = month.abb),  # Urutan bulan
+    Period = ifelse(Year == 1854, "April 1854 to March 1855", "April 1855 to March 1856")
+  )
+
+# Plot Nightingale Chart (Coxcomb Chart)
+ggplot(nightingale_long, aes(Month, Rate, fill = Cause)) + 
+  geom_col(width = 1, position = "identity") + 
+  coord_polar() + 
+  facet_wrap(~Period) +
+  scale_fill_manual(values = c("skyblue3", "grey30", "firebrick")) +
+  scale_y_sqrt() +
+  theme_void() +
+  theme(
+    axis.text.x = element_text(size = 9),
+    strip.text = element_text(size = 11),
+    legend.position = "bottom",
+    plot.background = element_rect(fill = alpha("cornsilk", 0.5)),
+    plot.margin = unit(c(10, 10, 10, 10), "pt"),
+    plot.title = element_text(vjust = 5)
+  ) +
+  ggtitle("Simulated Nightingale Chart: Causes of Mortality in the Army")
+
+```
+
 ## Voronoi Diagram {#voronoi-diagram}
 
 ![](images/clipboard-2530505370.png){width="204"}
 
 Membagi ruang menjadi wilayah berdasarkan kedekatan titik-titik data.
+
+```{r}
+# Data
+set.seed(1)
+x <- sample(1:400, size = 100)
+y <- sample(1:400, size = 100)
+dist <- sqrt((x - 200) ^ 2 + (y - 200) ^ 2)
+
+df <- data.frame(x, y, dist = dist)
+```
+
+```{r}
+# install.packages("ggvoronoi")
+# devtools::install_github("garretrc/ggvoronoi")
+library(ggvoronoi)
+
+ggplot(df, aes(x, y)) +
+  stat_voronoi(geom = "path") 
+```
+
+```{r}
+ggplot(df, aes(x, y)) +
+  stat_voronoi(geom = "path") +
+  geom_point() 
+
+```
+
+```{r}
+ggplot(df, aes(x, y)) +
+  stat_voronoi(geom = "path",
+               color = 4,      # Color of the lines
+               lwd = 0.7,      # Width of the lines
+               linetype = 1) + # Type of the lines
+  geom_point()
+```
+
+```{r}
+
+ggplot(df, aes(x, y, fill = dist)) +
+  geom_voronoi() +
+  geom_point() 
+ 
+
+```
+
+```{r}
+ggplot(df, aes(x, y, fill = dist)) +
+  geom_voronoi() +
+  stat_voronoi(geom = "path") +
+  geom_point() 
+
+```
+
+```{r}
+ggplot(df, aes(x, y, fill = dist)) +
+  geom_voronoi(alpha = 0.75) +
+  stat_voronoi(geom = "path") +
+  geom_point() 
+
+```
+
+```{r}
+ggplot(df, aes(x, y, fill = dist)) +
+  geom_voronoi() +
+  stat_voronoi(geom = "path") +
+  geom_point() +
+  scale_fill_gradient(low = "#F9F9F9",
+                      high = "#312271") 
+ 
+
+```
+
+```{r}
+ggplot(df, aes(x, y, fill = dist)) +
+  geom_voronoi() +
+  stat_voronoi(geom = "path") +
+  geom_point() +
+  theme(legend.position = "none") 
+
+```
+
+### Bounding box
+
+```{r}
+# Circle
+s <- seq(0, 2 * pi, length.out = 3000)
+circle <- data.frame(x = 120 * (1 + cos(s)),
+                     y = 120 * (1 + sin(s)),
+                     group = rep(1, 3000))
+
+ggplot(df, aes(x, y, fill = dist)) +
+  geom_voronoi(outline = circle,
+               color = 1, size = 0.1) +
+  scale_fill_gradient(low = "#B9DDF1",
+                      high = "#2A5783",
+                      guide = FALSE) +
+  theme_void() +
+  coord_fixed()
+```
 
 ------------------------------------------------------------------------
 
@@ -291,30 +1056,111 @@ Visualisasi data kualitatif membantu menyampaikan informasi yang lebih deskripti
 
 Menampilkan distribusi kata dalam teks berdasarkan frekuensi penggunaannya.
 
+```{r}
+# install.packages("ggwordcloud")
+library(ggwordcloud)
+
+df <- tibble(
+  iso_639_3 = c("zho", "wuu", "vie", "urd", "tur", "tha",
+                "tgl", "tel", "tam", "swa", "spa", "rus",
+                "pus", "por", "pnb", "pan", "msa", "mar",
+                "kor", "kan", "jpn", "jav", "ita", "ind",
+                "hin", "hau", "guj", "fra", "fas", "eng",
+                "deu", "ben", "arz", "ara"),
+  word = c("謝謝", "謝謝", "Cảm ơn ông", "بہت شکریہ", "Teşekkür ederim", "ขอบคุณ",
+           "Salamat", "ధన్యవాదాలు", "நன்றி", "Asante", "Gracias", "Спасибо!",
+           "شكرًا", "Obrigado", "شکریہ", "ਮੁਰਕੁਪਾ", "Terima kasih", "आभार आहे",
+           "감사합니다", "ಧನ್ಯವಾದಗಳು", "ありがとう", "Matur nuwun sanget", "Grazie", "Terima kasih",
+           "धन्यवाद", "Na gode", "આભાર", "Merci", "متشكرم", "Thank you",
+           "Danke", "ধন্যবাদ", "شكراً", "شكراً"),
+  name = c("Chinese", "Wu Chinese", "Vietnamese", "Urdu", "Turkish", "Thai",
+           "Tagalog", "Telugu", "Tamil", "Swahili", "Spanish", "Russian",
+           "Pushto", "Portuguese", "Western Panjabi", "Panjabi", "Malay", "Marathi",
+           "Korean", "Kannada", "Japanese", "Javanese", "Italian", "Indonesian",
+           "Hindi", "Hausa", "Gujarati", "French", "Persian", "English",
+           "German", "Bengali", "Egyptian Arabic", "Arabic"),
+  native_speakers = c(1200, 80, 75, 67, 78.5, 28,
+                      28, 81, 69, 8, 480, 154,
+                      55, 220, 120, 120, 77, 83,
+                      77.2, 69, 125, 82, 90, 43,
+                      322, 43.7, 55, 76.8, 60, 400,
+                      95, 260, 65, 245),
+  speakers = c(1200, 80, 75, 67, 88, 72,
+               73, 81, 77, 98, 555, 239,
+               55, 243, 120, 120, 277, 83,
+               77.2, 69, 125, 82, 114, 199,
+               442, 63.2, 55, 350.8, 110, 800,
+               107.5, 280, 65, 515)
+)
+```
+
+```{r}
+set.seed(1)
+ggplot(df, aes(label = word)) +
+  geom_text_wordcloud() +
+  theme_minimal()
+```
+
+```{r}
+set.seed(1)
+ggplot(df, aes(label = word, size = speakers)) +
+  geom_text_wordcloud() +
+  theme_minimal()
+```
+
+```{r}
+set.seed(1)
+ggwordcloud(words = df$word, freq = df$speakers)
+```
+
+```{r}
+set.seed(1)
+ggplot(df, aes(label = word, size = speakers)) +
+  geom_text_wordcloud() +
+  scale_size_area(max_size = 20) +
+  theme_minimal()
+```
+
+```{r}
+library(ggforce)
+set.seed(1)
+ggplot(df, aes(label = word, size = speakers)) +
+  geom_text_wordcloud(rm_outside = TRUE) +
+  scale_size_area(max_size = 60) +
+  theme_minimal()
+```
+
+```{r}
+set.seed(1)
+
+# Data
+df <- thankyou_words_small
+df$angle <- sample(c(0, 45, 60, 90, 120, 180), nrow(df), replace = TRUE)
+
+ggplot(df, aes(label = word, size = speakers, angle = angle)) +
+  geom_text_wordcloud() +
+  scale_size_area(max_size = 20) +
+  theme_minimal()
+```
+
+```{r}
+set.seed(1)
+ggplot(df, aes(label = word, size = speakers)) +
+  geom_text_wordcloud(shape = "diamond") +
+  scale_size_area(max_size = 20) +
+  theme_minimal()
+```
+
+```{r}
+set.seed(1)
+ggplot(df, aes(label = word, size = speakers)) +
+  geom_text_wordcloud(shape = "star") +
+  scale_size_area(max_size = 20) +
+  theme_minimal()
+```
+
 ## Word Trees {#word-trees}
 
 ![](images/clipboard-3911942585.png){width="201"}
 
 Menampilkan struktur hierarki dari kata atau frasa dalam teks.
-
-# **Tables** {#tables}
-
-Tabel digunakan untuk menyajikan data numerik dan kategorikal dalam format yang mudah dibaca.
-
-## The Ten Guidelines of Better Tables {#better-tables}
-
-Sepuluh prinsip utama dalam mendesain tabel yang lebih baik.
-
-## Demonstration: A Basic Data Table Redesign {#basic-table-redesign}
-
-Contoh perbaikan desain tabel dasar agar lebih mudah dipahami.
-
-## Demonstration: A Regression Table Redesign {#regression-table-redesign}
-
-Contoh penyajian hasil regresi dalam format tabel yang lebih efektif.
-
-------------------------------------------------------------------------
-
-## **Kesimpulan**
-
-Pada praktikum ini, kita telah membahas berbagai teknik visualisasi untuk menunjukkan hubungan antar variabel, distribusi bagian ke keseluruhan, data kualitatif, serta penyajian tabel yang lebih efektif. Pemilihan jenis visualisasi yang tepat bergantung pada karakteristik data dan tujuan analisis yang ingin dicapai.

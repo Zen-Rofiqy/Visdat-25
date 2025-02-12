@@ -11,7 +11,7 @@
 | Pekan | Materi                                                        | Status             |
 | ----- | ------------------------------------------------------------- | ------------------ |
 | 1     | Pengenalan software: R package esquisse                       | :heavy_check_mark: |
-| 2     | Membuat grafik berbagai jenis data (part 1)                   |                    |
+| 2     | Membuat grafik berbagai jenis data (part 1)                   | :heavy_check_mark: |
 | 3     | Membuat grafik berbagai jenis data (part 2)                   |                    |
 | 4     | Eksplorasi data untuk group project                           |                    |
 | 5-6   | Diskusi project (revisi berdasarkan feedback di kelas kuliah) |                    |
