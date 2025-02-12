@@ -461,51 +461,6 @@ ggRadar(data=mtcars,aes(colour=am,facet=cyl),interactive=TRUE)
 ggRadar(iris, aes(x=c(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)))
 ```
 
-```{r fig.height=5, fig.width=8, dpi=300}
-# Normalisasi data numerik untuk radar chart
-normalize <- function(x) {
-  (x - min(x)) / (max(x) - min(x)) * 10
-}
-
-data_cars_norm <- data_cars %>% 
-  mutate(across(c(mpg, hp, drat, wt, qsec, cc), normalize))
-
-# Menyiapkan data untuk fmsb
-max_min <- data.frame(
-  matrix(rep(c(10, 0), 
-             each = ncol(data_cars_norm) - 1), 
-         nrow = 2, byrow = TRUE)
-  )
-colnames(max_min) <- colnames(data_cars_norm)[-1]
-
-data_selected <- data_cars_norm %>% 
-  filter(car_name %in% c("Mazda RX4", "Datsun 710", "Hornet 4 Drive"))
-data_radar <- rbind(max_min, data_selected[-1])
-
-# Plot radar chart
-radarchart(data_radar,
-           axistype = 1,        # Menampilkan nilai pada sumbu
-           caxislabels = c("0", "2", "4", "6", "8", "10"), # Ubah label sumbu
-           calcex = 1.2,        # Ukuran font untuk label sumbu
-           cglty = 1,           # Grid line type
-           cglcol = "gray",     # Grid line color
-           pcol = c("red", "blue", "green"), # Warna garis untuk tiap mobil
-           plwd = 2,            # Ketebalan garis
-           plty = 1,            # Tipe garis
-           pfcol = c(rgb(1, 0, 0, 0.25), # Warna isi
-                     rgb(0, 0, 1, 0.25), 
-                     rgb(0, 1, 0, 0.25)))  
-
-legend("topright", 
-       legend = c("Mazda RX4", "Datsun 710", "Hornet 4 Drive"),
-       bty = "n", 
-       pch = 20, 
-       col = c("red", "blue", "green"),
-       text.col = "grey25", 
-       pt.cex = 2,  # Ukuran simbol dalam legenda
-       cex = 1.5)   # Ukuran font pada legenda
-```
-
 ## Chord Diagram {#chord-diagram}
 
 ![](images/clipboard-1694170991.png){width="166"}
