@@ -882,6 +882,63 @@ ggplot(df, aes(area = value, fill = group, label = value)) +
 
 Mirip dengan treemap, tetapi berbentuk melingkar untuk menunjukkan hierarki.
 
+```{r}
+# install.packages("plotly")
+library(plotly)
+
+# Create data
+data <- list(
+  label = c("A", "B", "C", "D"),
+  parent = c("", "A", "A", "B"),
+  value = c(10, 20, 30, 40)
+)
+data<-data.frame(data)
+# Create sunburst chart
+fig <- plot_ly(data, ids = ~label, labels = ~label, 
+               parents = ~parent, values = ~value,
+               type = 'sunburst')
+fig
+```
+
+```{r}
+# Sample hierarchical data (Organization Structure)
+data <- list(
+  id = c("CEO", "HR", "HR-Manager", "HR-TeamLead", "HR-Staff", "Finance", 
+         "Finance-Manager", "Finance-Accountant", "Finance-Analyst", "IT", 
+         "IT-Manager",
+         "IT-Developer", "IT-QA"),
+  parent = c("", "CEO", "HR", "HR", "HR", "CEO", "Finance", "Finance", 
+             "Finance", "CEO", 
+             "IT", "IT", "IT"),
+  value = c(1, 1, 3, 10, 1, 1, 1, 4, 2, 1, 1, 6, 3)
+)
+data<-data.frame(data)
+# Create sunburst chart for organization structure
+organization_sunburst <- plot_ly(data, ids = ~id, labels = ~id, parents = ~parent, 
+                                 values = ~value, type = "sunburst")
+
+# Display the chart
+organization_sunburst
+```
+
+```{r}
+# Sample hierarchical data (File System Usage)
+data <- list(
+  id = c("Root", "usr", "usr-bin", "usr-lib", "usr-local", "home", "home-user1", 
+         "home-user2", "home-user3", "var", "var-log", "var-tmp", "var-cache"),
+  parent = c("", "Root", "usr", "usr", "usr", "Root", "home", "home", "home", "Root",
+             "var", "var", "var"),
+  value = c(100, 50, 30, 20, 10, 50, 20, 15, 15, 30, 25, 15, 10)
+)
+data<-data.frame(data)
+# Create sunburst chart for file system usage
+file_system_sunburst <- plot_ly(data, ids = ~id, labels = ~id, parents = ~parent, 
+                                values = ~value, type = "sunburst")
+
+# Display the chart
+file_system_sunburst
+```
+
 ## Nightingale Chart {#nightingale-chart}
 
 ![](images/clipboard-2076041745.png){width="183"}
