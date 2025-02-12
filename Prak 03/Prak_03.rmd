@@ -781,7 +781,99 @@ ggplot(df, aes(x = hsize, y = value, fill = group)) +
 Menampilkan hierarki data dalam bentuk persegi panjang bersarang.
 
 ```{r}
+group <- paste("Group", 1:9)
+subgroup <- c("A", "C", "B", "A", "A",
+              "C", "C", "B", "B")
+value <- c(7, 25, 50, 5, 16,
+           18, 30, 12, 41)
 
+df <- data.frame(group, subgroup, value) 
+```
+
+```{r}
+# install.packages("treemapify")
+library(treemapify)
+# install.packages("ggplot2")
+library(ggplot2)
+
+ggplot(df, aes(area = value, fill = group)) +
+  geom_treemap()
+```
+
+```{r}
+ggplot(df, aes(area = value, fill = value)) +
+  geom_treemap()
+```
+
+```{r}
+ggplot(df, aes(area = value, fill = group, label = value)) +
+  geom_treemap() +
+  geom_treemap_text()
+```
+
+```{r}
+ggplot(df, aes(area = value, fill = group, label = value)) +
+  geom_treemap() +
+  geom_treemap_text(colour = "white",
+                    place = "centre",
+                    size = 15)
+```
+
+```{r}
+ggplot(df, aes(area = value, fill = group,
+               label = paste(group, value, sep = "\n"))) +
+  geom_treemap() +
+  geom_treemap_text(colour = "white",
+                    place = "centre",
+                    size = 15) +
+  theme(legend.position = "none")
+```
+
+```{r}
+ggplot(df, aes(area = value, fill = value, label = group)) +
+  geom_treemap() +
+  geom_treemap_text(colour = "white",
+                    place = "centre",
+                    size = 15)
+```
+
+```{r}
+ggplot(df, aes(area = value, fill = value, label = group)) +
+  geom_treemap() +
+  geom_treemap_text(colour = "white",
+                    place = "centre",
+                    size = 15,
+                    grow = TRUE)
+```
+
+```{r}
+ggplot(df, aes(area = value, fill = value,
+               label = group, subgroup = subgroup)) +
+  geom_treemap() +
+  geom_treemap_subgroup_border(colour = "white", size = 5) +
+  geom_treemap_subgroup_text(place = "centre", grow = TRUE,
+                             alpha = 0.25, colour = "black",
+                             fontface = "italic") +
+  geom_treemap_text(colour = "white", place = "centre",
+                    size = 15, grow = TRUE)
+```
+
+```{r}
+ggplot(df, aes(area = value, fill = value, label = group)) +
+  geom_treemap() +
+  geom_treemap_text(colour = c(rep("white", 2),
+                               1, rep("white", 6)),
+                    place = "centre", size = 15) +
+  scale_fill_viridis_c()
+```
+
+```{r}
+ggplot(df, aes(area = value, fill = group, label = value)) +
+  geom_treemap() +
+  geom_treemap_text(colour = "white",
+                    place = "centre",
+                    size = 15) +
+  scale_fill_brewer(palette = "Blues")
 ```
 
 ## Sunburst Diagram {#sunburst-diagram}
@@ -796,11 +888,69 @@ Mirip dengan treemap, tetapi berbentuk melingkar untuk menunjukkan hierarki.
 
 Variasi dari pie chart yang digunakan untuk menampilkan data dalam bentuk radial.
 
+```{r}
+# Simulasi data mirip dengan Nightingale dataset
+set.seed(123)
+nightingale_sim <- data.frame(
+  Month = rep(month.abb, 2),  # 12 bulan, 2 periode
+  Year = rep(c(1854, 1855), each = 12),
+  Disease = sample(50:150, 24, replace = TRUE),  # Kematian karena penyakit
+  Wounds = sample(10:50, 24, replace = TRUE),    # Kematian karena luka
+  Other = sample(5:30, 24, replace = TRUE)       # Kematian lainnya
+)
+
+# Ubah data ke long format
+nightingale_long <- nightingale_sim %>%
+  pivot_longer(cols = c(Disease, Wounds, Other), names_to = "Cause", values_to = "Rate") %>%
+  mutate(
+    Month = factor(Month, levels = month.abb),  # Urutan bulan
+    Period = ifelse(Year == 1854, "April 1854 to March 1855", "April 1855 to March 1856")
+  )
+
+# Plot Nightingale Chart (Coxcomb Chart)
+ggplot(nightingale_long, aes(Month, Rate, fill = Cause)) + 
+  geom_col(width = 1, position = "identity") + 
+  coord_polar() + 
+  facet_wrap(~Period) +
+  scale_fill_manual(values = c("skyblue3", "grey30", "firebrick")) +
+  scale_y_sqrt() +
+  theme_void() +
+  theme(
+    axis.text.x = element_text(size = 9),
+    strip.text = element_text(size = 11),
+    legend.position = "bottom",
+    plot.background = element_rect(fill = alpha("cornsilk", 0.5)),
+    plot.margin = unit(c(10, 10, 10, 10), "pt"),
+    plot.title = element_text(vjust = 5)
+  ) +
+  ggtitle("Simulated Nightingale Chart: Causes of Mortality in the Army")
+
+```
+
 ## Voronoi Diagram {#voronoi-diagram}
 
 ![](images/clipboard-2530505370.png){width="204"}
 
 Membagi ruang menjadi wilayah berdasarkan kedekatan titik-titik data.
+
+```{r}
+# Data
+set.seed(1)
+x <- sample(1:400, size = 100)
+y <- sample(1:400, size = 100)
+dist <- sqrt((x - 200) ^ 2 + (y - 200) ^ 2)
+
+df <- data.frame(x, y, dist = dist)
+```
+
+```{r}
+# install.packages("ggvoronoi")
+# devtools::install_github("garretrc/ggvoronoi")
+library(ggvoronoi)
+
+ggplot(df, aes(x, y)) +
+  stat_voronoi(geom = "path") 
+```
 
 ------------------------------------------------------------------------
 
