@@ -1,0 +1,66 @@
+---
+title: "Prak 04 Visdat"
+author: "Angga Fathan Rofiqy (G1401211006)"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    self_contained: true
+    thumbnails: false
+    lightbox: true
+    gallery: true
+    highlight: tango
+    code_folding: show
+    toc_depth: 5
+    number_sections: false
+    theme: flatly
+    toc: yes
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+    fig_caption: true
+---
+
+```{r setup, include=FALSE, echo=FALSE, warning=FALSE, message = FALSE}
+#                      -=( Install & Load Package Function )=-
+install_load <- function (package1, ...)  {   
+
+   # convert arguments to vector
+   packages <- c(package1, ...)
+
+   # start loop to determine if each package is installed
+   for(package in packages){
+
+       # if package is installed locally, load
+       if(package %in% rownames(installed.packages()))
+          do.call('library', list(package))
+
+       # if package is not installed locally, download, then load
+       else {
+          install.packages(package)
+          do.call("library", list(package))
+       }
+   } 
+}
+
+install_load("knitr","ggplot2","viridis","dplyr","DT","showtext","ggrepel",
+             "GGally","tibble","scales","tidyverse","fmsb","devtools",
+             "ggiraphExtra")
+
+# Set wd 
+opts_knit$set(root.dir = normalizePath("./"))
+
+# Folder Chart
+if (!dir.exists("Chart")) {
+  dir.create("Chart")
+}
+
+# Add Google Fonts 
+font_add_google("Lato", "lato")
+showtext_auto()
+```
+
+# Data
+
+```{r}
+
+```
